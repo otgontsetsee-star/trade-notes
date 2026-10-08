@@ -1,0 +1,1988 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Алт ба GBPJPY арилжааны хувийн журнал — P&L хуанли, дүрмийн шалгалт, мэдээний сэрэмжлүүлэг, MT5 импорт.">
+<meta name="theme-color" content="#5B4FE6">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%234B47EA'/%3E%3Cstop offset='.55' stop-color='%238A6CF3'/%3E%3Cstop offset='1' stop-color='%23D7A6EE'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cpath d='M32 10 L36 28 L54 32 L36 36 L32 54 L28 36 L10 32 L28 28 Z' fill='white'/%3E%3C/svg%3E">
+<title>Trade notes</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+:root{
+  --font:"Manrope","Segoe UI",system-ui,-apple-system,sans-serif;
+  --bg:#F7F5FF; --surface:#FFFFFF; --surface-2:#F1EDFF; --surface-3:#E6E0FC;
+  --line:#E8E3FB; --line-strong:#D5CCF6;
+  --ink:#1F1B3D; --ink-2:#5B5583; --ink-3:#8E89B2;
+  --accent:#5B4FE6; --accent-2:#B48BF2; --accent-soft:#EDE9FF; --on-accent:#FFFFFF;
+  --win:#16896A; --win-soft:#DFF4EC;
+  --loss:#D2476E; --loss-soft:#FCE6EC;
+  --warn:#A8701A;
+  --grad:linear-gradient(135deg,#4B47EA 0%,#8A6CF3 55%,#D7A6EE 100%);
+  --radius:10px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#1B1930; --surface:#232040; --surface-2:#2C2850; --surface-3:#36315E;
+    --line:#35305C; --line-strong:#4A4478;
+    --ink:#F2EFFF; --ink-2:#BCB5E2; --ink-3:#8E88BA;
+    --accent:#A99CFF; --accent-2:#E0B5F5; --accent-soft:#38316A; --on-accent:#1B1930;
+    --win:#5ED7A6; --win-soft:#1E3A3A;
+    --loss:#FF86A6; --loss-soft:#4A2944;
+    --warn:#F2C46B;
+    --grad:linear-gradient(135deg,#4B47EA 0%,#8A6CF3 55%,#D7A6EE 100%);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1B1930; --surface:#232040; --surface-2:#2C2850; --surface-3:#36315E;
+    --line:#35305C; --line-strong:#4A4478;
+    --ink:#F2EFFF; --ink-2:#BCB5E2; --ink-3:#8E88BA;
+    --accent:#A99CFF; --accent-2:#E0B5F5; --accent-soft:#38316A; --on-accent:#1B1930;
+    --win:#5ED7A6; --win-soft:#1E3A3A;
+    --loss:#FF86A6; --loss-soft:#4A2944;
+    --warn:#F2C46B;
+    --grad:linear-gradient(135deg,#4B47EA 0%,#8A6CF3 55%,#D7A6EE 100%);
+    color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--font);font-size:14px;line-height:1.55;
+  font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{margin:0;text-wrap:balance;font-weight:600}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- апп бүтэц ---------- */
+.app{display:flex;min-height:100vh;align-items:stretch}
+.side{
+  width:220px;flex:0 0 220px;background:var(--surface);border-right:1px solid var(--line);
+  display:flex;flex-direction:column;position:sticky;top:0;height:100vh;
+}
+.side .brand{display:flex;flex-direction:column;gap:1px;padding:16px 16px 12px}
+.mark{font-weight:800;font-size:15px;letter-spacing:-.01em}
+.logo{display:block;width:100%;height:58px;object-fit:cover;border-radius:10px;margin-bottom:10px}
+.brand small{color:var(--ink-3);font-size:12px}
+.nav{display:flex;flex-direction:column;gap:1px;padding:4px 10px 14px;overflow-y:auto;flex:1}
+.nav button{
+  display:block;width:100%;text-align:left;background:none;border:0;border-radius:7px;
+  padding:7px 10px;color:var(--ink-2);font-size:13.5px;font-weight:500;cursor:pointer;
+}
+.nav button:hover{background:var(--surface-2);color:var(--ink)}
+.nav button[aria-current="true"]{background:var(--accent-soft);color:var(--accent);font-weight:700}
+.nav .sep{font-size:11.5px;font-weight:600;color:var(--ink-3);padding:16px 10px 5px}
+.side-foot{border-top:1px solid var(--line);padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-size:12px;color:var(--ink-3)}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{
+  position:sticky;top:0;z-index:15;background:var(--bg);border-bottom:1px solid var(--line);
+  padding:12px 24px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.topbar h1{font-size:17px;font-weight:700;letter-spacing:-.01em;margin-right:4px}
+.topbar .tools{margin-left:auto;display:flex;gap:8px;align-items:center}
+.acct{
+  display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:999px;
+  padding:3px 11px;font-size:12.5px;color:var(--ink-2);background:var(--surface);
+}
+.acct i{width:7px;height:7px;border-radius:50%;background:var(--accent-2);display:block}
+.acct b{font-weight:700;color:var(--ink)}
+.wrap{padding:22px 24px 72px;max-width:1280px;width:100%}
+
+/* ---------- нийтлэг ---------- */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.panel > header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;min-height:22px}
+.panel h3{font-size:14px;font-weight:700}
+.panel > header .dim,.panel > header .mono{font-size:12.5px}
+.grid{display:grid;gap:14px}
+.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cols-3{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.split{grid-template-columns:minmax(0,2fr) minmax(250px,1fr);align-items:start}
+.pos{color:var(--win)} .neg{color:var(--loss)} .dim{color:var(--ink-3)}
+.mono{font-variant-numeric:tabular-nums}
+
+.btn{
+  background:var(--surface);border:1px solid var(--line-strong);border-radius:7px;
+  padding:6px 13px;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink);
+}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--grad);border-color:transparent;color:#fff}
+.btn.primary:hover{filter:brightness(1.08);background:var(--grad)}
+.btn.ghost{background:none;border-color:var(--line)}
+.btn.danger{color:var(--loss);border-color:var(--line)}
+.btn.sm{padding:4px 10px;font-size:12.5px}
+
+.notice{
+  display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+  background:var(--accent-soft);border:1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+  border-radius:var(--radius);padding:10px 14px;font-size:13.5px;margin:0 0 20px;
+}
+
+.sect-head{display:flex;align-items:center;gap:12px;margin:28px 0 12px}
+.eyebrow{font-size:13px;font-weight:700;color:var(--ink)}
+.sect-head .rule{flex:1;height:1px;background:var(--line)}
+.sect-head .dim{font-size:12.5px}
+
+/* ---------- KPI ---------- */
+.kpis{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
+  border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--line);
+}
+.kpi{padding:14px 16px;background:var(--surface);display:flex;flex-direction:column;gap:6px;min-height:94px;min-width:0}
+.kpi .k{font-size:12px;font-weight:500;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi .v{font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi .v.sm{font-size:15px;font-weight:700;letter-spacing:0;line-height:1.35}
+.kpi .n{font-size:12px;color:var(--ink-3);margin-top:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.trio div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.trio b{font-size:18px;font-weight:700;letter-spacing:-.01em}
+.trio em{font-style:normal;font-size:12px;font-weight:500;color:var(--ink-3)}
+
+/* ---------- графикууд ---------- */
+.chart-wrap{overflow-x:auto}
+svg{display:block;max-width:100%}
+.bar-row{display:grid;grid-template-columns:minmax(88px,1.1fr) 1fr auto;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
+.bar-row:last-child{border-bottom:0}
+.bar-row .lbl{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{height:6px;border-radius:3px;background:var(--surface-2);position:relative;overflow:hidden}
+.bar-track i{position:absolute;top:0;bottom:0;border-radius:3px;display:block}
+.bar-row .val{font-size:12.5px;font-weight:600;min-width:78px;text-align:right}
+
+.pill{
+  display:inline-flex;align-items:center;padding:1px 8px;border-radius:999px;
+  font-size:11.5px;font-weight:700;border:1px solid transparent;line-height:1.6;
+}
+.pill.win,.pill.buy{background:var(--win-soft);color:var(--win)}
+.pill.loss,.pill.sell{background:var(--loss-soft);color:var(--loss)}
+.pill.be{background:var(--surface-2);color:var(--ink-2)}
+.pill.tag{background:none;color:var(--ink-2);font-weight:500;border-color:var(--line-strong)}
+
+.grade{display:inline-flex;width:22px;height:22px;align-items:center;justify-content:center;border-radius:6px;font-weight:700;font-size:12px}
+.grade.A{background:var(--win-soft);color:var(--win)}
+.grade.B{background:var(--accent-soft);color:var(--warn)}
+.grade.C{background:var(--surface-2);color:var(--ink-2)}
+.grade.D{background:var(--loss-soft);color:var(--loss)}
+
+/* ---------- хүснэгт ---------- */
+.table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:1020px}
+th{
+  text-align:left;font-size:12px;font-weight:500;color:var(--ink-3);
+  padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap;
+}
+td{padding:10px 12px;border-bottom:1px solid var(--line);font-size:13.5px;vertical-align:middle}
+tbody tr:last-child td{border-bottom:0}
+tbody tr.row:hover{background:var(--surface-2)}
+tbody tr.row{cursor:pointer}
+td.num{text-align:right;white-space:nowrap}
+tr.detail td{background:var(--bg);padding:0}
+.detail-in{padding:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+.dl{display:flex;flex-direction:column;gap:4px}
+.dl .k{font-size:12px;font-weight:500;color:var(--ink-3)}
+.dl .v{font-size:13.5px}
+.note-box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:13.5px;white-space:pre-wrap}
+
+/* ---------- шүүлтүүр ---------- */
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.filters select,.filters input{
+  background:var(--surface);border:1px solid var(--line-strong);border-radius:7px;padding:6px 10px;font-size:13px;height:34px;
+}
+.filters input[type="search"]{min-width:190px}
+
+/* ---------- форм ---------- */
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;align-items:start}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field .lab{font-size:12px;font-weight:600;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.field input,.field select,.field textarea{
+  background:var(--bg);border:1px solid var(--line-strong);border-radius:7px;padding:0 11px;width:100%;height:38px;
+}
+.field textarea{height:auto;min-height:84px;padding:9px 11px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent)}
+.field .hint{font-size:11.5px;color:var(--ink-3)}
+.checks{display:flex;flex-direction:column;gap:9px}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;cursor:pointer}
+.check input{margin-top:3px;accent-color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{
+  border:1px solid var(--line-strong);background:var(--surface);border-radius:999px;
+  padding:4px 11px;font-size:12.5px;font-weight:500;cursor:pointer;user-select:none;
+}
+.chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--ink);font-weight:700}
+.calcbar{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:1px;
+  border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--line);
+}
+.calcbar div{padding:10px 13px;background:var(--bg);display:flex;flex-direction:column;gap:2px;min-width:0}
+.calcbar b{font-size:15px;font-weight:700}
+.calcbar em{font-style:normal;font-size:12px;font-weight:500;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.form-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* ---------- хуанли ---------- */
+.cal-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.cal-month{font-size:14.5px;font-weight:700;min-width:150px;text-align:center}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr)) minmax(96px,.85fr);gap:6px;min-width:780px}
+.cal-dow{font-size:12px;font-weight:500;color:var(--ink-3);text-align:center;padding:2px 0 4px}
+.cal-cell{
+  min-height:78px;border:1px solid transparent;border-radius:8px;padding:7px 9px;
+  background:none;display:flex;flex-direction:column;gap:3px;text-align:left;
+  font:inherit;color:inherit;cursor:default;
+}
+.cal-cell.has{cursor:pointer;border-color:var(--line);background:var(--surface)}
+.cal-cell.has:hover{border-color:var(--line-strong)}
+.cal-cell.out{opacity:.3}
+.cal-cell .d{font-size:12px;font-weight:500;color:var(--ink-3)}
+.cal-cell .p{font-size:14.5px;font-weight:700;margin-top:auto;white-space:nowrap}
+.cal-cell .c{font-size:11.5px;color:var(--ink-3);white-space:nowrap}
+.cal-cell.win{background:color-mix(in srgb, var(--win) 9%, var(--surface));border-color:color-mix(in srgb, var(--win) 24%, var(--line))}
+.cal-cell.loss{background:color-mix(in srgb, var(--loss) 9%, var(--surface));border-color:color-mix(in srgb, var(--loss) 24%, var(--line))}
+.cal-cell.big.win{background:color-mix(in srgb, var(--win) 18%, var(--surface))}
+.cal-cell.big.loss{background:color-mix(in srgb, var(--loss) 18%, var(--surface))}
+.cal-cell[aria-pressed="true"]{outline:1.5px solid var(--accent);outline-offset:1px}
+.cal-week{background:none;border-left:1px solid var(--line);border-radius:0;padding-left:13px}
+
+/* ---------- импорт ---------- */
+.drop{
+  display:block;border:1.5px dashed var(--line-strong);border-radius:var(--radius);padding:24px 18px;text-align:center;
+  background:var(--bg);font-size:13.5px;font-weight:600;color:var(--ink-2);cursor:pointer;
+}
+.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.steps{counter-reset:s;display:flex;flex-direction:column;gap:10px;font-size:13.5px;margin:0;padding:0;list-style:none}
+.steps li{display:flex;gap:10px;align-items:flex-start}
+.steps li::before{
+  counter-increment:s;content:counter(s);flex:0 0 auto;width:20px;height:20px;border-radius:50%;
+  background:var(--surface-2);font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;margin-top:1px;color:var(--ink-2);
+}
+
+.recent-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.recent-row:first-child{padding-top:0}
+.recent-row:last-child{border-bottom:0;padding-bottom:0}
+.recent-row:hover .t div{color:var(--accent)}
+.recent-row .t{min-width:0}
+.recent-row .t div{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.recent-row .t small{font-size:12px;color:var(--ink-3)}
+.recent-row .r{text-align:right;font-weight:700;font-size:13.5px;min-width:72px}
+.recent-row .r small{display:block;font-size:12px;font-weight:500}
+
+/* ---------- дүрэм ---------- */
+.rule-row{display:grid;grid-template-columns:minmax(0,1fr) auto 190px;gap:16px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.rule-row:last-child{border-bottom:0}
+.rule-title{font-weight:700;font-size:14px}
+.rule-input{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2);white-space:nowrap}
+.rule-input input{width:76px;height:36px;border:1px solid var(--line-strong);border-radius:7px;background:var(--bg);padding:0 10px;font-weight:700;text-align:right}
+.rule-input input:focus{border-color:var(--accent);outline:none}
+.rule-stat{display:flex;flex-direction:column;align-items:flex-end;gap:1px;font-size:12.5px}
+.rule-stat b{font-size:13.5px}
+.cl-edit{display:flex;flex-direction:column;gap:8px}
+.cl-row{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:10px;align-items:center}
+.cl-n{width:22px;height:22px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.cl-text{height:38px;border:1px solid var(--line-strong);border-radius:7px;background:var(--bg);padding:0 11px;width:100%}
+.cl-text:focus{border-color:var(--accent);outline:none}
+.rule-pills{display:flex;flex-wrap:wrap;gap:4px;min-width:150px;max-width:210px}
+.rule-pills .pill{white-space:nowrap}
+.auto-rule{display:flex;gap:8px;align-items:flex-start;font-size:13px}
+@media (max-width:640px){
+  .rule-row{grid-template-columns:1fr;gap:8px}
+  .rule-stat{align-items:flex-start}
+}
+
+/* ---------- мэдээний самбар ---------- */
+.cal-layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
+.cal-main{min-width:0}
+.cal-main .kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:640px){.cal-main .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.cal-layout .cal-grid{min-width:640px}
+.news{position:sticky;top:72px;max-height:calc(100vh - 92px);overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-bottom:4px}
+.next-ev{
+  color:#fff;border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;flex:none;
+  background:radial-gradient(circle at 88% 12%, rgba(255,255,255,.38), transparent 38%),
+             radial-gradient(circle at 10% 110%, rgba(255,214,240,.35), transparent 45%), var(--grad);
+}
+.ne-k{font-size:11.5px;font-weight:700;opacity:.85}
+.ne-title{font-size:18px;font-weight:800;line-height:1.25;margin-top:3px;letter-spacing:-.01em}
+.ne-when{font-size:12.5px;opacity:.92;margin-top:2px}
+.ne-count{display:flex;gap:8px;margin-top:12px}
+.ne-count div{flex:1;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:6px 8px;text-align:center}
+.ne-count b{display:block;font-size:21px;font-weight:800;line-height:1.1}
+.ne-count span{font-size:11px;opacity:.85}
+.next-ev .ne-tags{margin-top:10px}
+.next-ev .tg{color:#fff;border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.1)}
+.ne-tip{margin-top:10px;font-size:12px;line-height:1.45;background:rgba(20,10,60,.18);border-radius:8px;padding:7px 10px}
+.news-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:6px 2px 0;flex:none}
+.news-head b{font-size:13.5px}
+.news-head .dim{font-size:11px}
+.nw{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:11px 13px;flex:none}
+.nw.now{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent)}
+.nw.past{opacity:.72}
+.nw-h{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.nw-h b{font-size:13.5px}
+.nw-h .dim{font-size:12px}
+.now-badge{font-size:10.5px;font-weight:800;color:var(--on-accent);background:var(--accent);border-radius:999px;padding:1px 7px}
+.lvl{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800}
+.lvl i{display:inline-flex;gap:2px}
+.lvl i span{width:5px;height:12px;border-radius:2px;background:var(--surface-3);display:block}
+.lvl.high{color:var(--loss)} .lvl.high i span{background:var(--loss)}
+.lvl.mid{color:var(--warn)} .lvl.mid i span:nth-child(-n+2){background:var(--warn)}
+.lvl.calm{color:var(--win)} .lvl.calm i span:first-child{background:var(--win)}
+.nd{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;padding:8px 0 6px;border-top:1px dashed var(--line)}
+.nd-day{text-align:center;line-height:1.1;padding-top:1px}
+.nd-day span{display:block;font-size:11px;color:var(--ink-3);font-weight:600}
+.nd-day b{font-size:17px;font-weight:800}
+.nd.today .nd-day b{color:var(--accent)}
+.nd-list{display:flex;flex-direction:column;gap:7px;min-width:0}
+.ne{display:grid;grid-template-columns:8px minmax(0,1fr);gap:9px}
+.ne .imp{width:8px;height:8px;border-radius:50%;margin-top:6px;display:block}
+.ne.i3 .imp{background:var(--loss);box-shadow:0 0 0 3px color-mix(in srgb, var(--loss) 22%, transparent)}
+.ne.i2 .imp{background:var(--warn)}
+.ne-main{min-width:0}
+.ne-t{font-size:13px;font-weight:600;line-height:1.35}
+.ne.i3 .ne-t{font-weight:800}
+.ne-s{font-size:11.5px;color:var(--ink-3);display:flex;flex-wrap:wrap;gap:4px;margin-top:1px}
+.ne-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.tg{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;color:var(--ink-2);border:1px solid var(--line);border-radius:999px;padding:0 7px;line-height:17px}
+.tg i{width:6px;height:6px;border-radius:50%;display:block}
+.nw-weekly{font-size:11.5px;color:var(--ink-3);border-top:1px dashed var(--line);padding-top:7px;margin-top:4px;line-height:1.45}
+.nw-warn{display:flex;gap:8px;align-items:flex-start;background:var(--loss-soft);color:var(--loss);border-radius:8px;padding:7px 9px;font-size:12px;font-weight:700;margin-top:8px;line-height:1.4}
+.nw-warn .ic{width:16px;height:16px;border-radius:50%;background:var(--loss);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px}
+.news-foot{font-size:11px;color:var(--ink-3);line-height:1.5;padding:2px 2px 0;flex:none}
+.cal-cell .d{display:flex;justify-content:space-between;align-items:center;gap:4px}
+.cal-news-wrap{display:flex;gap:3px;flex-wrap:wrap;justify-content:flex-end}
+.cal-news{font-size:9.5px;font-weight:800;color:var(--loss);background:var(--loss-soft);border-radius:4px;padding:0 4px;line-height:15px;white-space:nowrap}
+@media (max-width:1440px){
+  .cal-layout{grid-template-columns:1fr}
+  .news{position:static;max-height:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));align-items:start;gap:12px}
+  .news-head,.news-foot{grid-column:1/-1}
+  .news-head{order:-1}
+}
+
+.empty{padding:36px 20px;text-align:center;color:var(--ink-3);font-size:13.5px}
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  background:var(--ink);color:var(--bg);padding:9px 18px;border-radius:999px;font-size:13px;font-weight:600;
+  z-index:50;
+}
+
+@media (max-width:900px){
+  .cols-2,.split{grid-template-columns:1fr}
+}
+@media (max-width:860px){
+  .app{flex-direction:column}
+  .side{width:auto;flex:none;height:auto;position:static;border-right:0;border-bottom:1px solid var(--line)}
+  .side .brand{padding:12px 16px 6px;flex-direction:row;align-items:center;gap:10px}
+  .side .brand small{display:none}
+  .logo{width:84px;height:34px;margin:0;border-radius:8px}
+  .nav{flex-direction:row;overflow-x:auto;padding:0 10px 10px;gap:3px}
+  .nav button{white-space:nowrap;width:auto}
+  .nav .sep{display:none}
+  .side-foot{display:none}
+  .topbar{position:static;padding:12px 16px}
+  .wrap{padding:18px 16px 60px}
+  .detail-in{grid-template-columns:1fr}
+  .kpi .v{font-size:19px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand">
+      <img class="logo" alt="hnkod" src="data:image/jpeg;base64,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">
+      <span class="mark">Trade notes</span>
+      <small>Алт · GBPJPY журнал</small>
+    </div>
+    <nav class="nav" id="nav">
+      <div class="sep">Хяналт</div>
+      <button data-tab="dash" aria-current="true">Самбар</button>
+      <button data-tab="cal">P&amp;L хуанли</button>
+      <button data-tab="analytics">Шинжилгээ</button>
+      <button data-tab="playbook">Стратегийн ном</button>
+      <button data-tab="rules">Миний дүрэм</button>
+      <div class="sep">Бүртгэл</div>
+      <button data-tab="trades">Арилжаанууд</button>
+      <button data-tab="form">Шинэ бичлэг</button>
+      <button data-tab="import">MT5 импорт</button>
+      <div class="sep">Систем</div>
+      <button data-tab="settings">Тохиргоо</button>
+    </nav>
+    <div class="side-foot">
+      <span id="storeLabel">Хадгалалт шалгаж байна…</span>
+      <button class="btn sm ghost" id="themeBtn">◐ Гэрэл / харанхуй</button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <h1 id="pageTitle">Самбар</h1>
+      <span class="acct"><i></i><span id="subtitle">Данс</span></span>
+      <span class="acct" id="balChip"></span>
+      <span class="tools">
+        <button class="btn sm" id="importBtn">MT5 импорт</button>
+        <button class="btn sm primary" id="newBtn">Шинэ арилжаа</button>
+      </span>
+    </header>
+    <main class="wrap">
+      <div id="demoNotice"></div>
+      <section id="view"></section>
+    </main>
+  </div>
+</div>
+
+<script>
+/* ================= тогтмолууд ================= */
+var CONTRACT = 100; // XAUUSD: 1 лот = 100 унц
+var SESSIONS = ["Ази","Лондон","Нью-Йорк","Лондон–НЙ давхцал"];
+var SETUPS = ["Бүтцийн эвдрэл (BOS)","Order block буцалт","FVG нөхөлт","Тренд үргэлжлэл","Мужийн эргэлт","Ликвидити цуглуулалт","Мэдээний импульс","Бусад"];
+var TFS = ["M5","M15","M30","H1","H4","D1"];
+var BIAS = ["Өсөх","Буурах","Хажуу"];
+var EMOTIONS = ["Тайван","Итгэлтэй","Тэвчээргүй","Айдастай","Шуналтай","Уурласан","Ядарсан"];
+var MISTAKES = ["Эрт орсон","Хожуу орсон","SL зөөсөн","SL тавиагүй","Өшөө авах арилжаа","Хэт том лот","FOMO","Ашгаа эрт таслсан","Алдагдлаа барьсан","Төлөвлөгөөнд байгаагүй"];
+var DEFAULT_CHECKLIST = [
+  {k:"ms",   t:"Market structure-аа харсан"},
+  {k:"liq",  t:"Liquidity авах бүсийг тодорхойлсон"},
+  {k:"vp",   t:"Volume profile харсан"},
+  {k:"zone", t:"FVG / OB unmitigated бүс харсан"},
+  {k:"pa",   t:"Price action харсан"},
+  {k:"htf",  t:"Higher time frame харсан"}
+];
+var RULES = DEFAULT_CHECKLIST.slice();   // орохын өмнөх checklist — тохиргооноос ачаалагдана
+var WD = ["Ням","Даваа","Мягмар","Лхагва","Пүрэв","Баасан","Бямба"];
+
+/* ================= төлөв ================= */
+var state = {
+  tab:"dash",
+  trades:[],
+  settings:{balance:10000, account:"Exness Standard · Demo", deposits:[], serverUtcOffset:3,
+            riskPct:2, maxTrades:3, sessionHours:2, checklist:DEFAULT_CHECKLIST.slice()},
+  usingDemo:true,
+  storeReady:false,
+  storeMode:"local",
+  filters:{session:"", setup:"", result:"", dir:"", q:"", rule:""},
+  openRow:null,
+  editing:null,
+  calMonth:null,
+  calDay:null,
+  importRows:null,
+  events:[],
+  eventsUpdated:"",
+  importName:""
+};
+var db = null;
+var downloads = null;
+
+/* ================= жишээ өгөгдөл ================= */
+function demoTrades(){
+  var raw = [
+    ["2026-08-10","09:40","Лондон","Бүтцийн эвдрэл (BOS)","M15","Өсөх","buy",3312.40,3306.80,3325.00,3324.10,0.02,["plan","risk","sl","news","nore"],"Тайван","Итгэлтэй",[],4,"Лондон нээлтийн импульсийг хүлээгээд бүтэц эвдрэхийг баталгаажуулсны дараа орсон. Төлөвлөгөө бүрэн биелсэн."],
+    ["2026-08-11","16:05","Лондон–НЙ давхцал","Order block буцалт","M5","Буурах","sell",3330.10,3335.20,3318.00,3335.40,0.02,["plan","sl","news"],"Тэвчээргүй","Уурласан",["Эрт орсон"],3,"H1 OB руу хүрэхийг хүлээхгүй эрт орсон. Хүлээх дасгал хэрэгтэй."],
+    ["2026-08-12","10:20","Лондон","FVG нөхөлт","M15","Өсөх","buy",3321.00,3316.50,3333.00,3332.20,0.02,["plan","risk","sl","news","nore"],"Тайван","Тайван",[],4,"FVG-ийн 50% түвшинд орж, TP-ээ бүрэн авсан."],
+    ["2026-08-13","21:15","Нью-Йорк","Мэдээний импульс","M5","Хажуу","sell",3340.50,3345.00,3330.00,3345.10,0.01,["sl"],"Шуналтай","Уурласан",["Төлөвлөгөөнд байгаагүй","FOMO"],2,"CPI-ийн дараах хэлбэлзэлд төлөвлөгөөгүй орсон. Ийм арилжааг цаашид хийхгүй."],
+    ["2026-08-14","11:00","Лондон","Тренд үргэлжлэл","H1","Өсөх","buy",3327.80,3322.00,3340.00,3339.60,0.02,["plan","risk","sl","news","nore"],"Итгэлтэй","Итгэлтэй",[],5,"Өдрийн тренд дагасан хамгийн цэвэр арилжаа."],
+    ["2026-08-17","09:55","Лондон","Мужийн эргэлт","M15","Хажуу","sell",3352.20,3357.00,3341.00,3346.90,0.02,["plan","risk","sl","news","nore"],"Тайван","Тайван",[],4,"Хэсэгчлэн авсан. Муж хэвээр байсан тул эрт хаасан нь зөв."],
+    ["2026-08-18","17:30","Лондон–НЙ давхцал","Ликвидити цуглуулалт","M5","Буурах","sell",3348.00,3353.10,3336.00,3336.40,0.02,["plan","risk","sl","news","nore"],"Тайван","Итгэлтэй",[],4,"Азийн оргилын ликвидити цуглуулсны дараа орсон."],
+    ["2026-08-19","14:10","Нью-Йорк","Бүтцийн эвдрэл (BOS)","M15","Буурах","sell",3341.30,3346.00,3330.00,3346.20,0.02,["plan","sl","news","nore"],"Ядарсан","Ядарсан",["Хожуу орсон"],3,"Импульс дууссаны дараа хожуу орсон. Ядарсан үедээ арилжаа хийхгүй."],
+    ["2026-08-20","10:35","Лондон","FVG нөхөлт","M15","Өсөх","buy",3333.60,3328.90,3345.00,3344.20,0.02,["plan","risk","sl","news","nore"],"Итгэлтэй","Тайван",[],4,"Дүрмээ бүрэн баримталсан."],
+    ["2026-08-21","19:20","Нью-Йорк","Тренд үргэлжлэл","H1","Өсөх","buy",3350.00,3344.00,3363.00,3345.80,0.03,["plan","sl"],"Шуналтай","Уурласан",["Хэт том лот","SL зөөсөн"],2,"Лотоо нэмээд SL-ээ зөөсөн. Хамгийн муу арилжаа — давтахгүй."],
+    ["2026-08-24","11:45","Лондон","Order block буцалт","M15","Буурах","sell",3358.40,3363.00,3347.00,3347.60,0.02,["plan","risk","sl","news","nore"],"Тайван","Итгэлтэй",[],5,"Тэвчээртэй хүлээж, төлөвлөсөн газраасаа орсон."],
+    ["2026-08-25","16:40","Лондон–НЙ давхцал","Мужийн эргэлт","M5","Хажуу","buy",3344.10,3339.50,3355.00,3341.20,0.02,["plan","risk","sl","news","nore"],"Тайван","Тайван",[],3,"Муж эвдэрсэн тул гар аргаар эрт хаасан. Дүрмийн дагуу."]
+  ];
+  return raw.map(function(r,i){
+    var checks = {}; var nOk = r[12].length >= 5 ? 6 : r[12].length;
+    DEFAULT_CHECKLIST.forEach(function(x,i){ checks[x.k] = i < nOk; });
+    return {
+      id:"demo-"+i, demo:true, date:r[0], time:r[1], session:r[2], setup:r[3], tf:r[4], bias:r[5],
+      dir:r[6], entry:r[7], sl:r[8], tp:r[9], exit:r[10], lot:r[11],
+      fees:0, checks:checks, emoBefore:r[13], emoAfter:r[14], mistakes:r[15], confidence:r[16],
+      notes:r[17], chart:""
+    };
+  });
+}
+var DEMO = demoTrades();
+
+/* ================= тооцоолол ================= */
+function num(v){ var n = parseFloat(v); return isFinite(n) ? n : 0; }
+function contractFor(sym){
+  if(!sym) return CONTRACT;
+  var s = String(sym).toUpperCase();
+  if(s.indexOf("XAU")>=0 || s.indexOf("GOLD")>=0) return 100;
+  if(s.indexOf("XAG")>=0 || s.indexOf("SILVER")>=0) return 5000;
+  if(/^[A-Z]{6}/.test(s)) return /USD/.test(s.slice(3,6)) ? 100000 : null; // USD-ээр үнэлэгддэггүй хос — ханшгүйгээр $ эрсдэл бодохгүй
+  return 100;
+}
+function hasPl(t){ return t.plOverride !== undefined && t.plOverride !== null && t.plOverride !== ""; }
+function calc(t){
+  var sign = t.dir === "buy" ? 1 : -1;
+  var lot = num(t.lot);
+  var C = contractFor(t.symbol);
+  // SL/TP тавиагүй (0) бол эрсдэл/зорилт тодорхойгүй гэж үзнэ
+  // SL ашгийн тал руу зөөгдсөн (breakeven/trailing) бол анхны эрсдэл тодорхойгүй
+  var slOk = num(t.sl) && (t.dir === "buy" ? num(t.sl) < num(t.entry) : num(t.sl) > num(t.entry));
+  var risk = (slOk && C) ? Math.abs(num(t.entry)-num(t.sl)) * C * lot : 0;
+  var reward = (num(t.tp) && C) ? Math.abs(num(t.tp)-num(t.entry)) * C * lot : 0;
+  var pl = hasPl(t) ? num(t.plOverride)
+         : (num(t.exit)-num(t.entry)) * sign * (C||CONTRACT) * lot - num(t.fees);
+  var open = !hasPl(t) && !t.exit && t.exit !== 0;
+  if(open) pl = 0;
+  return {
+    risk: risk,
+    reward: reward,
+    rrPlanned: risk > 0 ? reward/risk : 0,
+    pl: pl,
+    r: risk > 0 ? pl/risk : 0,
+    open: open,
+    outcome: open ? "open" : (pl > 0.0001 ? "win" : (pl < -0.0001 ? "loss" : "be")),
+    passed: RULES.filter(function(x){return t.checks && t.checks[x.k]}).length
+  };
+}
+function journaled(t){ return !t.imported || t.journaled; }
+function gradeOf(t){
+  if(!journaled(t)) return null;
+  var total = RULES.length + 3;
+  var ok = calc(t).passed + (3 - compOf(t).v.length);
+  var p = total ? ok/total : 0;
+  return p >= 0.9 ? "A" : p >= 0.75 ? "B" : p >= 0.5 ? "C" : "D";
+}
+/* Бүх дүрэм баталгаатай биелсэн эсэх — эрсдэл тодорхойгүй бол баталгаажаагүй гэж үзнэ */
+function followed(t){
+  var c = compOf(t);
+  return c.v.length === 0 && c.riskPct !== null && (!journaled(t) || calc(t).passed >= RULES.length);
+}
+
+/* ================= дүрмийн автомат шалгалт ================= */
+var SESS_AUTO = [[0,7,"Ази"],[7,12,"Лондон"],[12,16,"Лондон–НЙ давхцал"],[16,21,"Нью-Йорк"],[21,24,"Ази"]];
+function autoSession(time, offset){
+  var m = String(time||"").match(/^(\d{1,2}):(\d{2})/); if(!m) return "";
+  var h = ((parseInt(m[1],10) + parseInt(m[2],10)/60 - num(offset)) % 24 + 24) % 24;
+  for(var i=0;i<SESS_AUTO.length;i++){ if(h >= SESS_AUTO[i][0] && h < SESS_AUTO[i][1]) return SESS_AUTO[i][2]; }
+  return "";
+}
+function minsOf(date, time){
+  var d = String(date||"").split("-"), m = String(time||"00:00").split(":");
+  if(d.length<3) return 0;
+  return Date.UTC(+d[0], +d[1]-1, +d[2], +m[0]||0, +m[1]||0) / 60000;
+}
+function fmtDur(min){ var h = Math.floor(min/60), m = Math.round(min%60); return (h? h+"ц ":"")+m+"м"; }
+function startBalance(){
+  var dep = state.settings.deposits || [];
+  return dep.length ? dep.reduce(function(a,x){ return a + num(x.amount); }, 0) : num(state.settings.balance);
+}
+var _comp = {valid:false, map:{}};
+function invalidateComp(){ _comp.valid = false; }
+function compliance(){
+  if(_comp.valid) return _comp.map;
+  var list = visibleTrades(), S = state.settings;
+  var map = {}, arr = sorted(list), dep = S.deposits || [];
+  var closed = arr.map(function(t){
+    return {t:t, at: minsOf(t.closeDate||t.date, t.closeTime||t.time), pl: calc(t).pl, open: calc(t).open};
+  });
+  var perDay = {}, perSess = {};
+  arr.forEach(function(t){
+    var at = minsOf(t.date, t.time), c = calc(t), v = [], info = {};
+    /* 1) өдрийн тоо */
+    perDay[t.date] = (perDay[t.date]||0) + 1;
+    info.dayIndex = perDay[t.date];
+    if(num(S.maxTrades) && info.dayIndex > num(S.maxTrades))
+      v.push({k:"day", short:"#"+info.dayIndex+" өдөрт", text:"Өдрийн "+info.dayIndex+" дэх арилжаа (хязгаар "+num(S.maxTrades)+")"});
+    /* 2) эрсдэл % — арилжаа нээх үеийн баланс */
+    var bal = dep.length
+      ? dep.filter(function(d){ return minsOf(d.date, d.time) <= at; }).reduce(function(a,d){ return a+num(d.amount); },0)
+      : num(S.balance);
+    closed.forEach(function(x){ if(!x.open && x.t !== t && x.at <= at) bal += x.pl; });
+    info.balance = bal;
+    if(c.risk > 0 && bal > 0){
+      info.riskPct = c.risk/bal*100;
+      if(num(S.riskPct) && info.riskPct > num(S.riskPct) + 1e-9)
+        v.push({k:"risk", short:info.riskPct.toFixed(1)+"% эрсдэл", text:"Эрсдэл $"+c.risk.toFixed(2)+" = данснаас "+info.riskPct.toFixed(1)+"% (хязгаар "+num(S.riskPct)+"% = $"+(bal*num(S.riskPct)/100).toFixed(2)+")"});
+    } else { info.riskPct = null; }
+    /* 3) сесс дээрх цаг */
+    var sess = t.session || autoSession(t.time, S.serverUtcOffset);
+    info.session = sess;
+    var sk = t.date+"|"+sess;
+    if(perSess[sk] === undefined) perSess[sk] = at;
+    info.sinceStart = at - perSess[sk];
+    if(num(S.sessionHours) && sess && info.sinceStart > num(S.sessionHours)*60)
+      v.push({k:"time", short:fmtDur(info.sinceStart), text:sess+" сесс эхэлснээс "+fmtDur(info.sinceStart)+"-ын дараа орсон (хязгаар "+num(S.sessionHours)+" цаг)"});
+    info.v = v;
+    map[t.id] = info;
+  });
+  _comp = {valid:true, map:map};
+  return map;
+}
+function compOf(t){ return compliance()[t.id] || {v:[], riskPct:null, dayIndex:0, sinceStart:0}; }
+function kpiRow(items){
+  return '<div class="kpis">'+items.map(function(x){
+    return '<div class="kpi"><span class="k">'+esc(x.k)+'</span>'
+      + '<span class="v'+(x.sm?" sm":"")+' '+(x.c||"")+'">'+(x.sm?esc(x.v):x.v)+'</span>'
+      + '<span class="n">'+esc(x.n||"")+'</span></div>';
+  }).join("")+'</div>';
+}
+function money(v,dp){ dp = dp===undefined?2:dp; return (v<0?"−":"")+"$"+Math.abs(v).toFixed(dp); }
+function signed(v,dp){ dp = dp===undefined?2:dp; return (v>0?"+":v<0?"−":"")+"$"+Math.abs(v).toFixed(dp); }
+function pct(v){ return (v*100).toFixed(1)+"%"; }
+function cls(v){ return v>0?"pos":v<0?"neg":"dim"; }
+
+function sorted(list){
+  return list.slice().sort(function(a,b){
+    return (a.date+" "+(a.time||"")).localeCompare(b.date+" "+(b.time||""));
+  });
+}
+function stats(list){
+  var s = {n:0, wins:0, losses:0, be:0, gp:0, gl:0, pl:0, rSum:0, rN:0, maxWin:0, maxLoss:0,
+           bestStreak:0, worstStreak:0, maxDD:0, curve:[], avgWin:0, avgLoss:0};
+  var arr = sorted(list), cum = 0, peak = 0, cw = 0, cl = 0;
+  arr.forEach(function(t){
+    var c = calc(t);
+    if(c.open) return;
+    s.n++; s.pl += c.pl; cum += c.pl;
+    peak = Math.max(peak, cum);
+    s.maxDD = Math.max(s.maxDD, peak - cum);
+    s.curve.push({x:s.n, y:cum, t:t});
+    if(c.risk>0){ s.rSum += c.r; s.rN++; }
+    if(c.outcome==="win"){ s.wins++; s.gp += c.pl; s.maxWin = Math.max(s.maxWin,c.pl); cw++; cl=0; s.bestStreak=Math.max(s.bestStreak,cw); }
+    else if(c.outcome==="loss"){ s.losses++; s.gl += -c.pl; s.maxLoss = Math.min(s.maxLoss,c.pl); cl++; cw=0; s.worstStreak=Math.max(s.worstStreak,cl); }
+    else { s.be++; cw=0; cl=0; }
+  });
+  s.winRate = (s.wins+s.losses) ? s.wins/(s.wins+s.losses) : 0;
+  s.pf = s.gl > 0 ? s.gp/s.gl : (s.gp>0 ? Infinity : 0);
+  s.avgR = s.rN ? s.rSum/s.rN : 0;
+  s.avgWin = s.wins ? s.gp/s.wins : 0;
+  s.avgLoss = s.losses ? s.gl/s.losses : 0;
+  s.expectancy = s.n ? s.pl/s.n : 0;
+  return s;
+}
+function groupBy(list, fn){
+  var m = {};
+  list.forEach(function(t){
+    var keys = fn(t); if(!Array.isArray(keys)) keys=[keys];
+    keys.forEach(function(k){ if(k===undefined||k===null||k==="") return; (m[k]=m[k]||[]).push(t); });
+  });
+  return Object.keys(m).map(function(k){ return {key:k, list:m[k], st:stats(m[k])}; });
+}
+
+/* ================= хадгалалт ================= */
+function visibleTrades(){
+  return state.trades.length ? state.trades : (state.usingDemo ? DEMO : []);
+}
+function saveLocal(){
+  try{
+    localStorage.setItem("xau_trades", JSON.stringify(state.trades));
+    localStorage.setItem("xau_settings", JSON.stringify(state.settings));
+  }catch(e){}
+}
+function loadLocal(){
+  try{
+    var t = localStorage.getItem("xau_trades");
+    if(t){ state.trades = JSON.parse(t) || []; }
+    var s = localStorage.getItem("xau_settings");
+    if(s){ state.settings = Object.assign(state.settings, JSON.parse(s)||{}); }
+  }catch(e){}
+  applyRules();
+}
+function putTrade(t){
+  if(db){
+    db.collection("trades").doc(t.id).set(t).catch(function(e){ toast("Хадгалахад алдаа гарлаа: "+(e&&e.message||"")); });
+    var i = state.trades.findIndex(function(x){return x.id===t.id});
+    if(i>=0) state.trades[i]=t; else state.trades.push(t);
+  } else {
+    var j = state.trades.findIndex(function(x){return x.id===t.id});
+    if(j>=0) state.trades[j]=t; else state.trades.push(t);
+    saveLocal();
+  }
+  render();
+}
+function removeTrade(id){
+  state.trades = state.trades.filter(function(x){return x.id!==id});
+  if(db) db.collection("trades").doc(id).delete().catch(function(){});
+  else saveLocal();
+  render();
+}
+function applyRules(){
+  var cl = state.settings.checklist;
+  RULES = (Array.isArray(cl) && cl.length) ? cl.filter(function(x){ return x && x.t; }) : DEFAULT_CHECKLIST.slice();
+}
+function putSettings(){
+  applyRules();
+  if(db) db.doc("settings/account").set(state.settings).catch(function(){});
+  else saveLocal();
+  render();
+}
+async function initStore(){
+  try{
+    if(window.claude && window.claude.use){
+      db = await window.claude.use("db");
+      window.claude.use("downloads").then(function(d){ downloads = d; }).catch(function(){});
+    }
+  }catch(e){ db = null; }
+  if(db){
+    state.storeMode = "cloud";
+    db.collection("trades").onSnapshot(function(snap){
+      state.trades = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+      state.storeReady = true;
+      render();
+    }, function(){ state.storeMode="local"; db=null; loadLocal(); render(); });
+    db.collection("events").onSnapshot(function(snap){
+      var items = [], upd = "";
+      snap.docs.forEach(function(d){ var b = d.data() || {}; (b.items||[]).forEach(function(x){ items.push(x); }); if(b.updated && b.updated > upd) upd = b.updated; });
+      state.events = items; state.eventsUpdated = upd; _ev.valid = false;
+      render();
+    }, function(){});
+    db.doc("settings/account").onSnapshot(function(s){
+      if(s.exists) state.settings = Object.assign(state.settings, s.data());
+      applyRules();
+      render();
+    }, function(){});
+  } else {
+    state.storeMode = "local";
+    loadLocal();
+    render();
+    loadEventsFile();
+  }
+}
+/* Claude-аас гадуур (жишээ нь GitHub Pages): мэдээний хуваарийг events.json-оос уншина */
+function loadEventsFile(){
+  try{
+    var c = localStorage.getItem("xau_events");
+    if(c){ var o = JSON.parse(c); state.events = o.items || []; state.eventsUpdated = o.updated || ""; render(); }
+  }catch(e){}
+  if(!window.fetch || location.protocol === "file:") return;
+  fetch("events.json", {cache:"no-cache"}).then(function(r){ return r.ok ? r.json() : null; }).then(function(o){
+    if(!o || !Array.isArray(o.items)) return;
+    state.events = o.items; state.eventsUpdated = o.updated || "";
+    try{ localStorage.setItem("xau_events", JSON.stringify(o)); }catch(e){}
+    render();
+  }).catch(function(){});
+}
+/* файл хадгалах: Claude дотор downloads capability, гадна бол энгийн татах холбоос */
+function saveFile(filename, data, mime){
+  if(downloads){
+    return downloads.save({filename:filename, data:data}).then(function(){ toast(filename+" хадгалагдлаа"); })
+      .catch(function(err){
+        var c = err && err.code;
+        if(c === "declined") return;
+        if(c === "rate_limited"){ toast("Түр хүлээгээд дахин оролдоно уу"); return; }
+        blobSave(filename, data, mime);
+      });
+  }
+  blobSave(filename, data, mime);
+  return Promise.resolve();
+}
+function blobSave(filename, data, mime){
+  try{
+    var url = URL.createObjectURL(new Blob([data], {type: mime || "application/octet-stream"}));
+    var a = document.createElement("a"); a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+    toast(filename+" татагдлаа");
+  }catch(e){ toast("Файл хадгалж чадсангүй"); }
+}
+/* ---- нөөц (backup) ---- */
+function exportBackup(){
+  var data = {app:"trade-notes", version:1, exportedAt:new Date().toISOString(), trades:state.trades, settings:state.settings};
+  saveFile("trade-notes-backup-"+ymd(new Date())+".json", JSON.stringify(data, null, 1), "application/json");
+}
+function importBackup(text){
+  var o;
+  try{ o = JSON.parse(text); }catch(e){ toast("JSON файл уншигдсангүй"); return; }
+  if(!o || !Array.isArray(o.trades)){ toast("Энэ нь Trade notes-ийн нөөц файл биш байна"); return; }
+  var map = {}; state.trades.forEach(function(t){ map[t.id] = t; });
+  var added = 0, updated = 0;
+  o.trades.forEach(function(t){ if(!t || !t.id) return; if(map[t.id]) updated++; else added++; map[t.id] = t; });
+  state.trades = Object.keys(map).map(function(k){ return map[k]; });
+  if(o.settings) state.settings = Object.assign(state.settings, o.settings);
+  state.usingDemo = false; state.calMonth = null;
+  try{ localStorage.setItem("xau_hide_demo","1"); }catch(e){}
+  if(db){
+    o.trades.forEach(function(t){ if(t && t.id) db.collection("trades").doc(t.id).set(t).catch(function(){}); });
+    if(o.settings) db.doc("settings/account").set(state.settings).catch(function(){});
+  } else saveLocal();
+  applyRules(); render();
+  toast("Сэргээлээ: "+added+" шинэ, "+updated+" шинэчлэгдсэн арилжаа");
+}
+
+/* ================= UI туслахууд ================= */
+function el(html){ var d=document.createElement("div"); d.innerHTML=html.trim(); return d.firstElementChild; }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]}); }
+function toast(msg){
+  var t = el('<div class="toast">'+esc(msg)+'</div>');
+  document.body.appendChild(t);
+  setTimeout(function(){ t.remove(); }, 2600);
+}
+
+/* ---- график: equity муруй ---- */
+function equitySVG(curve){
+  var W=880, H=210, P={l:52,r:16,t:14,b:26};
+  if(curve.length < 2) return '<div class="empty">Муруй зурахад дор хаяж 2 хаагдсан арилжаа хэрэгтэй.</div>';
+  var ys = curve.map(function(p){return p.y}).concat([0]);
+  var min = Math.min.apply(null,ys), max = Math.max.apply(null,ys);
+  var pad = (max-min)*0.15 || 10; min -= pad; max += pad;
+  var xs = function(i){ return P.l + i*(W-P.l-P.r)/(curve.length-1); };
+  var yv = function(v){ return P.t + (max-v)*(H-P.t-P.b)/(max-min); };
+  var line = curve.map(function(p,i){ return (i?"L":"M")+xs(i).toFixed(1)+" "+yv(p.y).toFixed(1); }).join(" ");
+  var area = line + " L"+xs(curve.length-1).toFixed(1)+" "+yv(Math.max(min,0)).toFixed(1)+" L"+xs(0).toFixed(1)+" "+yv(Math.max(min,0)).toFixed(1)+" Z";
+  var ticks = [max, (max+min)/2, min];
+  var grid = ticks.map(function(v){
+    return '<line x1="'+P.l+'" y1="'+yv(v).toFixed(1)+'" x2="'+(W-P.r)+'" y2="'+yv(v).toFixed(1)+'" stroke="var(--line)" stroke-width="1"/>'
+      + '<text x="'+(P.l-8)+'" y="'+(yv(v)+4).toFixed(1)+'" text-anchor="end" font-size="11" fill="var(--ink-3)">'+(v>=0?"+":"−")+"$"+Math.abs(v).toFixed(0)+'</text>';
+  }).join("");
+  var zero = (min<0 && max>0) ? '<line x1="'+P.l+'" y1="'+yv(0).toFixed(1)+'" x2="'+(W-P.r)+'" y2="'+yv(0).toFixed(1)+'" stroke="var(--line-strong)" stroke-width="1" stroke-dasharray="3 3"/>' : "";
+  var last = curve[curve.length-1];
+  var up = last.y >= 0;
+  var col = up ? "var(--win)" : "var(--loss)";
+  return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto" role="img" aria-label="Хуримтлагдсан ашгийн муруй">'
+    + '<defs><linearGradient id="eqg" x1="0" y1="0" x2="0" y2="1">'
+    + '<stop offset="0%" stop-color="'+col+'" stop-opacity="0.22"/><stop offset="100%" stop-color="'+col+'" stop-opacity="0"/>'
+    + '</linearGradient></defs>'
+    + grid + zero
+    + '<path d="'+area+'" fill="url(#eqg)"/>'
+    + '<path d="'+line+'" fill="none" stroke="'+col+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'
+    + '<circle cx="'+xs(curve.length-1).toFixed(1)+'" cy="'+yv(last.y).toFixed(1)+'" r="4" fill="'+col+'"/>'
+    + '<text x="'+P.l+'" y="'+(H-7)+'" font-size="11" fill="var(--ink-3)">1</text>'
+    + '<text x="'+(W-P.r)+'" y="'+(H-7)+'" text-anchor="end" font-size="11" fill="var(--ink-3)">'+curve.length+' дэх арилжаа</text>'
+    + '</svg>';
+}
+
+/* ---- график: R тархалт ---- */
+function rHistogram(list){
+  var buckets = [
+    {t:"≤ −1R", lo:-1e9, hi:-1, neg:true},
+    {t:"−1 … −0.5R", lo:-1, hi:-0.5, neg:true},
+    {t:"−0.5 … 0R", lo:-0.5, hi:0, neg:true},
+    {t:"0 … 1R", lo:0, hi:1},
+    {t:"1 … 2R", lo:1, hi:2},
+    {t:"2 … 3R", lo:2, hi:3},
+    {t:"3R+", lo:3, hi:1e9}
+  ];
+  var counts = buckets.map(function(){return 0});
+  list.forEach(function(t){
+    var c = calc(t); if(c.open || !c.risk) return;
+    for(var i=0;i<buckets.length;i++){ if(c.r > buckets[i].lo && c.r <= buckets[i].hi){ counts[i]++; break; } }
+  });
+  var max = Math.max.apply(null, counts.concat([1]));
+  return buckets.map(function(b,i){
+    var w = counts[i]/max*100;
+    return '<div class="bar-row"><span class="lbl mono">'+b.t+'</span>'
+      + '<span class="bar-track"><i style="left:0;width:'+w.toFixed(1)+'%;background:'+(b.neg?"var(--loss)":"var(--win)")+'"></i></span>'
+      + '<span class="val">'+counts[i]+'</span></div>';
+  }).join("");
+}
+
+/* ---- ерөнхий задаргаа ---- */
+function breakdown(groups, opts){
+  opts = opts || {};
+  groups.sort(function(a,b){ return b.st.pl - a.st.pl; });
+  var max = Math.max.apply(null, groups.map(function(g){return Math.abs(g.st.pl)}).concat([1]));
+  if(!groups.length) return '<div class="empty">Өгөгдөл алга.</div>';
+  return groups.map(function(g){
+    var v = g.st.pl, w = Math.abs(v)/max*50;
+    var left = v>=0 ? 50 : 50-w;
+    return '<div class="bar-row"><span class="lbl" title="'+esc(g.key)+'">'+esc(g.key)+'</span>'
+      + '<span class="bar-track"><i style="left:'+left.toFixed(1)+'%;width:'+w.toFixed(1)+'%;background:'+(v>=0?"var(--win)":"var(--loss)")+'"></i></span>'
+      + '<span class="val '+cls(v)+'">'+signed(v)+' <span class="dim">· '+g.st.n+'</span></span></div>';
+  }).join("");
+}
+
+/* ================= харагдац: самбар ================= */
+function viewDash(){
+  var list = visibleTrades(), s = stats(list);
+  var bal = startBalance();
+  var kpi = [
+    {k:"Нийт P/L", v:signed(s.pl), c:cls(s.pl), n: bal? (s.pl/bal*100).toFixed(2)+"% данснаас":"—"},
+    {k:"Ялалт", v:pct(s.winRate), c:"", n:s.wins+" ялсан / "+s.losses+" алдсан"},
+    {k:"Profit factor", v:(s.pf===Infinity?"∞":s.pf.toFixed(2)), c:s.pf>=1?"pos":"neg", n:"Ашиг ÷ алдагдал"},
+    {k:"Дундаж R", v:(s.avgR>=0?"+":"−")+Math.abs(s.avgR).toFixed(2)+"R", c:cls(s.avgR), n:"Арилжаа тутамд"},
+    {k:"Хүлээлт", v:signed(s.expectancy), c:cls(s.expectancy), n:"Арилжаа тутамд"},
+    {k:"Макс уналт", v:money(s.maxDD), c:"", n:"Оргилоос ёроол"}
+  ];
+  var kpiHtml = kpiRow(kpi);
+
+  /* сахилга бат — хатуу дүрэм (+ бөглөсөн бол checklist) */
+  var okList = list.filter(followed);
+  var badList = list.filter(function(t){ return !followed(t); });
+  var fs = stats(okList), bs = stats(badList);
+  var discipline =
+    '<div class="grid cols-2">'
+    + disciplineCard("Дүрмээ баримталсан", fs, "var(--win)")
+    + disciplineCard("Дүрмээ зөрчсөн", bs, "var(--loss)")
+    + '</div>';
+
+  var mistakeGroups = groupBy(list, function(t){ return (t.mistakes||[]); });
+  mistakeGroups.sort(function(a,b){ return b.list.length - a.list.length; });
+  var mistakeHtml = mistakeGroups.length
+    ? mistakeGroups.map(function(g){
+        return '<div class="bar-row"><span class="lbl">'+esc(g.key)+'</span>'
+          + '<span class="bar-track"><i style="left:0;width:'+(g.list.length/mistakeGroups[0].list.length*100).toFixed(1)+'%;background:var(--loss)"></i></span>'
+          + '<span class="val '+cls(g.st.pl)+'">'+signed(g.st.pl)+' <span class="dim">· '+g.list.length+'</span></span></div>';
+      }).join("")
+    : '<div class="empty">Бүртгэгдсэн алдаа алга. Сайн байна.</div>';
+
+  var emoGroups = groupBy(list, function(t){ return t.emoBefore; });
+
+  if(state.tab === "analytics"){
+    return ''
+    + '<div class="sect-head" style="margin-top:0"><span class="eyebrow">Задаргаа</span><span class="rule"></span><span class="dim" style="font-size:12.5px">'+list.length+' арилжаа</span></div>'
+    + '<div class="grid cols-3">'
+      + '<div class="panel"><header><h3>Сессээр</h3></header>'+breakdown(groupBy(list,function(t){return t.session}))+'</div>'
+      + '<div class="panel"><header><h3>Стратегиар</h3></header>'+breakdown(groupBy(list,function(t){return t.setup}))+'</div>'
+      + '<div class="panel"><header><h3>Гарагаар</h3></header>'+breakdown(groupBy(list,function(t){ var d=new Date(t.date+"T00:00:00"); return isNaN(d)?"":WD[d.getDay()]; }))+'</div>'
+    + '</div>'
+    + '<div class="grid cols-3" style="margin-top:14px">'
+      + '<div class="panel"><header><h3>R-үржвэрийн тархалт</h3></header>'+rHistogram(list)+'</div>'
+      + '<div class="panel"><header><h3>Оролтын сэтгэл зүй</h3></header>'+breakdown(emoGroups)+'</div>'
+      + '<div class="panel"><header><h3>Давтагдсан алдаа</h3></header>'+mistakeHtml+'</div>'
+    + '</div>'
+    + '<div class="sect-head"><span class="eyebrow">Сахилга бат</span><span class="rule"></span><span class="dim" style="font-size:12.5px">Өдрийн хязгаар · эрсдэл · сессийн цаг · checklist</span></div>'
+    + discipline;
+  }
+
+  var recent = sorted(list).reverse().slice(0,8);
+  var recentHtml = recent.length ? '<div class="recent">'
+    + recent.map(function(t){
+        var c = calc(t);
+        return '<div class="recent-row" data-id="'+esc(t.id)+'" role="button" tabindex="0">'
+          + '<div class="t"><div>'+esc(t.setup||t.symbol||"—")+'</div><small>'+esc(t.date)+(t.time?' · '+esc(t.time):'')+'</small></div>'
+          + '<span class="pill '+(t.dir==="buy"?"buy":"sell")+'">'+(t.dir==="buy"?"Buy":"Sell")+'</span>'
+          + '<div class="r '+cls(c.pl)+'">'+(c.open?"Нээлттэй":signed(c.pl))
+            + '<small>'+(c.open||!c.risk?"":(c.r>=0?"+":"−")+Math.abs(c.r).toFixed(2)+"R")+'</small></div>'
+          + '</div>';
+      }).join("") + '</div>'
+    : '<div class="empty">Арилжаа алга.</div>';
+
+  return ''
+  + '<div class="sect-head" style="margin-top:0"><span class="eyebrow">Тойм</span><span class="rule"></span><span class="dim" style="font-size:12.5px">'+list.length+' арилжаа</span></div>'
+  + kpiHtml
+  + '<div class="grid split" style="margin-top:14px">'
+    + '<div class="panel"><header><h3>Ашгийн муруй</h3><span class="dim mono" style="font-size:12.5px">Сайн '+signed(s.maxWin)+' · муу '+signed(s.maxLoss)+'</span></header>'
+    + '<div class="chart-wrap">'+equitySVG(s.curve)+'</div></div>'
+    + '<div class="panel"><header><h3>Сүүлийн арилжаа</h3></header>'+recentHtml+'</div>'
+  + '</div>'
+  + '<div class="sect-head"><span class="eyebrow">Сахилга бат</span><span class="rule"></span></div>'
+  + discipline;
+}
+
+/* ================= харагдац: стратегийн ном ================= */
+function viewPlaybook(){
+  var list = visibleTrades().filter(function(t){ return t.setup; });
+  var groups = groupBy(list, function(t){ return t.setup; });
+  groups.sort(function(a,b){ return b.st.pl - a.st.pl; });
+  var rows = groups.length ? groups.map(function(g){
+    var st = g.st;
+    return '<tr>'
+      + '<td><b>'+esc(g.key)+'</b></td>'
+      + '<td class="num">'+st.n+'</td>'
+      + '<td class="num '+(st.winRate>=0.5?"pos":"")+'">'+pct(st.winRate)+'</td>'
+      + '<td class="num">'+(st.pf===Infinity?"∞":st.pf.toFixed(2))+'</td>'
+      + '<td class="num '+cls(st.avgR)+'">'+(st.avgR>=0?"+":"−")+Math.abs(st.avgR).toFixed(2)+'R</td>'
+      + '<td class="num '+cls(st.expectancy)+'">'+signed(st.expectancy)+'</td>'
+      + '<td class="num '+cls(st.pl)+'" style="font-weight:600">'+signed(st.pl)+'</td>'
+      + '</tr>';
+  }).join("") : '<tr><td colspan="7"><div class="empty">Стратеги тэмдэглэсэн арилжаа алга.</div></td></tr>';
+
+  var best = groups[0], worst = groups[groups.length-1];
+  return '<div class="sect-head" style="margin-top:0"><span class="eyebrow">Стратегийн гүйцэтгэл</span><span class="rule"></span>'
+    + '<span class="dim" style="font-size:12.5px">Хүлээлт = арилжаа тутамд дунджаар</span></div>'
+    + (groups.length>1 ? '<div style="margin-bottom:14px">'+kpiRow([
+        {k:"Хамгийн ашигтай", v:best.key, sm:true, c:"pos", n:signed(best.st.pl)+" · "+best.st.n+" арилжаа"},
+        {k:"Хамгийн сул", v:worst.key, sm:true, c:cls(worst.st.pl), n:signed(worst.st.pl)+" · "+worst.st.n+" арилжаа"},
+        {k:"Стратегийн тоо", v:String(groups.length), n:"тэмдэглэгдсэн"},
+        {k:"Нийт арилжаа", v:String(list.length), n:"стратегитай"}
+      ])+'</div>' : "")
+    + '<div class="table-scroll"><table style="min-width:760px"><thead><tr>'
+      + '<th>Стратеги</th><th style="text-align:right">Арилжаа</th><th style="text-align:right">Ялалт</th>'
+      + '<th style="text-align:right">PF</th><th style="text-align:right">Дундаж R</th><th style="text-align:right">Хүлээлт</th><th style="text-align:right">Нийт</th>'
+      + '</tr></thead><tbody>'+rows+'</tbody></table></div>'
+    ;
+}
+
+/* ================= харагдац: миний дүрэм ================= */
+function viewRules(){
+  var S = state.settings, list = visibleTrades();
+  var byRule = {day:[], risk:[], time:[]}, okRule = {day:[], risk:[], time:[]}, unknownRisk = 0, rps = [];
+  list.forEach(function(t){
+    var c = compOf(t), ks = c.v.map(function(v){ return v.k; });
+    ["day","risk","time"].forEach(function(k){
+      if(ks.indexOf(k) >= 0) byRule[k].push(t);
+      else if(k !== "risk" || c.riskPct !== null) okRule[k].push(t);
+    });
+    if(c.riskPct === null) unknownRisk++; else rps.push(c.riskPct);
+  });
+  var ok = list.filter(followed), bad = list.filter(function(t){ return !followed(t); });
+  var pctOk = list.length ? ok.length/list.length : 0;
+  rps.sort(function(a,b){ return a-b; });
+  var medRisk = rps.length ? rps[Math.floor(rps.length/2)] : null;
+  var days = {}; list.forEach(function(t){ days[t.date] = (days[t.date]||0)+1; });
+  var dayVals = Object.keys(days).map(function(k){ return days[k]; });
+  var avgDay = dayVals.length ? list.length/dayVals.length : 0, maxDay = Math.max.apply(null, dayVals.concat([0]));
+
+  function ruleRow(k, title, input, unit, hint){
+    var bA = byRule[k], oA = okRule[k], sb = stats(bA), so = stats(oA);
+    return '<div class="rule-row">'
+      + '<div class="rule-main"><div class="rule-title">'+title+'</div><div class="dim" style="font-size:12.5px">'+hint+'</div></div>'
+      + '<label class="rule-input">'+input+'<span>'+unit+'</span></label>'
+      + '<div class="rule-stat">'
+        + '<span><b class="'+(bA.length?"neg":"pos")+'">'+(bA.length? bA.length+" зөрчил" : "Зөрчилгүй")+'</b>'+(bA.length?' <span class="'+cls(sb.pl)+'">'+signed(sb.pl)+'</span>':'')+'</span>'
+        + '<span class="dim">Баримталсан '+oA.length+(oA.length?' · <span class="'+cls(so.pl)+'">'+signed(so.pl)+'</span>':'')+'</span>'
+      + '</div></div>';
+  }
+
+  var violRows = sorted(bad).reverse().filter(function(t){ return compOf(t).v.length; }).slice(0,60).map(function(t){
+    var c = calc(t);
+    return '<tr class="row" data-id="'+esc(t.id)+'">'
+      + '<td style="white-space:nowrap">'+esc(t.date)+' <span class="dim">'+esc(t.time||"")+'</span></td>'
+      + '<td>'+compOf(t).v.map(function(v){ return '<span class="pill loss" title="'+esc(v.text)+'">'+esc(v.short)+'</span>'; }).join(" ")+'</td>'
+      + '<td class="num '+cls(c.pl)+'" style="font-weight:700">'+signed(c.pl)+'</td></tr>';
+  }).join("");
+
+  return '<div class="sect-head" style="margin-top:0"><span class="eyebrow">Дүрмийн биелэлт</span><span class="rule"></span>'
+    + '<span class="dim">'+list.length+' арилжаа</span></div>'
+    + kpiRow([
+        {k:"Бүх дүрэм баримталсан", v:pct(pctOk), c:pctOk>=0.8?"pos":pctOk>=0.5?"":"neg", n:ok.length+" / "+list.length+" арилжаа"},
+        {k:"Дундаж эрсдэл (медиан)", v: medRisk===null ? "—" : medRisk.toFixed(1)+"%", c: medRisk!==null && medRisk > num(S.riskPct) ? "neg" : "pos", n:"хязгаар "+num(S.riskPct)+"%"},
+        {k:"Өдөрт дунджаар", v:avgDay.toFixed(1), c: avgDay > num(S.maxTrades) ? "neg" : "", n:"хамгийн их "+maxDay+" · хязгаар "+num(S.maxTrades)},
+        {k:"Эрсдэл шалгагдаагүй", v:String(unknownRisk), n:"анхны SL тодорхойгүй"}
+      ])
+    + '<div class="sect-head"><span class="eyebrow">Эрсдэлийн хатуу дүрэм</span><span class="rule"></span>'
+    + '<span class="dim">Арилжаа бүр дээр автоматаар шалгагдана</span></div>'
+    + '<div class="panel" style="padding-top:6px;padding-bottom:6px">'
+      + ruleRow("day", "Өдөрт ихдээ", '<input type="number" min="1" step="1" id="rMaxTrades" value="'+esc(S.maxTrades)+'">', "арилжаа", "Өдрийн "+(num(S.maxTrades)+1)+" дэх арилжаанаас эхлэн зөрчил гэж тооцно")
+      + ruleRow("risk", "Нэг арилжааны эрсдэл", '<input type="number" min="0.1" step="0.1" id="rRisk" value="'+esc(S.riskPct)+'">', "% данснаас", "Эрсдэл = |оролт − SL| × лот × contract, арилжаа нээх үеийн балансаас")
+      + ruleRow("time", "Нэг сесс дээр", '<input type="number" min="0.5" step="0.5" id="rHours" value="'+esc(S.sessionHours)+'">', "цаг", "Тухайн өдрийн сессийн эхний арилжаанаас тоолно")
+    + '</div>'
+    + '<div class="sect-head"><span class="eyebrow">Орохын өмнөх checklist</span><span class="rule"></span>'
+    + '<span class="dim">Арилжаа бүрийг бөглөхдөө тэмдэглэнэ</span></div>'
+    + '<div class="panel"><div class="cl-edit" id="clEdit">'
+      + RULES.map(function(r,i){
+          return '<div class="cl-row" data-k="'+esc(r.k)+'"><span class="cl-n">'+(i+1)+'</span>'
+            + '<input class="cl-text" value="'+esc(r.t)+'" aria-label="Дүрэм '+(i+1)+'">'
+            + '<button type="button" class="btn sm ghost" data-cl-del="'+i+'" aria-label="Устгах">✕</button></div>';
+        }).join("")
+    + '</div>'
+    + '<div class="form-actions" style="margin-top:12px">'
+      + '<button type="button" class="btn sm" id="clAdd">+ Дүрэм нэмэх</button>'
+      + '<button type="button" class="btn primary" id="saveRules" style="margin-left:auto">Дүрмээ хадгалах</button>'
+    + '</div></div>'
+    + '<div class="sect-head"><span class="eyebrow">Дүрэм зөрчсөн арилжаа</span><span class="rule"></span>'
+    + '<span class="dim">Мөр дээр дарж дэлгэрэнгүйг нээнэ</span></div>'
+    + (violRows ? '<div class="table-scroll"><table style="min-width:560px"><thead><tr><th>Огноо</th><th>Зөрчил</th><th style="text-align:right">Үр дүн</th></tr></thead><tbody>'+violRows+'</tbody></table></div>'
+                : '<div class="panel"><div class="empty">Дүрэм зөрчсөн арилжаа алга.</div></div>');
+}
+function disciplineCard(title, s, color){
+  return '<div class="panel">'
+    + '<header><h3>'+esc(title)+'</h3><span class="dim mono">'+s.n+' арилжаа</span></header>'
+    + '<div class="trio">'
+      + '<div><b class="'+(s.winRate>=0.5?"pos":"")+'">'+pct(s.winRate)+'</b><em>Ялалт</em></div>'
+      + '<div><b class="'+cls(s.pl)+'">'+signed(s.pl)+'</b><em>Үр дүн</em></div>'
+      + '<div><b class="'+cls(s.avgR)+'">'+(s.avgR>=0?"+":"−")+Math.abs(s.avgR).toFixed(2)+'R</b><em>Дундаж R</em></div>'
+    + '</div></div>';
+}
+
+/* ================= эдийн засгийн мэдээ ================= */
+var TAGC = {XAU:"#C9962B", XAG:"#9AA3AF", DXY:"#4B7BE5", OIL:"#8A6A4F", GBPJPY:"#D2476E"};
+var WD_SHORT = ["Ня","Да","Мя","Лх","Пү","Ба","Бя"];
+var UB_OFF = 8;
+function shiftParts(ms, offH){
+  var d = new Date(ms + offH*3600000), iso = d.toISOString();
+  return {date: iso.slice(0,10), time: iso.slice(11,16), dow: d.getUTCDay(), day: d.getUTCDate()};
+}
+function ubOf(ms){ return shiftParts(ms, UB_OFF); }
+function srvOf(ms){ return shiftParts(ms, num(state.settings.serverUtcOffset)); }
+function nthSunday(y, mo, n){ var w = new Date(Date.UTC(y, mo-1, 1)).getUTCDay(); return 1 + (7-w)%7 + (n-1)*7; }
+function usDst(y, m, d){
+  var cur = Date.UTC(y, m-1, d);
+  return cur >= Date.UTC(y, 2, nthSunday(y,3,2)) && cur < Date.UTC(y, 10, nthSunday(y,11,1));
+}
+function etMs(y, m, d, h, mi){ return Date.UTC(y, m-1, d, h + (usDst(y,m,d)?4:5), mi); }
+function parseEvT(t){ var m = String(t||"").match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/); return m ? Date.UTC(+m[1], +m[2]-1, +m[3], +m[4], +m[5]) : NaN; }
+var _ev = {valid:false, list:[]};
+function allEvents(){
+  if(_ev.valid) return _ev.list;
+  _ev = {valid:true, list:(state.events||[]).map(function(e){ return Object.assign({t_ms: parseEvT(e.t)}, e); })
+           .filter(function(e){ return isFinite(e.t_ms); }).sort(function(a,b){ return a.t_ms - b.t_ms; })};
+  return _ev.list;
+}
+/* долоо хоног бүрийн тогтмол мэдээ: EIA (Лх 10:30 ET), ажилгүйдлийн тэтгэмж (Пү 8:30 ET) */
+function weeklyEvents(fromDate, toDate){
+  var out = [], p = fromDate.split("-"), d = new Date(Date.UTC(+p[0], +p[1]-1, +p[2]));
+  for(; ymdUTC(d) <= toDate; d.setUTCDate(d.getUTCDate()+1)){
+    var y = d.getUTCFullYear(), m = d.getUTCMonth()+1, dd = d.getUTCDate(), wd = d.getUTCDay();
+    if(wd === 3) out.push({code:"EIA", title:"EIA нефтийн нөөц", t_ms:etMs(y,m,dd,10,30), tags:["OIL"]});
+    if(wd === 4) out.push({code:"Claims", title:"АНУ ажилгүйдлийн тэтгэмж", t_ms:etMs(y,m,dd,8,30), tags:["XAU","DXY"]});
+  }
+  return out;
+}
+function ymdUTC(d){ return d.toISOString().slice(0,10); }
+function tradeUtcMs(t){ return minsOf(t.date, t.time)*60000 - num(state.settings.serverUtcOffset)*3600000; }
+/* өндөр нөлөөтэй мэдээнээс 30 мин өмнө – 60 мин дараах цонхонд нээсэн эсэх */
+function newsNear(t){
+  var ms = tradeUtcMs(t);
+  return allEvents().filter(function(e){ return e.imp >= 3 && !e.allDay && ms >= e.t_ms - 30*60000 && ms <= e.t_ms + 60*60000; });
+}
+function tagChips(tags){
+  return (tags||[]).map(function(k){ return '<span class="tg"><i style="background:'+(TAGC[k]||"var(--ink-3)")+'"></i>'+esc(k)+'</span>'; }).join("");
+}
+function countdownHtml(e){
+  var diff = Math.max(0, e.t_ms - Date.now());
+  var d = Math.floor(diff/86400000), h = Math.floor(diff%86400000/3600000), m = Math.floor(diff%3600000/60000);
+  return '<div><b>'+d+'</b><span>өдөр</span></div><div><b>'+h+'</b><span>цаг</span></div><div><b>'+m+'</b><span>минут</span></div>';
+}
+function nextBigEvent(){
+  var now = Date.now();
+  return allEvents().filter(function(e){ return e.imp >= 3 && e.t_ms > now; })[0] || null;
+}
+function newsPanel(weeks){
+  var evs = allEvents(), todayUB = ubOf(Date.now()).date;
+  if(!evs.length){
+    return '<aside class="news"><div class="nw"><div class="nw-h"><b>Мэдээний хуваарь</b></div>'
+      + '<div class="dim" style="font-size:12.5px">Хуваарь ачаалагдаагүй байна. Claude-д «мэдээний хуваарийг шинэчил» гэж хэлээрэй.</div></div></aside>';
+  }
+  var nx = nextBigEvent(), hero = "";
+  if(nx){
+    var u = ubOf(nx.t_ms);
+    hero = '<div class="next-ev">'
+      + '<div class="ne-k">Дараагийн том мэдээ</div>'
+      + '<div class="ne-title">'+esc(nx.title)+'</div>'
+      + '<div class="ne-when">'+WD[u.dow]+', '+(+u.date.slice(5,7))+'-р сарын '+u.day+' · '+(nx.allDay?"бүтэн өдөр":(nx.approx?"≈ ":"")+u.time+" УБ")+'</div>'
+      + '<div class="ne-count" id="neCount">'+countdownHtml(nx)+'</div>'
+      + '<div class="ne-tags">'+tagChips(nx.tags)+'</div>'
+      + '<div class="ne-tip">Мэдээ гарахаас 30 минутын өмнө, 1 цагийн дараа хэлбэлзэл, spread огцом өсдөг.</div>'
+      + '</div>';
+  }
+  var upd = (state.eventsUpdated || "");
+  var blocks = weeks.map(function(wk, wi){
+    var ws = wk.start, we = wk.end;
+    var list = evs.filter(function(e){ var d = ubOf(e.t_ms).date; return d >= ws && d <= we && e.imp >= 2; });
+    var hi = list.filter(function(e){ return e.imp >= 3; }).length;
+    var lvl = hi >= 3 ? "high" : hi >= 1 ? "mid" : "calm";
+    var lvlTxt = {high:"Өндөр эрсдэл", mid:"Анхаар", calm:"Тайван"}[lvl];
+    var isNow = todayUB >= ws && todayUB <= we, isPast = we < todayUB;
+    var byD = {}; list.forEach(function(e){ var d = ubOf(e.t_ms).date; (byD[d] = byD[d] || []).push(e); });
+    var dayRows = Object.keys(byD).sort().map(function(d){
+      var u = ubOf(byD[d][0].t_ms);
+      return '<div class="nd'+(d===todayUB?" today":"")+'"><div class="nd-day"><span>'+WD_SHORT[u.dow]+'</span><b>'+u.day+'</b></div><div class="nd-list">'
+        + byD[d].map(function(e){
+            var t = ubOf(e.t_ms).time;
+            return '<div class="ne i'+e.imp+'"><i class="imp"></i><div class="ne-main">'
+              + '<div class="ne-t">'+esc(e.title)+'</div>'
+              + '<div class="ne-s"><span>'+(e.allDay?"Бүтэн өдөр":(e.approx?"≈ ":"")+t)+'</span>'+(e.note?'<span>· '+esc(e.note)+'</span>':'')+'</div>'
+              + '<div class="ne-tags">'+tagChips(e.tags)+'</div>'
+              + '</div></div>';
+          }).join("")
+        + '</div></div>';
+    }).join("");
+    var wk1 = weeklyEvents(ws, we).map(function(e){ var u = ubOf(e.t_ms); return WD_SHORT[u.dow]+' '+u.time+' '+e.title; });
+    var hit = visibleTrades().filter(function(t){ return t.date >= ws && t.date <= we && newsNear(t).length; });
+    var warn = "";
+    if(hit.length){
+      var names = {}; hit.forEach(function(t){ newsNear(t).forEach(function(e){ names[e.code] = 1; }); });
+      warn = '<div class="nw-warn"><b class="ic">!</b><span>'+Object.keys(names).join(", ")+' мэдээний үеэр '+hit.length+' арилжаа нээсэн · <span class="mono">'+signed(stats(hit).pl)+'</span></span></div>';
+    }
+    return '<section class="nw'+(isNow?" now":"")+(isPast?" past":"")+'">'
+      + '<div class="nw-h"><b>'+(wi+1)+'-р 7 хоног</b><span class="dim">'+ws.slice(5).replace("-",".")+' – '+we.slice(5).replace("-",".")+'</span>'
+        + (isNow?'<span class="now-badge">Энэ 7 хоног</span>':'')
+        + '<span class="lvl '+lvl+'"><i><span></span><span></span><span></span></i>'+lvlTxt+'</span></div>'
+      + (dayRows || '<div class="dim" style="font-size:12.5px;padding:2px 0 4px">Том мэдээ алга</div>')
+      + (wk1.length ? '<div class="nw-weekly">Долоо хоног бүр: '+esc(wk1.join(" · "))+'</div>' : '')
+      + warn
+      + '</section>';
+  }).join("");
+  return '<aside class="news">'
+    + hero
+    + '<div class="news-head"><b>7 хоног бүрийн мэдээ</b><span class="dim">XAU · XAG · DXY · OIL · GBPJPY</span></div>'
+    + blocks
+    + '<div class="news-foot">Цаг: Улаанбаатар (UTC+8). Хуанли дээрх тэмдэг серверийн өдрөөр. Эх сурвалж: BLS, Fed, BEA, Census, ISM, ONS, BoE, BoJ'+(upd?' · шинэчилсэн '+esc(upd):'')+'.</div>'
+    + '</aside>';
+}
+
+/* ================= харагдац: хуанли ================= */
+var DOW = ["Да","Мя","Лх","Пү","Ба","Бя","Ня"];
+function pad2(n){ return (n<10?"0":"")+n; }
+function ymd(d){ return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate()); }
+function monthLabel(ym){
+  var MN = ["1-р сар","2-р сар","3-р сар","4-р сар","5-р сар","6-р сар","7-р сар","8-р сар","9-р сар","10-р сар","11-р сар","12-р сар"];
+  var p = ym.split("-");
+  return p[0]+" он · "+MN[parseInt(p[1],10)-1];
+}
+function defaultMonth(list){
+  var ds = list.map(function(t){return t.date}).filter(Boolean).sort();
+  return ds.length ? ds[ds.length-1].slice(0,7) : ymd(new Date()).slice(0,7);
+}
+function shiftMonth(ym, k){
+  var p = ym.split("-"), d = new Date(parseInt(p[0],10), parseInt(p[1],10)-1+k, 1);
+  return d.getFullYear()+"-"+pad2(d.getMonth()+1);
+}
+function viewCalendar(){
+  var all = visibleTrades();
+  var ym = state.calMonth || (state.calMonth = defaultMonth(all));
+  var y = parseInt(ym.split("-")[0],10), m = parseInt(ym.split("-")[1],10)-1;
+
+  var byDay = {};
+  all.forEach(function(t){ if(!t.date) return; (byDay[t.date] = byDay[t.date] || []).push(t); });
+  var monthList = all.filter(function(t){ return (t.date||"").slice(0,7) === ym; });
+  var ms = stats(monthList);
+  var dayPls = Object.keys(byDay).filter(function(k){return k.slice(0,7)===ym})
+                 .map(function(k){ return stats(byDay[k]).pl; });
+  var green = dayPls.filter(function(v){return v>0.0001}).length;
+  var red = dayPls.filter(function(v){return v<-0.0001}).length;
+  var peak = Math.max.apply(null, dayPls.map(Math.abs).concat([1]));
+
+  var kpiHtml = kpiRow([
+    {k:"Сарын P/L", v:signed(ms.pl), c:cls(ms.pl), n:monthLabel(ym)},
+    {k:"Ялалт", v:pct(ms.winRate), c:"", n:ms.wins+" ялсан / "+ms.losses+" алдсан"},
+    {k:"Ашиг ÷ алдагдал", v:(ms.avgLoss? (ms.avgWin/ms.avgLoss).toFixed(2):"—")+"×", c:"", n:"дундаж харьцаа"},
+    {k:"Арилжаа", v:String(ms.n), c:"", n:"энэ сард хаагдсан"},
+    {k:"Ногоон өдөр", v:String(green), c:green?"pos":"", n:"ашигтай хаасан"},
+    {k:"Улаан өдөр", v:String(red), c:red?"neg":"", n:"алдагдалтай хаасан"}
+  ]);
+
+  /* сүлжээ: Даваагаар эхэлнэ */
+  var first = new Date(y, m, 1);
+  var offset = (first.getDay() + 6) % 7;
+  var start = new Date(y, m, 1 - offset);
+  var cells = DOW.map(function(d){ return '<div class="cal-dow">'+d+'</div>'; }).join("") + '<div class="cal-dow">Долоо хоног</div>';
+  var cur = new Date(start), weeks = [];
+  var newsByDay = {};
+  allEvents().forEach(function(e){ if(e.imp >= 3){ var d = srvOf(e.t_ms).date; (newsByDay[d] = newsByDay[d] || []).push(e); } });
+  for(var w=0; w<6; w++){
+    var weekPl = 0, weekN = 0, rendered = "";
+    var wStart = ymd(cur), wEnd = ymd(new Date(cur.getFullYear(), cur.getMonth(), cur.getDate()+6));
+    weeks.push({start:wStart, end:wEnd});
+    for(var i=0; i<7; i++){
+      var key = ymd(cur);
+      var dayList = byDay[key] || [];
+      var ds = stats(dayList);
+      var isOut = cur.getMonth() !== m;
+      if(!isOut){ weekPl += ds.pl; weekN += dayList.length; }
+      var tone = dayList.length && !isOut ? (ds.pl>0.0001?"win":ds.pl<-0.0001?"loss":"") : "";
+      var big = Math.abs(ds.pl) > peak*0.6 ? " big" : "";
+      rendered += '<button type="button" class="cal-cell'+(isOut?" out":"")+(dayList.length&&!isOut?" has":"")+(tone?" "+tone:"")+big+'"'
+        + ' data-day="'+key+'" aria-pressed="'+(state.calDay===key)+'"'+(dayList.length&&!isOut?"":" disabled")+'>'
+        + '<span class="d"><span>'+cur.getDate()+'</span>'
+          + ((newsByDay[key]||[]).length && !isOut ? '<span class="cal-news-wrap">'+newsByDay[key].slice(0,2).map(function(e){ return '<span class="cal-news" title="'+esc(e.title)+'">'+esc(e.code)+'</span>'; }).join("")+'</span>' : '')
+        + '</span>'
+        + (dayList.length&&!isOut
+            ? '<span class="p '+cls(ds.pl)+'">'+signed(ds.pl)+'</span><span class="c">'+dayList.length+' арилжаа</span>'
+            : '')
+        + '</button>';
+      cur.setDate(cur.getDate()+1);
+    }
+    cells += rendered + '<div class="cal-cell cal-week">'
+      + '<span class="d">'+(w+1)+'-р 7 хоног</span>'
+      + (weekN ? '<span class="p '+cls(weekPl)+'">'+signed(weekPl)+'</span><span class="c">'+weekN+' арилжаа</span>' : '')
+      + '</div>';
+    if(cur.getMonth() !== m && cur > new Date(y, m+1, 0)) break;
+  }
+
+  var dayPanel = "";
+  if(state.calDay && byDay[state.calDay]){
+    var dl2 = sorted(byDay[state.calDay]);
+    var dsel = stats(dl2);
+    var dayNews = (newsByDay[state.calDay]||[]).map(function(e){ return '<span class="pill loss">'+esc(e.code)+' · '+srvOf(e.t_ms).time+' сервер</span>'; }).join(" ");
+    dayPanel = '<div class="panel" style="margin-top:14px">'
+      + '<header><h3>'+esc(state.calDay)+' '+dayNews+'</h3>'
+      + '<span class="mono '+cls(dsel.pl)+'" style="font-size:13.5px">'+signed(dsel.pl)+' · '+dl2.length+' арилжаа · '+pct(dsel.winRate)+'</span></header>'
+      + '<div class="table-scroll"><table style="min-width:620px"><tbody>'
+      + dl2.map(function(t){
+          var c = calc(t);
+          return '<tr class="row" data-id="'+esc(t.id)+'">'
+            + '<td class="mono dim" style="white-space:nowrap">'+esc(t.time||"—")+'</td>'
+            + '<td><span class="pill '+(t.dir==="buy"?"buy":"sell")+'">'+(t.dir==="buy"?"Buy":"Sell")+'</span></td>'
+            + '<td>'+esc(t.setup||t.symbol||"—")+'</td>'
+            + '<td class="num">'+num(t.lot).toFixed(2)+'</td>'
+            + '<td class="num '+cls(c.r)+'">'+(c.open?"—":(c.r>=0?"+":"−")+Math.abs(c.r).toFixed(2)+"R")+'</td>'
+            + '<td class="num '+cls(c.pl)+'" style="font-weight:600">'+(c.open?"Нээлттэй":signed(c.pl))+'</td>'
+            + '</tr>';
+        }).join("")
+      + '</tbody></table></div></div>';
+  }
+
+  return '<div class="cal-layout"><div class="cal-main">'
+    + '<div class="sect-head" style="margin-top:0"><span class="eyebrow">Өдрийн P/L</span><span class="rule"></span></div>'
+    + kpiHtml
+    + '<div class="panel" style="margin-top:14px">'
+      + '<div class="cal-bar">'
+        + '<button class="btn sm ghost" data-mon="-1">‹</button>'
+        + '<span class="cal-month">'+monthLabel(ym)+'</span>'
+        + '<button class="btn sm ghost" data-mon="1">›</button>'
+        + '<button class="btn sm ghost" data-mon="0">Одоогийн сар</button>'
+        + '<span class="dim" style="margin-left:auto;font-size:12.5px">Өдөр дээр дарж тухайн өдрийн арилжааг нээнэ</span>'
+      + '</div>'
+      + '<div class="chart-wrap"><div class="cal-grid">'+cells+'</div></div>'
+    + '</div>'
+    + dayPanel
+    + '</div>'
+    + newsPanel(weeks)
+    + '</div>';
+}
+
+/* ================= харагдац: арилжаанууд ================= */
+function filtered(){
+  var f = state.filters;
+  return sorted(visibleTrades()).reverse().filter(function(t){
+    var c = calc(t);
+    if(f.session && t.session !== f.session) return false;
+    if(f.setup && t.setup !== f.setup) return false;
+    if(f.dir && t.dir !== f.dir) return false;
+    if(f.result && c.outcome !== f.result) return false;
+    if(f.rule === "ok" && !followed(t)) return false;
+    if(f.rule === "bad" && followed(t)) return false;
+    if(f.q){
+      var hay = [t.symbol,t.notes,t.setup,t.session,(t.mistakes||[]).join(" "),t.emoBefore,t.emoAfter,t.date].join(" ").toLowerCase();
+      if(hay.indexOf(f.q.toLowerCase()) < 0) return false;
+    }
+    return true;
+  });
+}
+function viewTrades(){
+  var rows = filtered();
+  var s = stats(rows);
+  var opt = function(arr,cur){ return '<option value="">Бүгд</option>'+arr.map(function(x){return '<option'+(cur===x?' selected':'')+'>'+esc(x)+'</option>'}).join("") };
+  var head = '<div class="filters">'
+    + '<select data-f="session">'+opt(SESSIONS,state.filters.session)+'</select>'
+    + '<select data-f="setup">'+opt(SETUPS,state.filters.setup)+'</select>'
+    + '<select data-f="dir"><option value="">Бүх чиглэл</option><option value="buy"'+(state.filters.dir==="buy"?" selected":"")+'>Buy</option><option value="sell"'+(state.filters.dir==="sell"?" selected":"")+'>Sell</option></select>'
+    + '<select data-f="result"><option value="">Бүх үр дүн</option><option value="win"'+(state.filters.result==="win"?" selected":"")+'>Ялсан</option><option value="loss"'+(state.filters.result==="loss"?" selected":"")+'>Алдсан</option><option value="be"'+(state.filters.result==="be"?" selected":"")+'>Тэнцсэн</option><option value="open"'+(state.filters.result==="open"?" selected":"")+'>Нээлттэй</option></select>'
+    + '<select data-f="rule"><option value="">Бүх дүрэм</option><option value="ok"'+(state.filters.rule==="ok"?" selected":"")+'>Дүрэм баримталсан</option><option value="bad"'+(state.filters.rule==="bad"?" selected":"")+'>Дүрэм зөрчсөн</option></select>'
+    + '<input type="search" data-f="q" placeholder="Тэмдэглэлээс хайх…" value="'+esc(state.filters.q)+'">'
+    + '<button class="btn sm ghost" id="clearF">Цэвэрлэх</button>'
+    + '<span class="dim mono" style="margin-left:auto;font-size:13px">'+rows.length+' мөр · '+signed(s.pl)+' · '+pct(s.winRate)+'</span>'
+    + '</div>';
+
+  if(!rows.length) return head + '<div class="panel"><div class="empty">Шүүлтүүрт тохирох арилжаа алга.</div></div>';
+
+  var body = rows.map(function(t){
+    var c = calc(t), g = gradeOf(t);
+    var open = state.openRow === t.id;
+    var main = '<tr class="row" data-id="'+esc(t.id)+'">'
+      + '<td class="mono" style="white-space:nowrap">'+esc(t.date)+' <span class="dim">'+esc(t.time||"")+'</span></td>'
+      + '<td><span class="pill '+(t.dir==="buy"?"buy":"sell")+'">'+(t.dir==="buy"?"Buy":"Sell")+'</span></td>'
+      + '<td>'+esc(t.setup||t.symbol||"—")+'<div class="dim" style="font-size:12px">'+esc([t.session,t.tf].filter(Boolean).join(" · ")||"—")+'</div></td>'
+      + '<td class="num">'+num(t.entry).toFixed(2)+'</td>'
+      + '<td class="num dim">'+num(t.sl).toFixed(2)+'</td>'
+      + '<td class="num">'+(c.open?"—":num(t.exit).toFixed(2))+'</td>'
+      + '<td class="num">'+num(t.lot).toFixed(2)+'</td>'
+      + '<td class="num dim">'+c.rrPlanned.toFixed(1)+'</td>'
+      + '<td class="num '+cls(c.r)+'">'+(c.open||!c.risk?"—":(c.r>=0?"+":"−")+Math.abs(c.r).toFixed(2)+"R")+'</td>'
+      + '<td class="num '+cls(c.pl)+'" style="font-weight:600">'+(c.open?'<span class="pill be">Нээлттэй</span>':signed(c.pl))+'</td>'
+      + '<td><div class="rule-pills">'+(compOf(t).v.length
+            ? compOf(t).v.map(function(v){ return '<span class="pill loss" title="'+esc(v.text)+'">'+esc(v.short)+'</span>'; }).join("")
+            : compOf(t).riskPct === null
+              ? '<span class="pill be" title="Анхны SL тодорхойгүй — эрсдэлийг шалгах боломжгүй">эрсдэл ?</span>'
+              : '<span class="pill win" title="Хатуу дүрэм бүгд биелсэн">✓</span>')+'</div></td>'
+      + '<td>'+(g ? '<span class="grade '+g+'" title="Checklist '+c.passed+'/'+RULES.length+'">'+g+'</span>'
+                  : '<span class="pill tag" title="MT5-аас импортлосон — тэмдэглэл бөглөөгүй">бөглөх</span>')+'</td>'
+      + '</tr>';
+    if(!open) return main;
+    var cp = compOf(t), S = state.settings;
+    var autoRows = [
+      {ok:!cp.v.some(function(v){return v.k==="day"}), t:"Өдрийн "+cp.dayIndex+" дэх арилжаа (хязгаар "+num(S.maxTrades)+")"},
+      {ok:!cp.v.some(function(v){return v.k==="risk"}), unk:cp.riskPct===null,
+        t: cp.riskPct===null ? "Эрсдэл тодорхойгүй — анхны SL мэдэгдэхгүй" : "Эрсдэл данснаас "+cp.riskPct.toFixed(1)+"% (хязгаар "+num(S.riskPct)+"%)"},
+      {ok:!cp.v.some(function(v){return v.k==="time"}), t:(cp.session||"Сесс")+" эхэлснээс "+fmtDur(cp.sinceStart)+"-д (хязгаар "+num(S.sessionHours)+"ц)"}
+    ].map(function(x){
+      return '<div class="auto-rule">'+(x.unk?'<span class="dim">?</span>':x.ok?'<span class="pos">✓</span>':'<span class="neg">✕</span>')+'<span>'+esc(x.t)+'</span></div>';
+    }).join("");
+    var chk = journaled(t) ? RULES.map(function(r){
+      var on = t.checks && t.checks[r.k];
+      return '<div class="auto-rule">'+(on?'<span class="pos">✓</span>':'<span class="neg">✕</span>')+'<span>'+esc(r.t)+'</span></div>';
+    }).join("") : '<span class="dim">Бөглөөгүй — «Засах» дарж тэмдэглэнэ үү</span>';
+    var mis = (t.mistakes||[]).length ? (t.mistakes||[]).map(function(m){return '<span class="pill tag">'+esc(m)+'</span>'}).join(" ") : '<span class="dim">Алдаа тэмдэглээгүй</span>';
+    var detail = '<tr class="detail"><td colspan="12"><div class="detail-in">'
+      + dl("Төлөвлөсөн зорилт (TP)", num(t.tp).toFixed(2)+" · "+money(c.reward))
+      + dl("Эрсдэл", c.risk ? money(c.risk)+(cp.riskPct!==null?' <span class="dim">('+cp.riskPct.toFixed(1)+'% тухайн үеийн данснаас)</span>':"") : '<span class="dim">Тодорхойгүй</span>')
+      + dl("HTF чиглэл", esc(t.bias||"—"))
+      + dl("Сэтгэл зүй", esc(t.emoBefore||"—")+" → "+esc(t.emoAfter||"—")+' <span class="dim">· итгэл '+(t.confidence||"—")+'/5</span>')
+      + dl("Хатуу дүрэм (автомат)", autoRows)
+      + (newsNear(t).length ? dl("Мэдээний үеэр", newsNear(t).map(function(e){
+          var mins = Math.round((tradeUtcMs(t) - e.t_ms)/60000);
+          return '<div class="auto-rule"><span class="neg">!</span><span>'+esc(e.title)+' — '+(mins===0?"яг гарах үед":mins<0?(-mins)+" мин өмнө":mins+" мин дараа")+' орсон</span></div>';
+        }).join("")) : "")
+      + dl("Checklist ("+c.passed+"/"+RULES.length+")", chk)
+      + dl("Алдаа", mis)
+      + '<div class="dl" style="grid-column:1/-1"><span class="k">Тэмдэглэл ба сургамж</span>'
+        + '<div class="note-box">'+(t.notes?esc(t.notes):'<span class="dim">Тэмдэглэл бичээгүй.</span>')+'</div>'
+        + (t.chart?'<a href="'+esc(t.chart)+'" target="_blank" rel="noopener" style="font-size:13px;color:var(--accent)">Графикийн зураг ↗</a>':'')
+        + '<div style="display:flex;gap:8px;margin-top:8px">'
+          + (t.demo?'<span class="dim" style="font-size:12.5px">Жишээ бичлэг — засах боломжгүй</span>'
+             : '<button class="btn sm" data-edit="'+esc(t.id)+'">Засах</button><button class="btn sm danger" data-del="'+esc(t.id)+'">Устгах</button>')
+        + '</div>'
+      + '</div>'
+      + '</div></td></tr>';
+    return main + detail;
+  }).join("");
+
+  return head + '<div class="table-scroll"><table>'
+    + '<thead><tr><th>Огноо</th><th>Чиглэл</th><th>Стратеги / сесс</th><th style="text-align:right">Оролт</th><th style="text-align:right">SL</th><th style="text-align:right">Гарсан</th><th style="text-align:right">Лот</th><th style="text-align:right">R:R</th><th style="text-align:right">R</th><th style="text-align:right">Үр дүн</th><th>Дүрэм</th><th>Үнэлгээ</th></tr></thead>'
+    + '<tbody>'+body+'</tbody></table></div>';
+}
+function dl(k,v){ return '<div class="dl"><span class="k">'+k+'</span><span class="v">'+v+'</span></div>'; }
+
+/* ================= харагдац: форм ================= */
+function viewForm(){
+  var t = state.editing || {};
+  var checks = t.checks || {};
+  var mist = t.mistakes || [];
+  var today = ymd(new Date());
+  var sel = function(arr, cur, empty){
+    return (empty?'<option value="">—</option>':'')+arr.map(function(x){return '<option'+(cur===x?' selected':'')+'>'+esc(x)+'</option>'}).join("");
+  };
+  return '<form id="tradeForm" class="grid" style="gap:16px">'
+  + '<div class="panel"><header><h3>Нөхцөл байдал</h3><span class="eyebrow">1 / 4</span></header>'
+    + '<div class="form-grid">'
+      + f("date","Огноо",'<input type="date" name="date" value="'+esc(t.date||today)+'" required>')
+      + f("time","Оролтын цаг",'<input type="time" name="time" value="'+esc(t.time||"")+'">')
+      + f("session","Сесс",'<select name="session">'+sel(SESSIONS,t.session)+'</select>')
+      + f("tf","Хугацааны фрейм",'<select name="tf">'+sel(TFS,t.tf||"M15")+'</select>')
+      + f("setup","Стратеги / setup",'<select name="setup">'+sel(SETUPS,t.setup)+'</select>')
+      + f("bias","Дээд фреймийн чиглэл",'<select name="bias">'+sel(BIAS,t.bias)+'</select>')
+    + '</div></div>'
+
+  + '<div class="panel"><header><h3>Гүйцэтгэл</h3><span class="eyebrow">2 / 4</span></header>'
+    + '<div class="form-grid">'
+      + f("dir","Чиглэл",'<select name="dir"><option value="buy"'+(t.dir!=="sell"?" selected":"")+'>Buy — худалдан авалт</option><option value="sell"'+(t.dir==="sell"?" selected":"")+'>Sell — худалдаа</option></select>')
+      + f("lot","Лот",'<input type="number" step="0.01" min="0.01" name="lot" value="'+esc(t.lot||"0.01")+'" required>')
+      + f("entry","Оролтын үнэ",'<input type="number" step="0.01" name="entry" value="'+esc(t.entry||"")+'" required>')
+      + f("sl","Stop loss",'<input type="number" step="0.01" name="sl" value="'+esc(t.sl||"")+'" required>')
+      + f("tp","Take profit",'<input type="number" step="0.01" name="tp" value="'+esc(t.tp||"")+'">')
+      + f("exit","Гарсан үнэ",'<input type="number" step="0.01" name="exit" value="'+esc(t.exit||"")+'"><span class="hint">Хоосон бол нээлттэй арилжаа</span>')
+      + f("fees","Комисс / своп ($)",'<input type="number" step="0.01" name="fees" value="'+esc(t.fees||"0")+'">')
+      + f("plOverride","Бодит P/L ($)",'<input type="number" step="0.01" name="plOverride" value="'+esc(hasPl(t)?t.plOverride:"")+'"><span class="hint">Хоосон бол үнээр бодно</span>')
+      + f("chart","Графикийн холбоос",'<input type="url" name="chart" placeholder="https://tradingview.com/x/…" value="'+esc(t.chart||"")+'">')
+    + '</div>'
+    + '<div class="calcbar" id="calcbar" style="margin-top:14px"></div></div>'
+
+  + '<div class="panel"><header><h3>Орохын өмнөх checklist</h3><span class="eyebrow">3 / 4</span></header>'
+    + '<div class="checks">'+RULES.map(function(r){
+        return '<label class="check"><input type="checkbox" name="rule_'+r.k+'"'+(checks[r.k]?" checked":"")+'><span>'+esc(r.t)+'</span></label>';
+      }).join("")+'</div>'
+    + '<div class="hint" style="margin-top:10px;color:var(--ink-3);font-size:12.5px">Биелүүлсэн дүрмийн тоогоор гүйцэтгэлийн үнэлгээ (A–D) автоматаар тодорхойлогдоно.</div>'
+  + '</div>'
+
+  + '<div class="panel"><header><h3>Сэтгэл зүй ба сургамж</h3><span class="eyebrow">4 / 4</span></header>'
+    + '<div class="form-grid">'
+      + f("emoBefore","Оролтын өмнөх байдал",'<select name="emoBefore">'+sel(EMOTIONS,t.emoBefore||"Тайван")+'</select>')
+      + f("emoAfter","Хаасны дараах байдал",'<select name="emoAfter">'+sel(EMOTIONS,t.emoAfter||"Тайван")+'</select>')
+      + f("confidence","Итгэлийн түвшин (1–5)",'<input type="number" min="1" max="5" name="confidence" value="'+esc(t.confidence||3)+'">')
+    + '</div>'
+    + '<div class="field" style="margin-top:14px"><span class="lab">Гаргасан алдаа</span><div class="chips" id="mistakeChips">'
+      + MISTAKES.map(function(m){ return '<button type="button" class="chip" data-m="'+esc(m)+'" aria-pressed="'+(mist.indexOf(m)>=0)+'">'+esc(m)+'</button>'; }).join("")
+    + '</div></div>'
+    + '<label class="field" style="margin-top:14px"><span class="lab">Тэмдэглэл ба сургамж</span>'
+      + '<textarea name="notes" placeholder="Юу төлөвлөсөн, юу болсон, дараагийн удаад юуг өөрчлөх вэ?">'+esc(t.notes||"")+'</textarea></label>'
+  + '</div>'
+
+  + '<div class="form-actions">'
+    + '<button type="submit" class="btn primary">'+(state.editing?"Хадгалах":"Тэмдэглэлд нэмэх")+'</button>'
+    + (state.editing?'<button type="button" class="btn ghost" id="cancelEdit">Болих</button>':'')
+    + '<span class="dim" style="font-size:12.5px">1 лот = '+CONTRACT+' унц — ашиг/алдагдал автоматаар бодогдоно.</span>'
+  + '</div></form>';
+}
+function f(id,label,input){ return '<label class="field"><span class="lab" title="'+esc(label)+'">'+esc(label)+'</span>'+input+'</label>'; }
+
+/* ================= харагдац: тохиргоо ================= */
+function viewSettings(){
+  var real = state.trades.length;
+  return '<div class="grid cols-3">'
+  + '<div class="panel"><header><h3>Данс</h3></header>'
+    + '<div class="form-grid">'
+      + f("account","Дансны нэр",'<input id="setAccount" value="'+esc(state.settings.account)+'">')
+      + ((state.settings.deposits||[]).length
+          ? f("balance","Нийт орлого + кредит ($)",'<input type="number" value="'+startBalance().toFixed(2)+'" disabled>')
+          : f("balance","Эхлэлийн баланс ($)",'<input id="setBalance" type="number" step="1" value="'+esc(state.settings.balance)+'">'))
+      + f("offset","Брокерын серверийн цаг (UTC+)",'<input id="setOffset" type="number" step="1" min="-12" max="14" value="'+esc(state.settings.serverUtcOffset)+'"><span class="hint">XM, Exness зуны цагаар ихэвчлэн +3 / +0</span>')
+    + '</div>'
+    + '<div class="form-actions" style="margin-top:14px"><button class="btn primary" id="saveSettings">Хадгалах</button>'
+      + '<span class="dim" style="font-size:12.5px">Эрсдэлийн дүрмийг «Миний дүрэм» хэсэгт тохируулна</span></div>'
+  + '</div>'
+  + '<div class="panel"><header><h3>Орлого / гүйлгээ</h3><span class="dim">MT5 тайлангаас</span></header>'
+    + ((state.settings.deposits||[]).length
+      ? '<div class="recent">'+(state.settings.deposits||[]).map(function(d){
+          return '<div class="recent-row" style="cursor:default"><div class="t"><div>'+(d.kind==="credit"?"Кредит (бонус)":"Баланс")+' <span class="dim" style="font-weight:500">· '+esc(d.comment||"")+'</span></div><small>'+esc(d.date)+' · '+esc(d.time)+'</small></div><span></span>'
+            + '<div class="r '+cls(num(d.amount))+'">'+signed(num(d.amount))+'</div></div>';
+        }).join("")+'</div>'
+      : '<div class="empty" style="padding:20px">MT5 тайлан импортлоход орлогын гүйлгээ энд харагдана. Эрсдэлийн хувийг арилжаа бүрийн үеийн балансаас бодно.</div>')
+  + '</div>'
+  + '<div class="panel"><header><h3>Өгөгдөл</h3></header>'
+    + '<div style="font-size:13.5px;display:flex;flex-direction:column;gap:10px">'
+      + '<div>Бүртгэсэн арилжаа: <b class="mono">'+real+'</b></div>'
+      + '<div>Хадгалалт: <b>'+(state.storeMode==="cloud"?"Байнгын (Artifact DB)":"Энэ хөтчид (localStorage)")+'</b></div>'
+      + '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">'
+        + '<button class="btn primary" id="exportBackup">Нөөц татах</button>'
+        + '<label class="btn" style="cursor:pointer">Нөөцөөс сэргээх<input type="file" id="backupFile" accept=".json,application/json" hidden></label>'
+        + '<button class="btn ghost" id="exportCsv">CSV (Excel)</button>'
+      + '</div>'
+      + '<div class="dim" style="font-size:12.5px;line-height:1.5">'
+        + (state.storeMode==="cloud"
+            ? 'Нөөц файлаар өгөгдлөө өөр төхөөрөмж эсвэл өөрийн вэб хуудас руу зөөнө.'
+            : '<b style="color:var(--loss)">Өгөгдөл зөвхөн энэ хөтөч дээр хадгалагдана.</b> Хөтчийн түүх/cookie цэвэрлэвэл устна — 7 хоног тутам «Нөөц татах» дарж хадгалж байгаарай. Өөр төхөөрөмж рүү зөөхдөө нөөцөөс сэргээнэ.')
+      + '</div>'
+    + '</div>'
+  + '</div></div>';
+}
+
+/* ================= харагдац: MT5 импорт ================= */
+function viewImport(){
+  return '<div class="grid">'
+  + '<div class="panel"><header><h3>MT5-аас арилжаа татах</h3>'
+    + '<span class="dim" style="font-size:12.5px">'+(state.importName?esc(state.importName):"Тайлангийн файл эсвэл хуулсан мөрүүд")+'</span></header>'
+    + '<div class="grid cols-3">'
+      + '<ol class="steps">'
+        + '<li>MetaTrader 5 дээр <b>Toolbox → History</b> таб руу орно.</li>'
+        + '<li>Хугацааны мужаа сонгоод баруун товшоод <b>Report → HTML (Internet Explorer)</b> гэж хадгална.</li>'
+        + '<li>Тэр <b>.html</b> файлыг доорх талбар руу чирж оруулна (эсвэл History-ийн мөрүүдийг сонгоод Ctrl+C хийгээд доош буулгана).</li>'
+        + '<li>Урьдчилан харснаа шалгаад <b>Импортлох</b> дарна. Давхардсан арилжааг өөрөө алгасна.</li>'
+      + '</ol>'
+      + '<div style="display:flex;flex-direction:column;gap:10px">'
+        + '<label class="drop" id="drop">Файлаа энд чирж оруулна уу<br><span class="dim" style="font-size:12.5px">.html · .csv · .txt</span>'
+          + '<input type="file" id="mt5File" accept=".html,.htm,.csv,.txt,.tsv" hidden></label>'
+        + '<label class="field"><span class="lab">Эсвэл хуулсан мөрүүдээ буулгана уу</span>'
+          + '<textarea id="mt5Paste" placeholder="2026.10.01 09:40:12\tXAUUSD\tbuy\t0.02\t3312.40 …" style="min-height:92px;font-size:12.5px"></textarea></label>'
+        + '<div class="form-actions"><button class="btn" id="mt5Parse">Уншуулах</button>'
+          + (state.importRows ? '<button class="btn primary" id="mt5Import">Импортлох</button><button class="btn ghost" id="mt5Clear">Болих</button>' : '')
+        + '</div>'
+      + '</div>'
+    + '</div>'
+    + importPreview()
+  + '</div>'
+  + '<div class="panel"><header><h3>Автомат холболтын талаар</h3></header>'
+    + '<div style="font-size:13.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:9px">'
+      + '<div>Энэ вэб нь Claude дээр нийтлэгдсэн хуудас тул MT5-тай шууд, тасралтгүй холбогдох боломжгүй — брокерын серверээс өөрөө татаж чадахгүй.</div>'
+      + '<div>Бодит дасгал нь: <b>7 хоног тутам нэг удаа</b> History-гээ тайлан болгон хадгалаад энд чирч оруулах. Давхардсаныг өөрөө шүүдэг тул бүх түүхээ дахин оруулсан ч асуудалгүй.</div>'
+      + '<div>Жинхэнэ автомат синк хэрэгтэй бол өөрийн сервертэй тусдаа апп (MT5 Expert Advisor → API → өгөгдлийн сан) хийх шаардлагатай — тэр нь тусдаа төсөл.</div>'
+    + '</div>'
+  + '</div></div>';
+}
+function importPreview(){
+  var rows = state.importRows;
+  if(!rows) return "";
+  if(!rows.length) return '<div class="notice" style="border-left-color:var(--loss)"><b>Арилжаа олдсонгүй.</b> MT5-ийн <b>Positions</b> хэсэгтэй HTML тайлан эсвэл гарчигтай мөрүүдийг оруулна уу.</div>';
+  var have = {}; state.trades.forEach(function(t){ have[t.id]=1; });
+  var fresh = rows.filter(function(t){ return !have[t.id]; });
+  var net = rows.reduce(function(a,t){ return a + calc(t).pl; }, 0);
+  var dates = rows.map(function(t){return t.date}).sort();
+  return '<div class="notice" style="margin-top:14px;display:block">'
+    + '<b>'+rows.length+' арилжаа уншлаа</b> — '+esc(dates[0])+' … '+esc(dates[dates.length-1])
+    + ' · нийт <span class="mono '+cls(net)+'">'+signed(net)+'</span>'
+    + ' · шинэ <b>'+fresh.length+'</b>, давхардсан '+(rows.length-fresh.length)
+    + '<div class="table-scroll" style="margin-top:10px;max-height:240px;overflow-y:auto">'
+    + '<table style="min-width:560px"><thead><tr><th>Огноо</th><th>Хэрэгсэл</th><th>Чиглэл</th><th style="text-align:right">Лот</th><th style="text-align:right">Оролт</th><th style="text-align:right">Гарсан</th><th style="text-align:right">P/L</th></tr></thead><tbody>'
+    + rows.slice(0,40).map(function(t){
+        var c = calc(t);
+        return '<tr><td class="mono">'+esc(t.date)+' <span class="dim">'+esc(t.time||"")+'</span></td>'
+          + '<td>'+esc(t.symbol||"")+'</td>'
+          + '<td><span class="pill '+(t.dir==="buy"?"buy":"sell")+'">'+(t.dir==="buy"?"Buy":"Sell")+'</span></td>'
+          + '<td class="num">'+num(t.lot).toFixed(2)+'</td><td class="num">'+num(t.entry).toFixed(2)+'</td>'
+          + '<td class="num">'+num(t.exit).toFixed(2)+'</td>'
+          + '<td class="num '+cls(c.pl)+'">'+signed(c.pl)+'</td></tr>';
+      }).join("")
+    + '</tbody></table></div>'
+    + (rows.length>40?'<div class="dim" style="font-size:12.5px;margin-top:6px">Эхний 40 мөрийг харуулав.</div>':'')
+    + '</div>';
+}
+
+/* ================= MT5 задлагч ================= */
+function cellsFromText(text){
+  var t = text.trim();
+  if(/<\s*(table|tr|html)/i.test(t)){
+    var doc = new DOMParser().parseFromString(t, "text/html");
+    return Array.prototype.map.call(doc.querySelectorAll("tr"), function(tr){
+      var kids = Array.prototype.filter.call(tr.children, function(td){
+        return !/\bhidden\b/.test(td.className||"") && td.style.display !== "none";
+      });
+      return kids.map(function(td){
+        return (td.textContent||"").replace(/ /g," ").trim();
+      });
+    });
+  }
+  var lines = t.split(/\r?\n/).filter(function(l){ return l.trim(); });
+  var tabbed = lines.filter(function(l){ return l.indexOf("\t")>=0; }).length > lines.length/2;
+  return lines.map(function(l){
+    return tabbed ? l.split("\t").map(function(x){return x.trim()})
+                  : l.split(/[,;]/).map(function(x){return x.replace(/^"|"$/g,"").trim()});
+  });
+}
+function mtNum(v){
+  if(v == null) return 0;
+  var s = String(v).replace(/\s| |'/g,"").replace(/,(?=\d{3}\b)/g,"").replace(/,/,".");
+  var n = parseFloat(s.replace(/[^0-9.\-]/g,""));
+  return isFinite(n) ? n : 0;
+}
+function mtDate(v){
+  var m = String(v||"").match(/(\d{4})[.\-\/](\d{2})[.\-\/](\d{2})[\sT]*(\d{2}:\d{2})?/);
+  if(!m) return null;
+  return {date:m[1]+"-"+m[2]+"-"+m[3], time:m[4]||""};
+}
+function parseMt5(text){
+  var rows = cellsFromText(text), out = [], seen = {};
+  var hi = -1, map = null;
+  function buildMap(cells){
+    var mm = {}, tSeen = 0, pSeen = 0, ok = 0;
+    cells.forEach(function(raw, i){
+      var c = String(raw).toLowerCase().replace(/\s| /g,"");
+      if(/^(time|время|огноо|цаг)/.test(c)){ tSeen++; mm[tSeen===1?"t1":"t2"] = i; }
+      else if(/^(price|цена|үнэ)/.test(c)){ pSeen++; mm[pSeen===1?"p1":"p2"] = i; }
+      else if(/symbol|символ|хэрэгсэл/.test(c)){ mm.symbol = i; ok++; }
+      else if(/^(type|тип|төрөл)/.test(c)){ mm.type = i; ok++; }
+      else if(/volume|объ[её]м|lots?|хэмжээ/.test(c)){ mm.lot = i; ok++; }
+      else if(/^s\/l$|s\/l|stoploss|stop/.test(c)){ mm.sl = i; }
+      else if(/^t\/p$|t\/p|takeprofit|take/.test(c)){ mm.tp = i; }
+      else if(/commission|комис/.test(c)){ mm.comm = i; }
+      else if(/swap|своп/.test(c)){ mm.swap = i; }
+      else if(/profit|прибыл|ашиг/.test(c)){ mm.profit = i; ok++; }
+      else if(/position|ticket|deal|позиц|сделк|order/.test(c) && mm.ticket===undefined){ mm.ticket = i; }
+    });
+    return (ok >= 3 && mm.t1 !== undefined && mm.p1 !== undefined) ? mm : null;
+  }
+  for(var i=0;i<rows.length;i++){
+    var cand = buildMap(rows[i]);
+    if(cand){ hi = i; map = cand; break; }
+  }
+  if(!map) return [];
+  var SECTION = /^(orders|deals|open positions|working orders|results|summary|ордера|сделки|открытые позиции|итоги)$/i;
+  for(var j=hi+1;j<rows.length;j++){
+    var r = rows[j];
+    if(r && r.filter(function(x){return x;}).length === 1 && SECTION.test(String(r.filter(function(x){return x;})[0]).trim())) break;
+    if(r && buildMap(r)) break;
+    if(!r || r.length < 5) continue;
+    var od = mtDate(r[map.t1]); if(!od) continue;
+    var type = String(r[map.type]||"").toLowerCase();
+    if(type.indexOf("buy")<0 && type.indexOf("sell")<0) continue;
+    var cd = map.t2!==undefined ? mtDate(r[map.t2]) : null;
+    var sym = String(r[map.symbol]||"").trim();
+    var lot = mtNum(r[map.lot]);
+    var entry = mtNum(r[map.p1]);
+    var exit = map.p2!==undefined ? mtNum(r[map.p2]) : 0;
+    var comm = map.comm!==undefined ? mtNum(r[map.comm]) : 0;
+    var swap = map.swap!==undefined ? mtNum(r[map.swap]) : 0;
+    var profit = map.profit!==undefined ? mtNum(r[map.profit]) : 0;
+    var ticket = map.ticket!==undefined ? String(r[map.ticket]||"").replace(/[^0-9A-Za-z]/g,"") : "";
+    var id = "mt5-" + (ticket || (od.date+od.time+sym+lot+entry).replace(/[^0-9A-Za-z]/g,""));
+    if(seen[id]) continue; seen[id] = 1;
+    out.push({
+      id:id, imported:true, journaled:false, symbol:sym,
+      date:od.date, time:od.time, closeDate:cd?cd.date:"", closeTime:cd?cd.time:"",
+      dir:type.indexOf("sell")>=0 ? "sell" : "buy",
+      lot:lot, entry:entry, exit:exit,
+      sl: map.sl!==undefined ? mtNum(r[map.sl]) : 0,
+      tp: map.tp!==undefined ? mtNum(r[map.tp]) : 0,
+      fees: -(comm+swap),
+      plOverride: profit + comm + swap,
+      session:autoSession(od.time, state.settings.serverUtcOffset), setup:"", tf:"", bias:"", checks:{}, mistakes:[],
+      emoBefore:"", emoAfter:"", confidence:0, notes:"", chart:""
+    });
+  }
+  out.deposits = parseDeposits(rows);
+  return out;
+}
+/* Deals хэсгээс balance + credit гүйлгээ (орлого, бонус, зарлага) — данс = баланс + кредит (эквити) */
+function parseDeposits(rows){
+  var res = [], idx = null;
+  for(var i=0;i<rows.length;i++){
+    var low = rows[i].map(function(c){ return String(c).toLowerCase().trim(); });
+    if(!idx){
+      if(low.indexOf("deal")>=0 && low.indexOf("balance")>=0 && low.indexOf("type")>=0){
+        idx = {t:low.indexOf("time"), id:low.indexOf("deal"), type:low.indexOf("type"),
+               profit:low.indexOf("profit"), comment:low.indexOf("comment")};
+      }
+      continue;
+    }
+    if(low.length === 1 && /^(results|summary|итоги)$/.test(low[0])) break;
+    if(low[idx.type] !== "balance" && low[idx.type] !== "credit") continue;
+    var d = mtDate(rows[i][idx.t]); if(!d) continue;
+    res.push({id:String(rows[i][idx.id]||"").replace(/[^0-9A-Za-z]/g,""), date:d.date, time:d.time,
+              amount:mtNum(rows[i][idx.profit]), kind:low[idx.type], comment: idx.comment>=0 ? String(rows[i][idx.comment]||"") : ""});
+  }
+  return res;
+}
+function runImport(){
+  var rows = state.importRows || [];
+  var have = {}; state.trades.forEach(function(t){ have[t.id]=1; });
+  var fresh = rows.filter(function(t){ return !have[t.id]; });
+  var dep = state.settings.deposits || [], depIds = {}, newDep = 0;
+  dep.forEach(function(d){ depIds[d.id] = 1; });
+  (rows.deposits||[]).forEach(function(d){ if(!depIds[d.id]){ dep.push(d); newDep++; } });
+  if(newDep){
+    dep.sort(function(a,b){ return (a.date+a.time).localeCompare(b.date+b.time); });
+    state.settings.deposits = dep; putSettings();
+  }
+  if(!fresh.length){ toast(newDep ? newDep+" гүйлгээ нэмэгдлээ, шинэ арилжаа алга" : "Шинэ арилжаа алга — бүгд аль хэдийн бүртгэгдсэн"); return; }
+  state.usingDemo = false;
+  fresh.forEach(function(t){
+    if(db) db.collection("trades").doc(t.id).set(t).catch(function(){});
+    state.trades.push(t);
+  });
+  if(!db) saveLocal();
+  state.importRows = null; state.importName = "";
+  state.tab = "cal"; state.calMonth = defaultMonth(state.trades); state.calDay = null;
+  render();
+  toast(fresh.length+" арилжаа импортлолоо");
+}
+
+/* ================= render ================= */
+var TITLES = {dash:"Самбар", cal:"P&L хуанли", analytics:"Шинжилгээ", playbook:"Стратегийн ном", rules:"Миний дүрэм",
+              trades:"Арилжаанууд", form:"Шинэ бичлэг", import:"MT5 импорт", settings:"Тохиргоо"};
+function render(){
+  invalidateComp(); _ev.valid = false;
+  var list = visibleTrades(), s = stats(list), bal = startBalance();
+  document.getElementById("subtitle").textContent = state.settings.account;
+  document.getElementById("pageTitle").textContent = TITLES[state.tab] || "Самбар";
+  document.getElementById("storeLabel").textContent =
+    state.storeMode==="cloud" ? "Байнгын хадгалалт идэвхтэй" : "Энэ хөтөч дээр хадгалж байна";
+  document.getElementById("balChip").innerHTML =
+    '<span class="dim">Данс</span> <b class="mono">'+money(startBalance() + s.pl)+'</b>';
+
+  document.getElementById("demoNotice").innerHTML = (!state.trades.length && state.usingDemo)
+    ? '<div class="notice"><b>Жишээ өгөгдөл харагдаж байна.</b> Бодит арилжаа биш — эхний бичлэгээ нэмэх эсвэл MT5-аас импортлоход алга болно. <button class="btn sm ghost" id="hideDemo">Хоослох</button></div>'
+    : "";
+
+  var v = document.getElementById("view");
+  v.innerHTML = (state.tab==="dash" || state.tab==="analytics") ? viewDash()
+    : state.tab==="cal" ? viewCalendar()
+    : state.tab==="playbook" ? viewPlaybook()
+    : state.tab==="rules" ? viewRules()
+    : state.tab==="trades" ? viewTrades()
+    : state.tab==="form" ? viewForm()
+    : state.tab==="import" ? viewImport()
+    : viewSettings();
+
+  Array.prototype.forEach.call(document.querySelectorAll('#nav button'), function(b){
+    if(b.dataset.tab===state.tab) b.setAttribute("aria-current","true");
+    else b.removeAttribute("aria-current");
+  });
+  if(state.tab==="form") updateCalcbar();
+}
+
+/* ================= үйлдлүүд ================= */
+document.getElementById("nav").addEventListener("click", function(e){
+  var b = e.target.closest("button[data-tab]"); if(!b) return;
+  state.tab = b.dataset.tab; state.openRow=null; render();
+});
+document.getElementById("newBtn").addEventListener("click", function(){
+  state.editing = null; state.tab = "form"; render();
+});
+document.getElementById("importBtn").addEventListener("click", function(){
+  state.tab = "import"; render();
+});
+document.getElementById("themeBtn").addEventListener("click", function(){
+  var cur = document.documentElement.getAttribute("data-theme");
+  var next = cur === "dark" ? "light" : cur === "light" ? "dark"
+    : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "dark");
+  document.documentElement.setAttribute("data-theme", next);
+  try{ localStorage.setItem("xau_theme", next); }catch(e){}
+});
+
+document.getElementById("view").addEventListener("click", function(e){
+  var mon = e.target.closest("[data-mon]");
+  if(mon){
+    var k = parseInt(mon.dataset.mon,10);
+    state.calMonth = k === 0 ? ymd(new Date()).slice(0,7) : shiftMonth(state.calMonth || defaultMonth(visibleTrades()), k);
+    state.calDay = null; render(); return;
+  }
+  var day = e.target.closest("[data-day]");
+  if(day && !day.disabled){
+    state.calDay = state.calDay === day.dataset.day ? null : day.dataset.day;
+    render(); return;
+  }
+  var row = e.target.closest("tr.row, .recent-row");
+  if(row && !e.target.closest("button")){
+    if(state.tab === "cal" || state.tab === "dash"){ state.tab = "trades"; state.openRow = row.dataset.id; render(); return; }
+    state.openRow = state.openRow === row.dataset.id ? null : row.dataset.id;
+    render(); return;
+  }
+  var ed = e.target.closest("[data-edit]");
+  if(ed){
+    state.editing = state.trades.find(function(x){return x.id===ed.dataset.edit}) || null;
+    state.tab = "form"; render(); return;
+  }
+  var delBtn = e.target.closest("[data-del]");
+  if(delBtn){ removeTrade(delBtn.dataset.del); toast("Арилжаа устлаа"); return; }
+  if(e.target.id === "clearF"){ state.filters={session:"",setup:"",result:"",dir:"",q:"",rule:""}; render(); return; }
+  if(e.target.id === "cancelEdit"){ state.editing=null; state.tab="trades"; render(); return; }
+  var chip = e.target.closest(".chip");
+  if(chip){ chip.setAttribute("aria-pressed", chip.getAttribute("aria-pressed")==="true" ? "false":"true"); return; }
+  if(e.target.id === "saveSettings"){
+    state.settings.account = document.getElementById("setAccount").value;
+    var sb = document.getElementById("setBalance"); if(sb) state.settings.balance = num(sb.value);
+    state.settings.serverUtcOffset = num(document.getElementById("setOffset").value);
+    putSettings(); toast("Тохиргоо хадгалагдлаа"); return;
+  }
+  if(e.target.id === "clAdd"){
+    var box = document.getElementById("clEdit");
+    var n = box.querySelectorAll(".cl-row").length + 1;
+    box.insertAdjacentHTML("beforeend", '<div class="cl-row" data-k="r'+Date.now().toString(36)+'"><span class="cl-n">'+n+'</span><input class="cl-text" placeholder="Шинэ дүрэм…" aria-label="Дүрэм '+n+'"><button type="button" class="btn sm ghost" data-cl-del="x" aria-label="Устгах">✕</button></div>');
+    box.lastElementChild.querySelector("input").focus();
+    return;
+  }
+  var clDel = e.target.closest("[data-cl-del]");
+  if(clDel){
+    clDel.closest(".cl-row").remove();
+    Array.prototype.forEach.call(document.querySelectorAll("#clEdit .cl-n"), function(x,i){ x.textContent = i+1; });
+    return;
+  }
+  if(e.target.id === "saveRules"){
+    state.settings.maxTrades = Math.max(1, Math.round(num(document.getElementById("rMaxTrades").value)));
+    state.settings.riskPct = num(document.getElementById("rRisk").value);
+    state.settings.sessionHours = num(document.getElementById("rHours").value);
+    state.settings.checklist = Array.prototype.map.call(document.querySelectorAll("#clEdit .cl-row"), function(row){
+      return {k: row.dataset.k, t: row.querySelector("input").value.trim()};
+    }).filter(function(x){ return x.t; });
+    putSettings(); toast("Дүрэм хадгалагдлаа"); return;
+  }
+  if(e.target.id === "exportCsv"){ exportCsv(); return; }
+  if(e.target.id === "exportBackup"){ exportBackup(); return; }
+  if(e.target.id === "mt5Parse"){
+    var txt = (document.getElementById("mt5Paste")||{}).value || "";
+    if(!txt.trim()){ toast("Эхлээд файлаа оруулах эсвэл мөрүүдээ буулгана уу"); return; }
+    state.importName = "Буулгасан мөрүүд";
+    state.importRows = parseMt5(txt);
+    render(); return;
+  }
+  if(e.target.id === "mt5Import"){ runImport(); return; }
+  if(e.target.id === "mt5Clear"){ state.importRows=null; state.importName=""; render(); return; }
+  if(e.target.id === "copyJson"){
+    try{ navigator.clipboard.writeText(JSON.stringify(state.trades,null,2)); toast("JSON хуулагдлаа"); }
+    catch(err){ toast("Хуулж чадсангүй"); }
+    return;
+  }
+});
+document.addEventListener("click", function(e){
+  if(e.target.id === "hideDemo"){ state.usingDemo = false; state.calMonth = null; state.calDay = null; try{ localStorage.setItem("xau_hide_demo","1"); }catch(err){} render(); }
+});
+document.getElementById("view").addEventListener("change", function(e){
+  var f = e.target.dataset && e.target.dataset.f;
+  if(f){ state.filters[f] = e.target.value; render(); return; }
+  if(e.target.id === "mt5File" && e.target.files && e.target.files[0]) readImportFile(e.target.files[0]);
+  if(e.target.id === "backupFile" && e.target.files && e.target.files[0]){
+    var fr = new FileReader();
+    fr.onload = function(){ importBackup(String(fr.result||"")); };
+    fr.readAsText(e.target.files[0], "utf-8");
+  }
+});
+function decodeReport(buf){
+  var u = new Uint8Array(buf), enc = "utf-8";
+  if(u.length>1 && u[0]===0xFF && u[1]===0xFE) enc = "utf-16le";
+  else if(u.length>1 && u[0]===0xFE && u[1]===0xFF) enc = "utf-16be";
+  else if(u.length>3 && u[1]===0 && u[3]===0) enc = "utf-16le";   // BOM-гүй UTF-16
+  try{ return new TextDecoder(enc).decode(u); }catch(e){ return new TextDecoder("utf-8").decode(u); }
+}
+function readImportFile(file){
+  var r = new FileReader();
+  r.onload = function(){
+    state.importName = file.name;
+    state.importRows = parseMt5(decodeReport(r.result));
+    render();
+    if(state.importRows.length) toast(state.importRows.length+" арилжаа уншлаа");
+  };
+  r.onerror = function(){ toast("Файлыг уншиж чадсангүй"); };
+  r.readAsArrayBuffer(file);
+}
+document.getElementById("view").addEventListener("dragover", function(e){
+  var d = e.target.closest("#drop"); if(!d) return;
+  e.preventDefault(); d.classList.add("over");
+});
+document.getElementById("view").addEventListener("dragleave", function(e){
+  var d = e.target.closest("#drop"); if(d) d.classList.remove("over");
+});
+document.getElementById("view").addEventListener("drop", function(e){
+  var d = e.target.closest("#drop"); if(!d) return;
+  e.preventDefault(); d.classList.remove("over");
+  if(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) readImportFile(e.dataTransfer.files[0]);
+});
+document.getElementById("view").addEventListener("input", function(e){
+  if(e.target.dataset && e.target.dataset.f === "q"){
+    state.filters.q = e.target.value;
+    var pos = e.target.selectionStart; render();
+    var again = document.querySelector('[data-f="q"]');
+    if(again){ again.focus(); again.setSelectionRange(pos,pos); }
+    return;
+  }
+  if(document.getElementById("tradeForm")) updateCalcbar();
+});
+
+function formTrade(form){
+  var g = function(n){ var el = form.elements[n]; return el ? el.value : ""; };
+  var checks = {}; RULES.forEach(function(r){ checks[r.k] = !!(form.elements["rule_"+r.k] && form.elements["rule_"+r.k].checked); });
+  var mistakes = Array.prototype.filter.call(form.querySelectorAll(".chip"), function(c){ return c.getAttribute("aria-pressed")==="true"; })
+                    .map(function(c){ return c.dataset.m; });
+  var prev = state.editing || {};
+  return {
+    id: prev.id || ("t-"+Date.now()+"-"+Math.random().toString(36).slice(2,7)),
+    imported: !!prev.imported, journaled: true,
+    symbol: prev.symbol || "XAUUSD",
+    closeDate: prev.closeDate || "", closeTime: prev.closeTime || "",
+    plOverride: g("plOverride") === "" ? "" : num(g("plOverride")),
+    date:g("date"), time:g("time"), session:g("session"), setup:g("setup"), tf:g("tf"), bias:g("bias"),
+    dir:g("dir"), lot:num(g("lot")), entry:num(g("entry")), sl:num(g("sl")),
+    tp: g("tp")===""?0:num(g("tp")), exit: g("exit")==="" ? "" : num(g("exit")),
+    fees:num(g("fees")), chart:g("chart"), checks:checks,
+    emoBefore:g("emoBefore"), emoAfter:g("emoAfter"), confidence:num(g("confidence")),
+    mistakes:mistakes, notes:g("notes")
+  };
+}
+function updateCalcbar(){
+  var form = document.getElementById("tradeForm"); if(!form) return;
+  var bar = document.getElementById("calcbar"); if(!bar) return;
+  var t = formTrade(form), c = calc(t);
+  var others = state.trades.filter(function(x){ return x.id !== t.id; });
+  var bal = startBalance() + others.reduce(function(a,x){ return a + calc(x).pl; }, 0);
+  var dayN = others.filter(function(x){ return x.date === t.date; }).length + 1;
+  var maxT = num(state.settings.maxTrades), rp = num(state.settings.riskPct);
+  bar.innerHTML = [
+    ["Эрсдэл", c.risk ? money(c.risk) : "—", ""],
+    ["Данснаас (хязгаар "+rp+"%)", (bal>0 && c.risk) ? (c.risk/bal*100).toFixed(2)+"%" : "—", (bal>0 && c.risk/bal*100 > rp) ? "neg" : (c.risk?"pos":"")],
+    ["Энэ өдөр", dayN+" / "+maxT, (maxT && dayN > maxT) ? "neg" : ""],
+    ["Боломжит ашиг", money(c.reward), ""],
+    ["Төлөвлөсөн R:R", c.rrPlanned ? c.rrPlanned.toFixed(2) : "—", c.rrPlanned>=2?"pos":""],
+    ["Үр дүн", c.open ? "Нээлттэй" : signed(c.pl), cls(c.pl)],
+    ["Бодит R", c.open ? "—" : (c.r>=0?"+":"−")+Math.abs(c.r).toFixed(2)+"R", cls(c.r)]
+  ].map(function(x){ return '<div><b class="'+x[2]+'">'+x[1]+'</b><em>'+x[0]+'</em></div>'; }).join("");
+}
+document.getElementById("view").addEventListener("submit", function(e){
+  if(e.target.id !== "tradeForm") return;
+  e.preventDefault();
+  var t = formTrade(e.target);
+  if(!t.entry || !t.sl){ toast("Оролт болон SL-ээ оруулна уу"); return; }
+  var wasEdit = !!state.editing;
+  state.editing = null; state.usingDemo = false;
+  putTrade(t);
+  state.tab = "trades"; state.openRow = t.id; state.calMonth = null; state.calDay = null;
+  render();
+  toast(wasEdit ? "Арилжаа шинэчлэгдлээ" : "Тэмдэглэлд нэмэгдлээ");
+});
+
+function exportCsv(){
+  var cols = ["Огноо","Цаг","Сесс","Стратеги","Фрейм","HTF","Чиглэл","Лот","Оролт","SL","TP","Гарсан","Комисс","Эрсдэл$","R:R","P/L$","R","Үнэлгээ","Checklist","Дүрмийн зөрчил","Өмнөх","Дараах","Итгэл","Алдаа","Тэмдэглэл"];
+  var rows = sorted(visibleTrades()).map(function(t){
+    var c = calc(t);
+    return [t.date,t.time,t.session,t.setup,t.tf,t.bias,t.dir,t.lot,t.entry,t.sl,t.tp,t.exit,t.fees,
+      c.risk.toFixed(2), c.rrPlanned.toFixed(2), c.pl.toFixed(2), c.r.toFixed(2), gradeOf(t)||"", c.passed+"/"+RULES.length, compOf(t).v.map(function(v){return v.text}).join(" | "),
+      t.emoBefore,t.emoAfter,t.confidence,(t.mistakes||[]).join(" | "),(t.notes||"").replace(/\n/g," ")];
+  });
+  var csv = "﻿" + [cols].concat(rows).map(function(r){
+    return r.map(function(v){ return '"'+String(v==null?"":v).replace(/"/g,'""')+'"'; }).join(",");
+  }).join("\n");
+  saveFile("trade-notes-"+ymd(new Date())+".csv", csv, "text/csv;charset=utf-8");
+}
+function copyCsv(csv){
+  try{
+    navigator.clipboard.writeText(csv);
+    toast("CSV санах ойд хуулагдлаа — хүснэгтэд буулгана уу");
+  }catch(e){ toast("CSV гаргаж чадсангүй"); }
+}
+
+/* ================= эхлүүлэх ================= */
+setInterval(function(){
+  if(state.tab !== "cal") return;
+  var el = document.getElementById("neCount"), nx = nextBigEvent();
+  if(el && nx) el.innerHTML = countdownHtml(nx);
+}, 30000);
+try{ var th = localStorage.getItem("xau_theme"); if(th) document.documentElement.setAttribute("data-theme", th); }catch(e){}
+try{ if(localStorage.getItem("xau_hide_demo")) state.usingDemo = false; }catch(e){}
+loadLocal();
+render();
+initStore();
+</script>
+</body>
+</html>

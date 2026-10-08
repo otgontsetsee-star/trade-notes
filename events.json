@@ -1,0 +1,832 @@
+{
+ "updated": "2026-10-08",
+ "items": [
+  {
+   "id": "202609011400-JOLTS",
+   "t": "2026-09-01T14:00Z",
+   "code": "JOLTS",
+   "title": "АНУ сул ажлын байр (JOLTS)",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "7-р сарын өгөгдөл",
+   "src": "BLS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202609041230-NFP",
+   "t": "2026-09-04T12:30Z",
+   "code": "NFP",
+   "title": "АНУ ажлын байр (NFP)",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "8-р сар · ажилгүйдлийн түвшин хамт",
+   "src": "BLS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202609101230-PPI",
+   "t": "2026-09-10T12:30Z",
+   "code": "PPI",
+   "title": "АНУ үйлдвэрлэгчийн үнэ (PPI)",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "8-р сар",
+   "src": "BLS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202609111230-CPI",
+   "t": "2026-09-11T12:30Z",
+   "code": "CPI",
+   "title": "АНУ инфляц (CPI)",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "8-р сар",
+   "src": "BLS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202609161230-Retail",
+   "t": "2026-09-16T12:30Z",
+   "code": "Retail",
+   "title": "АНУ жижиглэн борлуулалт",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "8-р сар",
+   "src": "Census",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202609161800-FOMC",
+   "t": "2026-09-16T18:00Z",
+   "code": "FOMC",
+   "title": "ФРС-ийн бодлогын хүү (FOMC)",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "Эдийн засгийн төсөөлөлтэй · 30 мин дараа Пауэллын хэвлэлийн бага хурал",
+   "src": "Federal Reserve",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202609171100-BoE",
+   "t": "2026-09-17T11:00Z",
+   "code": "BoE",
+   "title": "Английн Төв банкны хүү (BoE)",
+   "imp": 3,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "",
+   "src": "Bank of England",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202609291400-JOLTS",
+   "t": "2026-09-29T14:00Z",
+   "code": "JOLTS",
+   "title": "АНУ сул ажлын байр (JOLTS)",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "8-р сар",
+   "src": "BLS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202610011400-ISM",
+   "t": "2026-10-01T14:00Z",
+   "code": "ISM",
+   "title": "АНУ ISM үйлдвэрлэлийн PMI",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "",
+   "src": "ISM (1-р/3-р ажлын өдөр)",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202610021230-NFP",
+   "t": "2026-10-02T12:30Z",
+   "code": "NFP",
+   "title": "АНУ ажлын байр (NFP)",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "9-р сар · ажилгүйдлийн түвшин хамт",
+   "src": "BLS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202610051400-ISM",
+   "t": "2026-10-05T14:00Z",
+   "code": "ISM",
+   "title": "АНУ ISM үйлчилгээний PMI",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "",
+   "src": "ISM (1-р/3-р ажлын өдөр)",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202610071800-Minutes",
+   "t": "2026-10-07T18:00Z",
+   "code": "Minutes",
+   "title": "FOMC хурлын тэмдэглэл",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "9-р сарын хурал",
+   "src": "Federal Reserve",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202610141230-CPI",
+   "t": "2026-10-14T12:30Z",
+   "code": "CPI",
+   "title": "АНУ инфляц (CPI)",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "9-р сар",
+   "src": "BLS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202610151230-PPI",
+   "t": "2026-10-15T12:30Z",
+   "code": "PPI",
+   "title": "АНУ үйлдвэрлэгчийн үнэ (PPI)",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "9-р сар",
+   "src": "BLS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202610151230-Retail",
+   "t": "2026-10-15T12:30Z",
+   "code": "Retail",
+   "title": "АНУ жижиглэн борлуулалт",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "9-р сар",
+   "src": "Census",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202610200600-UKJobs",
+   "t": "2026-10-20T06:00Z",
+   "code": "UK Jobs",
+   "title": "Их Британийн ажил эрхлэлт",
+   "imp": 2,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "",
+   "src": "ONS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202610210600-UKCPI",
+   "t": "2026-10-21T06:00Z",
+   "code": "UK CPI",
+   "title": "Их Британийн инфляц (CPI)",
+   "imp": 3,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "9-р сар",
+   "src": "ONS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202610281800-FOMC",
+   "t": "2026-10-28T18:00Z",
+   "code": "FOMC",
+   "title": "ФРС-ийн бодлогын хүү (FOMC)",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "30 мин дараа Пауэллын хэвлэлийн бага хурал",
+   "src": "Federal Reserve",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202610291230-GDP",
+   "t": "2026-10-29T12:30Z",
+   "code": "GDP",
+   "title": "АНУ ДНБ (GDP) + PCE инфляц",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "3-р улирлын урьдчилсан ДНБ · 9-р сарын PCE",
+   "src": "BEA",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202610300300-BoJ",
+   "t": "2026-10-30T03:00Z",
+   "code": "BoJ",
+   "title": "Японы Төв банкны хүү (BoJ)",
+   "imp": 3,
+   "tags": [
+    "GBPJPY",
+    "XAU"
+   ],
+   "cur": "JPY",
+   "note": "Тогтмол цаггүй — ойролцоогоор 11:30–12:30 Токио",
+   "src": "Bank of Japan",
+   "allDay": false,
+   "approx": true
+  },
+  {
+   "id": "202610301230-ECI",
+   "t": "2026-10-30T12:30Z",
+   "code": "ECI",
+   "title": "АНУ хөдөлмөрийн зардлын индекс",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "3-р улирал",
+   "src": "BLS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202611021500-ISM",
+   "t": "2026-11-02T15:00Z",
+   "code": "ISM",
+   "title": "АНУ ISM үйлдвэрлэлийн PMI",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "",
+   "src": "ISM (1-р/3-р ажлын өдөр)",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202611030500-Election",
+   "t": "2026-11-03T05:00Z",
+   "code": "Election",
+   "title": "АНУ-ын завсрын сонгууль",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "Үр дүн УБ-ын цагаар 11-р сарын 4-нд гарч эхэлнэ — ханш огцом хөдөлж болно",
+   "src": "",
+   "allDay": true,
+   "approx": false
+  },
+  {
+   "id": "202611031500-JOLTS",
+   "t": "2026-11-03T15:00Z",
+   "code": "JOLTS",
+   "title": "АНУ сул ажлын байр (JOLTS)",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "9-р сар",
+   "src": "BLS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202611041500-ISM",
+   "t": "2026-11-04T15:00Z",
+   "code": "ISM",
+   "title": "АНУ ISM үйлчилгээний PMI",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "",
+   "src": "ISM (1-р/3-р ажлын өдөр)",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202611051200-BoE",
+   "t": "2026-11-05T12:00Z",
+   "code": "BoE",
+   "title": "Английн Төв банкны хүү (BoE)",
+   "imp": 3,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "Мөнгөний бодлогын тайлантай",
+   "src": "Bank of England",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202611061330-NFP",
+   "t": "2026-11-06T13:30Z",
+   "code": "NFP",
+   "title": "АНУ ажлын байр (NFP)",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "10-р сар · ажилгүйдлийн түвшин хамт",
+   "src": "BLS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202611101330-CPI",
+   "t": "2026-11-10T13:30Z",
+   "code": "CPI",
+   "title": "АНУ инфляц (CPI)",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "10-р сар",
+   "src": "BLS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202611131330-PPI",
+   "t": "2026-11-13T13:30Z",
+   "code": "PPI",
+   "title": "АНУ үйлдвэрлэгчийн үнэ (PPI)",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "10-р сар",
+   "src": "BLS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202611170700-UKJobs",
+   "t": "2026-11-17T07:00Z",
+   "code": "UK Jobs",
+   "title": "Их Британийн ажил эрхлэлт",
+   "imp": 2,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "",
+   "src": "ONS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202611171330-Retail",
+   "t": "2026-11-17T13:30Z",
+   "code": "Retail",
+   "title": "АНУ жижиглэн борлуулалт",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "10-р сар",
+   "src": "Census",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202611180700-UKCPI",
+   "t": "2026-11-18T07:00Z",
+   "code": "UK CPI",
+   "title": "Их Британийн инфляц (CPI)",
+   "imp": 3,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "10-р сар",
+   "src": "ONS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202611181900-Minutes",
+   "t": "2026-11-18T19:00Z",
+   "code": "Minutes",
+   "title": "FOMC хурлын тэмдэглэл",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "10-р сарын хурал · хүлээгдэж буй огноо",
+   "src": "Federal Reserve",
+   "allDay": false,
+   "approx": true
+  },
+  {
+   "id": "202611251330-PCE",
+   "t": "2026-11-25T13:30Z",
+   "code": "PCE",
+   "title": "АНУ PCE инфляц + ДНБ (2-р тооцоо)",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "10-р сарын PCE",
+   "src": "BEA",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202611260500-Holiday",
+   "t": "2026-11-26T05:00Z",
+   "code": "Holiday",
+   "title": "АНУ Талархлын баяр — зах хаалттай",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "Хөрвөх чадвар бага, spread өргөсөж болно · 27-нд хагас өдөр",
+   "src": "",
+   "allDay": true,
+   "approx": false
+  },
+  {
+   "id": "202612011500-ISM",
+   "t": "2026-12-01T15:00Z",
+   "code": "ISM",
+   "title": "АНУ ISM үйлдвэрлэлийн PMI",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "",
+   "src": "ISM (1-р/3-р ажлын өдөр)",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202612011500-JOLTS",
+   "t": "2026-12-01T15:00Z",
+   "code": "JOLTS",
+   "title": "АНУ сул ажлын байр (JOLTS)",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "10-р сар",
+   "src": "BLS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202612031500-ISM",
+   "t": "2026-12-03T15:00Z",
+   "code": "ISM",
+   "title": "АНУ ISM үйлчилгээний PMI",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "",
+   "src": "ISM (1-р/3-р ажлын өдөр)",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202612041330-NFP",
+   "t": "2026-12-04T13:30Z",
+   "code": "NFP",
+   "title": "АНУ ажлын байр (NFP)",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "11-р сар · ажилгүйдлийн түвшин хамт",
+   "src": "BLS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202612091900-FOMC",
+   "t": "2026-12-09T19:00Z",
+   "code": "FOMC",
+   "title": "ФРС-ийн бодлогын хүү (FOMC)",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "Эдийн засгийн төсөөлөлтэй · 30 мин дараа Пауэллын хэвлэлийн бага хурал",
+   "src": "Federal Reserve",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202612101330-CPI",
+   "t": "2026-12-10T13:30Z",
+   "code": "CPI",
+   "title": "АНУ инфляц (CPI)",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "11-р сар",
+   "src": "BLS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202612150700-UKJobs",
+   "t": "2026-12-15T07:00Z",
+   "code": "UK Jobs",
+   "title": "Их Британийн ажил эрхлэлт",
+   "imp": 2,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "",
+   "src": "ONS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202612151330-PPI",
+   "t": "2026-12-15T13:30Z",
+   "code": "PPI",
+   "title": "АНУ үйлдвэрлэгчийн үнэ (PPI)",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "11-р сар",
+   "src": "BLS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202612160700-UKCPI",
+   "t": "2026-12-16T07:00Z",
+   "code": "UK CPI",
+   "title": "Их Британийн инфляц (CPI)",
+   "imp": 3,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "11-р сар",
+   "src": "ONS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202612161330-Retail",
+   "t": "2026-12-16T13:30Z",
+   "code": "Retail",
+   "title": "АНУ жижиглэн борлуулалт",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "11-р сар",
+   "src": "Census",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202612171200-BoE",
+   "t": "2026-12-17T12:00Z",
+   "code": "BoE",
+   "title": "Английн Төв банкны хүү (BoE)",
+   "imp": 3,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "",
+   "src": "Bank of England",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202612180300-BoJ",
+   "t": "2026-12-18T03:00Z",
+   "code": "BoJ",
+   "title": "Японы Төв банкны хүү (BoJ)",
+   "imp": 3,
+   "tags": [
+    "GBPJPY",
+    "XAU"
+   ],
+   "cur": "JPY",
+   "note": "Тогтмол цаггүй — ойролцоогоор 11:30–12:30 Токио",
+   "src": "Bank of Japan",
+   "allDay": false,
+   "approx": true
+  },
+  {
+   "id": "202612231330-PCE",
+   "t": "2026-12-23T13:30Z",
+   "code": "PCE",
+   "title": "АНУ PCE инфляц + ДНБ (3-р тооцоо)",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "11-р сарын PCE",
+   "src": "BEA",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "202612250500-Holiday",
+   "t": "2026-12-25T05:00Z",
+   "code": "Holiday",
+   "title": "Зул сарын баяр — ихэнх зах хаалттай",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "",
+   "src": "",
+   "allDay": true,
+   "approx": false
+  }
+ ]
+}
