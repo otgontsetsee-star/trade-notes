@@ -1,0 +1,31 @@
+name: Мэдээний хуанли шинэчлэх
+
+on:
+  schedule:
+    - cron: "17 22 * * *"   # өдөр бүр 22:17 UTC (УБ-ын 06:17)
+  workflow_dispatch:         # Actions таб дээрээс гараар ажиллуулж болно
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: events.json шинэчлэх
+        run: python scripts/update_events.py events.json
+      - name: Өөрчлөлт байвал commit хийх
+        run: |
+          if git diff --quiet events.json; then
+            echo "Өөрчлөлтгүй"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add events.json
+            git commit -m "Мэдээний хуанли автоматаар шинэчлэгдэв"
+            git push
+          fi
