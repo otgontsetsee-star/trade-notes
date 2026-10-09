@@ -254,6 +254,29 @@ tr.detail td{background:var(--bg);padding:0}
   background:var(--bg);font-size:13.5px;font-weight:600;color:var(--ink-2);cursor:pointer;
 }
 .drop.over{border-color:var(--accent);background:var(--accent-soft)}
+/* ---------- зургаас таних ---------- */
+.shot{margin-bottom:16px}
+.shot-btn{display:inline-flex;align-items:center;gap:6px}
+body.drag-img::after{content:"Зургаа энд тавь — Juni уншаад тэмдэглэнэ";position:fixed;inset:10px;z-index:90;display:flex;align-items:center;justify-content:center;
+  border:3px dashed var(--accent);border-radius:16px;background:color-mix(in srgb, var(--accent-soft) 88%, transparent);color:var(--accent);font-weight:800;font-size:20px;pointer-events:none}
+.shot-drop{display:flex;flex-direction:column;align-items:center;gap:6px;padding:20px 16px}
+.shot-drop svg{color:var(--accent)}
+.shot-drop .dim{font-weight:500;font-size:12.5px}
+.shot-drop kbd{font:inherit;font-size:11px;border:1px solid var(--line-strong);border-radius:4px;padding:0 4px;background:var(--surface)}
+.shot-tip{display:flex;flex-direction:column;gap:8px;margin-top:10px;font-size:12.5px;color:var(--ink-3)}
+.shot-tip input{font:inherit;font-size:13px;padding:8px 10px;border:1px solid var(--line-strong);border-radius:8px;background:var(--surface);color:var(--ink);width:100%;box-sizing:border-box}
+.shot-thumbs{display:flex;gap:6px;flex-wrap:wrap}
+.shot-thumbs img{height:46px;max-width:220px;object-fit:cover;object-position:left center;border-radius:6px;border:1px solid var(--line)}
+.shot-busy{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.shot-status{display:flex;align-items:center;gap:10px;font-size:13.5px;flex-wrap:wrap}
+.spin{width:16px;height:16px;border-radius:50%;border:2.5px solid var(--line-strong);border-top-color:var(--accent);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.shot-alt{margin-top:12px;padding:10px 12px;border:1px dashed var(--line-strong);border-radius:8px;font-size:12.5px;color:var(--ink-2);line-height:1.55}
+.shot-alt kbd{font:inherit;font-size:11px;border:1px solid var(--line-strong);border-radius:4px;padding:0 4px;background:var(--surface)}
+.shot-ok{display:flex;flex-direction:column;gap:8px;margin-top:12px;padding:11px 13px;border-radius:8px;background:var(--accent-soft);font-size:13.5px;line-height:1.5}
+.ai-fill{box-shadow:0 0 0 2px var(--warn) !important}
+@media (prefers-reduced-motion: reduce){.spin{animation:none}}
+
 .steps{counter-reset:s;display:flex;flex-direction:column;gap:10px;font-size:13.5px;margin:0;padding:0;list-style:none}
 .steps li{display:flex;gap:10px;align-items:flex-start}
 .steps li::before{
@@ -365,41 +388,97 @@ tr.detail td{background:var(--bg);padding:0}
 
 /* ---------- миний алдаа ---------- */
 .pill.warn{background:color-mix(in srgb, var(--warn) 16%, var(--surface));color:var(--warn)}
-.habit-card{display:flex;flex-direction:column;gap:12px}
-.habit-card .lead{font-size:13.5px;color:var(--ink-2);line-height:1.55;margin:0}
-.vs{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
-.vs > div{background:var(--bg);padding:11px 13px;display:flex;flex-direction:column;gap:2px;min-width:0}
-.vs b{font-size:17px;font-weight:800;letter-spacing:-.01em}
-.vs em{font-style:normal;font-size:12px;color:var(--ink-3);font-weight:500}
-.vs small{font-size:12px;color:var(--ink-2)}
-.fix-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:13px}
-.fix-list li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;align-items:start}
-.fix-list li i{font-style:normal;width:20px;height:20px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px}
-.wk-row{display:grid;grid-template-columns:104px minmax(0,1fr) 120px;gap:12px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+.h-hero{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.h-tile{display:flex;flex-direction:column;gap:10px;min-height:168px}
+.h-tile .t{font-size:12.5px;font-weight:600;color:var(--ink-3)}
+.donut-wrap{display:flex;align-items:center;gap:16px}
+.donut-wrap svg{flex:none}
+.donut-wrap b{display:block;font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.donut-wrap small{font-size:12.5px;color:var(--ink-2)}
+.cmp{display:flex;flex-direction:column;gap:12px;margin-top:2px}
+.cmp-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center}
+.cmp-row span{font-size:12.5px;color:var(--ink-2)}
+.cmp-row b{font-size:15px;font-weight:800;text-align:right}
+.cmp-bar{grid-column:1/-1;height:12px;border-radius:4px;background:var(--surface-2);overflow:hidden}
+.cmp-bar i{display:block;height:100%;border-radius:4px}
+.streak b{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1}
+.streak small{font-size:12.5px;color:var(--ink-2);margin-left:6px}
+.day-dots{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
+.day-dots span{width:18px;height:18px;border-radius:5px;display:block;box-sizing:border-box}
+.dd-ok{border:2px solid var(--win)}
+.dd-bad{background:var(--warn)}
+.dd-cop{background:var(--loss);position:relative}
+.dd-cop::after{content:"";position:absolute;inset:4px;background:linear-gradient(45deg,transparent 42%,#fff 42% 58%,transparent 58%),linear-gradient(-45deg,transparent 42%,#fff 42% 58%,transparent 58%)}
+.path-card svg{width:100%;height:auto;overflow:visible}
+.path-card > header{flex-wrap:wrap;row-gap:6px}
+.path-card .cap{font-size:12.5px;color:var(--ink-2);margin:4px 0 0}
+.h-grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:14px;margin-top:14px;align-items:start}
+.src-legend{display:flex;flex-direction:column;gap:8px;font-size:13px}
+.src-legend div{display:flex;align-items:center;gap:8px}
+.src-legend i{width:12px;height:12px;border-radius:3px;display:block;flex:none}
+.src-legend b{margin-left:auto;font-weight:800}
+.fixes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.fix{display:flex;gap:11px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px 12px}
+.fix svg{flex:none;width:34px;height:34px}
+.fix b{display:block;font-size:13.5px;font-weight:800;line-height:1.25}
+.fix small{font-size:12px;color:var(--ink-3)}
+.wk-row{display:grid;grid-template-columns:104px minmax(0,1fr) 92px;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:12.5px}
 .wk-row:last-child{border-bottom:0}
 .wk-row > span:first-child{white-space:nowrap}
-.wk-bars{display:flex;gap:3px;align-items:center;min-height:14px;flex-wrap:wrap}
-.wk-bars span{width:10px;height:14px;border-radius:3px;display:block}
-.wk-bars .e{background:var(--warn)} .wk-bars .o{background:var(--loss)} .wk-bars .ok{background:var(--win-soft);border:1px solid color-mix(in srgb, var(--win) 35%, transparent)}
-.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-3)}
-.legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.wk-bars{display:flex;gap:4px;align-items:center;min-height:16px;flex-wrap:wrap}
+.wk-bars span{width:14px;height:14px;border-radius:4px;display:block;box-sizing:border-box}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-3);align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend .day-dots span{width:12px;height:12px;border-radius:3px}
+.more{margin-top:18px}
+.more summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--accent);padding:6px 0;list-style:none}
+.more summary::-webkit-details-marker{display:none}
+.more summary::before{content:"▸ ";}
+.more[open] summary::before{content:"▾ ";}
+.more .table-scroll{margin-top:8px}
 .src-warn{display:none;gap:9px;align-items:flex-start;background:var(--loss-soft);color:var(--loss);border-radius:8px;padding:9px 11px;font-size:12.5px;font-weight:700;margin-top:12px;line-height:1.45}
 .src-warn.on{display:flex}
 .src-warn.soft{background:var(--accent-soft);color:var(--accent)}
+@media (max-width:900px){ .h-hero{grid-template-columns:1fr 1fr} .h-grid2{grid-template-columns:1fr} }
+@media (max-width:640px){ .h-hero{grid-template-columns:1fr} .fixes{grid-template-columns:1fr} .h-tile{min-height:0} }
 
-/* ---------- Ноти туслах ---------- */
-.bot{position:fixed;right:20px;bottom:16px;z-index:40;display:flex;align-items:flex-end;gap:8px;pointer-events:none}
+/* ---------- Juni туслах ---------- */
+.bot{position:fixed;left:0;top:0;z-index:40;width:72px;height:76px;pointer-events:none}
 .bot[hidden]{display:none}
-.bot-btn{pointer-events:auto;background:none;border:0;padding:0;cursor:pointer;width:64px;height:72px;flex:none;
-  filter:drop-shadow(0 6px 10px rgba(60,40,140,.22));animation:botBob 3.2s ease-in-out infinite}
-.bot-btn svg{width:64px;height:72px;overflow:visible}
+.bot.walking{transition:left var(--walk,2s) cubic-bezier(.45,.05,.55,.95), top var(--walk,2s) cubic-bezier(.45,.05,.55,.95)}
+.bot-btn{pointer-events:auto;background:none;border:0;padding:0;cursor:grab;width:72px;height:76px;display:block;touch-action:none;
+  filter:drop-shadow(0 6px 8px rgba(30,27,46,.22));animation:botFloat 3s ease-in-out infinite}
+.bot.dragging .bot-btn{cursor:grabbing;animation:none;filter:drop-shadow(0 14px 16px rgba(90,60,170,.32))}
+.bot-btn svg{width:72px;height:76px;overflow:visible;display:block;transition:transform .2s}
+.bot.flip .bot-btn svg{transform:scaleX(-1)}
+.bot .arm-l,.bot .arm-r{transform-box:view-box}
+.bot .arm-l{transform-origin:8px 53px;animation:armL 2.6s ease-in-out infinite}
+.bot .arm-r{transform-origin:72px 53px;animation:armR 2.6s ease-in-out infinite}
+.bot.walking .bot-btn{animation:botWalk .42s ease-in-out infinite}
+.bot.walking .leg-l{animation:legStep .21s ease-in-out infinite alternate}
+.bot.walking .leg-r{animation:legStep .21s ease-in-out infinite alternate-reverse}
+.bot.walking .arm-l,.bot.walking .arm-r{animation-duration:.42s}
+.bot.dragging .leg-l,.bot.dragging .leg-r{transform:translateY(2px)}
+.bot.dragging .arm-l{transform:rotate(-35deg)} .bot.dragging .arm-r{transform:rotate(35deg)}
+.bot.hop .bot-btn{animation:botHop .6s ease-out}
+.bot .face-happy,.bot .face-worry{display:none}
+.bot.speaking .face-normal,.bot.worry .face-normal{display:none}
+.bot.speaking .face-happy{display:inline}
+.bot.worry:not(.speaking) .face-worry{display:inline}
+.bot .mouth-talk{transform-box:fill-box;transform-origin:center top;animation:talk .2s ease-in-out infinite alternate}
+.bot.speaking .arm-r{animation:wave .32s ease-in-out infinite alternate}
+.bot .eye{transform-box:fill-box;transform-origin:center;animation:blink 4.2s infinite}
 .bot-bubble{
-  pointer-events:auto;position:relative;max-width:270px;background:var(--surface);color:var(--ink);
+  pointer-events:auto;position:absolute;right:0;bottom:calc(100% + 4px);width:max-content;max-width:270px;
+  background:var(--surface);color:var(--ink);
   border:1px solid var(--line-strong);border-radius:14px 14px 4px 14px;padding:11px 13px 10px;font-size:13px;line-height:1.5;
-  box-shadow:0 10px 26px rgba(40,25,110,.16);margin-bottom:34px;opacity:0;transform:translateY(6px) scale(.97);
+  box-shadow:0 10px 26px rgba(40,25,110,.16);opacity:0;transform:translateY(6px) scale(.97);
   transition:opacity .25s ease, transform .25s ease;visibility:hidden
 }
+.bot.bl .bot-bubble{right:auto;left:0;border-radius:14px 14px 14px 4px}
+.bot.below .bot-bubble{bottom:auto;top:calc(100% + 4px)}
 .bot.talk .bot-bubble{opacity:1;transform:none;visibility:visible}
+.bot.walking .bot-bubble{transition:none}
 .bot-name{font-size:11px;font-weight:800;color:var(--accent);margin-bottom:2px;display:flex;justify-content:space-between;gap:8px}
 .bot-name span{color:var(--ink-3);font-weight:600}
 .bot-msg p{margin:0 0 5px}
@@ -409,24 +488,18 @@ tr.detail td{background:var(--bg);padding:0}
 .bot-act{display:flex;gap:6px;margin-top:8px}
 .bot-act button{font-size:11.5px;font-weight:700;border:1px solid var(--line-strong);background:var(--bg);border-radius:999px;padding:2px 10px;cursor:pointer;color:var(--ink-2)}
 .bot-act button:first-child{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
-.bot.run .bot-btn{animation:botRun 2.4s cubic-bezier(.25,.8,.35,1) both}
-.bot.run .leg-l{animation:legStep .18s ease-in-out infinite alternate}
-.bot.run .leg-r{animation:legStep .18s ease-in-out infinite alternate-reverse}
-.bot.run .bot-bubble{transition-delay:2.2s}
-.bot .eye{transform-box:fill-box;transform-origin:center;animation:blink 4.6s infinite}
-@keyframes botBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-@keyframes botRun{
-  0%{transform:translateX(calc(-100vw + 40px)) rotate(-4deg)}
-  70%{transform:translateX(10px) rotate(-3deg)}
-  85%{transform:translateX(-4px) rotate(2deg)}
-  100%{transform:translateX(0) rotate(0)}
-}
-@keyframes legStep{from{transform:translateY(0)}to{transform:translateY(-4px)}}
-@keyframes blink{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes botFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes botWalk{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-6px) rotate(4deg)}}
+@keyframes legStep{from{transform:translateY(0)}to{transform:translateY(-3px)}}
+@keyframes armL{0%,100%{transform:rotate(0)}50%{transform:rotate(-12deg)}}
+@keyframes armR{0%,100%{transform:rotate(0)}50%{transform:rotate(12deg)}}
+@keyframes wave{from{transform:rotate(10deg)}to{transform:rotate(-40deg)}}
+@keyframes botHop{0%{transform:translateY(0)}35%{transform:translateY(-22px) scale(1.06)}70%{transform:translateY(0) scale(1.06,.94)}100%{transform:none}}
+@keyframes talk{from{transform:scaleY(.45)}to{transform:scaleY(1)}}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}}
 @media (max-width:640px){
-  .bot{right:10px;bottom:10px}
-  .bot-btn,.bot-btn svg{width:50px;height:56px}
-  .bot-bubble{max-width:220px;font-size:12.5px;margin-bottom:26px}
+  .bot,.bot-btn,.bot-btn svg{width:58px;height:61px}
+  .bot-bubble{max-width:220px;font-size:12.5px}
 }
 
 .empty{padding:36px 20px;text-align:center;color:var(--ink-3);font-size:13.5px}
@@ -469,7 +542,6 @@ tr.detail td{background:var(--bg);padding:0}
       <button data-tab="dash" aria-current="true">Самбар</button>
       <button data-tab="cal">P&amp;L хуанли</button>
       <button data-tab="analytics">Шинжилгээ</button>
-      <button data-tab="playbook">Стратегийн ном</button>
       <button data-tab="rules">Миний дүрэм</button>
       <button data-tab="habits">Миний алдаа</button>
       <div class="sep">Бүртгэл</div>
@@ -492,7 +564,9 @@ tr.detail td{background:var(--bg);padding:0}
       <span class="acct" id="balChip"></span>
       <span class="tools">
         <button class="btn sm" id="importBtn">MT5 импорт</button>
-        <button class="btn sm primary" id="newBtn">Шинэ арилжаа</button>
+        <button class="btn sm primary shot-btn" id="shotBtn" title="Арилжааны дэлгэцийн зургаа оруулбал өөрөө уншаад тэмдэглэнэ"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M4 7h3l2-2.5h6L17 7h3v12H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.4" fill="none" stroke="currentColor" stroke-width="2"/></svg>Зургаар нэмэх</button>
+        <input type="file" id="shotTopFile" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden>
+        <button class="btn sm" id="newBtn">Шинэ арилжаа</button>
       </span>
     </header>
     <main class="wrap">
@@ -504,28 +578,35 @@ tr.detail td{background:var(--bg);padding:0}
 
 <div class="bot" id="bot" hidden>
   <div class="bot-bubble" role="status" aria-live="polite">
-    <div class="bot-name">Ноти <span id="botTime"></span></div>
+    <div class="bot-name">Juni <span id="botTime"></span></div>
     <div class="bot-msg" id="botMsg"></div>
     <div class="bot-act"><button type="button" id="botOk">Ойлголоо</button><button type="button" id="botMore">Өөр зөвлөгөө</button></div>
   </div>
-  <button type="button" class="bot-btn" id="botBtn" aria-label="Ноти туслах — сануулга харах">
-    <svg viewBox="0 0 64 72" aria-hidden="true">
-      <defs><linearGradient id="notiG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5B4FE6"/><stop offset=".6" stop-color="#9A72F0"/><stop offset="1" stop-color="#E7A3E6"/></linearGradient></defs>
-      <rect class="leg-l" x="19" y="58" width="8" height="11" rx="4" fill="#4A3FC9"/>
-      <rect class="leg-r" x="37" y="58" width="8" height="11" rx="4" fill="#4A3FC9"/>
-      <rect x="6" y="8" width="52" height="54" rx="15" fill="url(#notiG)"/>
-      <rect x="12" y="17" width="40" height="38" rx="10" fill="#FFFFFF"/>
-      <g fill="#F3EEFF" stroke="#4A3FC9" stroke-width="1.6">
-        <rect x="15" y="3" width="5" height="11" rx="2.5"/><rect x="24" y="3" width="5" height="11" rx="2.5"/>
-        <rect x="35" y="3" width="5" height="11" rx="2.5"/><rect x="44" y="3" width="5" height="11" rx="2.5"/>
+  <button type="button" class="bot-btn" id="botBtn" aria-label="Juni туслах — сануулга харах">
+    <svg viewBox="0 0 80 84" aria-hidden="true">
+      <ellipse class="leg-l" cx="31" cy="77.5" rx="5" ry="3.4" fill="#1E1B2E"/>
+      <ellipse class="leg-r" cx="49" cy="77.5" rx="5" ry="3.4" fill="#1E1B2E"/>
+      <ellipse class="arm-l" cx="5" cy="57" rx="3.6" ry="5.2" fill="#fff" stroke="#1E1B2E" stroke-width="2.4"/>
+      <ellipse class="arm-r" cx="75" cy="57" rx="3.6" ry="5.2" fill="#fff" stroke="#1E1B2E" stroke-width="2.4"/>
+      <path d="M40 7.5 C46.5 7.5 50 11.5 54 18.5 L69.5 46.5 C75 56.5 72.5 70.5 60 73.5 C51.5 75.5 28.5 75.5 20 73.5 C7.5 70.5 5 56.5 10.5 46.5 L26 18.5 C30 11.5 33.5 7.5 40 7.5 Z" fill="#fff" stroke="#1E1B2E" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M25.5 51 H54.5 V74.6 Q40 75.6 25.5 74.6 Z" fill="#1E1B2E"/>
+      <ellipse cx="24.5" cy="45.5" rx="4.4" ry="2.3" fill="#FF9EC4"/>
+      <ellipse cx="55.5" cy="45.5" rx="4.4" ry="2.3" fill="#FF9EC4"/>
+      <g class="face-normal">
+        <ellipse class="eye" cx="32" cy="38.5" rx="2.1" ry="2.6" fill="#1E1B2E"/>
+        <ellipse class="eye" cx="48" cy="38.5" rx="2.1" ry="2.6" fill="#1E1B2E"/>
+        <path d="M36.6 43.2 Q38.3 46 40 43.4 Q41.7 46 43.4 43.2" fill="none" stroke="#1E1B2E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
       </g>
-      <ellipse class="eye" cx="25" cy="33" rx="3.2" ry="3.8" fill="#2A2458"/>
-      <ellipse class="eye" cx="39" cy="33" rx="3.2" ry="3.8" fill="#2A2458"/>
-      <circle cx="26.2" cy="31.6" r="1.1" fill="#fff"/><circle cx="40.2" cy="31.6" r="1.1" fill="#fff"/>
-      <ellipse cx="19.5" cy="40.5" rx="3.6" ry="2.1" fill="#FF9EC4" opacity=".85"/>
-      <ellipse cx="44.5" cy="40.5" rx="3.6" ry="2.1" fill="#FF9EC4" opacity=".85"/>
-      <path d="M28.5 41.5 Q32 45.5 35.5 41.5" fill="none" stroke="#2A2458" stroke-width="2.2" stroke-linecap="round"/>
-      <path d="M16 49 H48" stroke="#E6E0FC" stroke-width="2" stroke-linecap="round"/>
+      <g class="face-happy">
+        <path d="M28.6 35.6 L33.6 38.6 L28.6 41.6 M51.4 35.6 L46.4 38.6 L51.4 41.6" fill="none" stroke="#1E1B2E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <g class="mouth-talk"><path d="M36.5 42.6 Q40 49 43.5 42.6 Z" fill="#1E1B2E" stroke="#1E1B2E" stroke-width="1.4" stroke-linejoin="round"/><ellipse cx="40" cy="45.6" rx="1.7" ry="1" fill="#FF8FBF"/></g>
+      </g>
+      <g class="face-worry">
+        <ellipse cx="32" cy="39" rx="2" ry="2.4" fill="#1E1B2E"/><ellipse cx="48" cy="39" rx="2" ry="2.4" fill="#1E1B2E"/>
+        <path d="M28.8 35.8 L34.2 34 M51.2 35.8 L45.8 34" stroke="#1E1B2E" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M36.4 45 Q38.2 43.2 40 45 Q41.8 46.8 43.6 45" fill="none" stroke="#1E1B2E" stroke-width="1.7" stroke-linecap="round"/>
+        <path d="M58.6 27.5 Q61.6 32 60 34 Q57.6 35 57.2 32.4 Q57.4 30 58.6 27.5 Z" fill="#8FD3FF" stroke="#4A9BD8" stroke-width=".8"/>
+      </g>
     </svg>
   </button>
 </div>
@@ -560,7 +641,7 @@ var state = {
   trades:[],
   settings:{balance:10000, account:"Exness Standard · Demo", deposits:[], serverUtcOffset:3,
             riskPct:2, maxTrades:3, sessionHours:2, checklist:DEFAULT_CHECKLIST.slice(),
-            bot:{on:true, every:60, notify:false}},
+            bot:{on:true, every:60, notify:false, roam:true}},
   usingDemo:true,
   storeReady:false,
   storeMode:"local",
@@ -1246,74 +1327,129 @@ function viewHabits(){
   var H = habitStats();
   if(!H.list.length) return '<div class="panel"><div class="empty">Хаагдсан арилжаа алга. Арилжаа нэмэх эсвэл MT5-аас импортлоход энд таны давтагддаг алдаа харагдана.</div></div>';
   var avg = function(a){ return a.length ? a.reduce(function(s,t){ return s + calc(t).pl; },0)/a.length : 0; };
-  var sEW = stats(H.earlyWins), sHeld = stats(H.held), sCop = stats(H.copied), sOwn = stats(H.own);
+  var C_WARN = "var(--warn)", C_WIN = "var(--win)", C_LOSS = "var(--loss)";
 
-  /* долоо хоног бүрийн хандлага */
+  /* 1) donut — эрт хаасан / TP-тэй ашигтай арилжаа */
+  function donut(parts, size, label){
+    var r = size/2 - 9, c = 2*Math.PI*r, tot = parts.reduce(function(a,p){ return a+p.v; },0) || 1, off = 0;
+    var arcs = parts.filter(function(p){ return p.v > 0; }).map(function(p){
+      var len = p.v/tot*c, gap = parts.filter(function(x){ return x.v>0; }).length > 1 ? 2 : 0;
+      var a = '<circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="'+p.c+'" stroke-width="14" stroke-dasharray="'+Math.max(0,len-gap)+' '+(c-Math.max(0,len-gap))+'" stroke-dashoffset="'+(-off)+'" transform="rotate(-90 '+size/2+' '+size/2+')"><title>'+esc(p.t+": "+p.v)+'</title></circle>';
+      off += len; return a;
+    }).join("");
+    return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" role="img" aria-label="'+esc(label)+'">'
+      + '<circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="var(--surface-2)" stroke-width="14"/>'+arcs+'</svg>';
+  }
+  var nE = H.earlyWins.length, nTP = H.winsTP.length;
+  var tile1 = '<div class="panel h-tile"><span class="t">Ашгаа эрт таслсан</span>'
+    + '<div class="donut-wrap">'+donut([{v:nE,c:C_WARN,t:"Эрт хаасан"},{v:Math.max(0,nTP-nE),c:C_WIN,t:"TP-ийн хагаст хүрсэн"}],96,"Эрт хаасан "+nE+" / "+nTP)
+    + '<div><b class="'+(nE?"neg":"pos")+'">'+nE+' / '+nTP+'</b><small>ашигтай арилжаагаа<br>TP-ийн хагаст хүрэхээс өмнө хаасан</small></div></div></div>';
+
+  /* 2) дундаж ашиг — эрт хаасан vs TP хүртэл */
+  var aE = avg(H.earlyWins), aH = avg(H.held), mx = Math.max(aE, aH, 0.01);
+  var tile2 = '<div class="panel h-tile"><span class="t">Нэг арилжааны дундаж ашиг</span><div class="cmp">'
+    + '<div class="cmp-row"><span>Эрт хаасан ('+H.earlyWins.length+')</span><b>'+signed(aE)+'</b><div class="cmp-bar"><i style="width:'+Math.max(2,aE/mx*100)+'%;background:'+C_WARN+'"></i></div></div>'
+    + '<div class="cmp-row"><span>TP хүртэл барьсан ('+H.held.length+')</span><b class="pos">'+(H.held.length?signed(aH):"—")+'</b><div class="cmp-bar"><i style="width:'+(H.held.length?Math.max(2,aH/mx*100):0)+'%;background:'+C_WIN+'"></i></div></div>'
+    + '</div>'+(H.held.length && aE>0 ? '<span class="dim" style="font-size:12.5px;margin-top:auto">TP хүртэл барьвал <b style="color:var(--ink)">'+Math.round(aH/aE)+' дахин</b> их</span>' : '')+'</div>';
+
+  /* 3) алдаагүй цуврал + сүүлийн 10 арилжааны өдөр */
+  var byDate = {}; H.list.forEach(function(t){ (byDate[t.date] = byDate[t.date] || []).push(t); });
+  var lastDays = Object.keys(byDate).sort().slice(-10);
+  var dots = lastDays.map(function(d){
+    var a = byDate[d], cop = a.some(isCopied), e = a.some(isEarly);
+    return '<span class="'+(cop?"dd-cop":e?"dd-bad":"dd-ok")+'" title="'+esc(d+" — "+(cop?"бусдыг дагасан":e?"эрт хаасан":"цэвэр"))+'"></span>';
+  }).join("");
+  var tile3 = '<div class="panel h-tile streak"><span class="t">Алдаагүй өдөр дараалан</span>'
+    + '<div><b class="'+(H.streak>=3?"pos":"")+'">'+H.streak+'</b><small>өдөр</small></div>'
+    + '<div class="day-dots" aria-label="Сүүлийн '+lastDays.length+' арилжааны өдөр">'+dots+'</div>'
+    + '<span class="legend"><span><span class="day-dots"><span class="dd-ok"></span></span>цэвэр</span><span><span class="day-dots"><span class="dd-bad"></span></span>эрт хаасан</span><span><span class="day-dots"><span class="dd-cop"></span></span>хуулбар</span></span></div>';
+
+  /* 4) оролт → TP зам: ашигтай арилжаа бүр нэг цэг */
+  var narrow = window.innerWidth < 640, W = narrow ? 420 : 800, X0 = narrow ? 30 : 56, X1 = narrow ? 390 : 744, Y = 92, DR = narrow ? 6 : 7, DS = narrow ? 14 : 17, pts = H.winsTP.map(function(t){ return {t:t, f:Math.max(0, Math.min(1, tpFrac(t)))}; })
+    .sort(function(a,b){ return a.f - b.f; });
+  var bins = {};
+  var circles = pts.map(function(p){
+    var x = X0 + p.f*(X1-X0), k = Math.round(x/(DR*2+2)), n = bins[k] = (bins[k]||0) + 1;
+    var y = Y - 14 - (n-1)*DS, early = p.f < 0.5, c = calc(p.t);
+    var tip = p.t.date+" "+(p.t.time||"")+" · TP-ийн "+Math.round(p.f*100)+"% · "+signed(c.pl);
+    return '<g class="pt" data-id="'+esc(p.t.id)+'"><circle cx="'+x+'" cy="'+y+'" r="11" fill="transparent"><title>'+esc(tip)+'</title></circle>'
+      + (p.f >= 0.95 ? '<path d="M'+x+' '+(y-8)+' L'+(x+8)+' '+y+' L'+x+' '+(y+8)+' L'+(x-8)+' '+y+' Z" fill="'+C_WIN+'" stroke="var(--surface)" stroke-width="2" pointer-events="none"/>'
+                     : '<circle cx="'+x+'" cy="'+y+'" r="'+DR+'" fill="'+(early?C_WARN:C_WIN)+'" stroke="var(--surface)" stroke-width="2" pointer-events="none"/>')
+      + '</g>';
+  }).join("");
+  var topY = Math.min.apply(null, [Y-40].concat(Object.keys(bins).map(function(k){ return Y - 14 - (bins[k]-1)*DS - 12; })));
+  var med = H.medFrac, mX = med === null ? null : X0 + med*(X1-X0);
+  var ticks = [[0,"Оролт"],[0.25,"25%"],[0.5,"50%"],[0.75,"75%"],[1,"TP"]].map(function(tk){
+    var x = X0 + tk[0]*(X1-X0);
+    return '<line x1="'+x+'" y1="'+(Y-4)+'" x2="'+x+'" y2="'+(Y+4)+'" stroke="var(--line-strong)" stroke-width="2"/>'
+      + '<text x="'+x+'" y="'+(Y+22)+'" text-anchor="middle" font-size="13" font-weight="'+(tk[0]===0||tk[0]===1?700:500)+'" fill="'+(tk[0]===0||tk[0]===1?"var(--ink)":"var(--ink-3)")+'">'+tk[1]+'</text>';
+  }).join("");
+  var pathSvg = '<svg viewBox="0 '+(topY-30)+' '+W+' '+(Y+34-(topY-30))+'" role="img" aria-label="Ашигтай арилжаа бүрийг хаасан цэг, оролтоос TP хүртэл">'
+    + '<rect x="'+X0+'" y="'+(topY-6)+'" width="'+((X1-X0)/2)+'" height="'+(Y-(topY-6))+'" rx="8" fill="var(--warn)" opacity=".08"/>'
+    + '<text x="'+(X0+(X1-X0)/2-10)+'" y="'+(topY+12)+'" text-anchor="end" font-size="12" font-weight="700" fill="var(--warn)">Эрт хаах бүс</text>'
+    + '<line x1="'+X0+'" y1="'+Y+'" x2="'+X1+'" y2="'+Y+'" stroke="var(--line-strong)" stroke-width="2" stroke-linecap="round"/>'
+    + ticks
+    + (mX === null ? '' : '<line x1="'+mX+'" y1="'+(topY-14)+'" x2="'+mX+'" y2="'+Y+'" stroke="var(--ink-2)" stroke-width="1.5" stroke-dasharray="4 4"/>'
+        + '<text x="'+(mX+6)+'" y="'+(topY-18)+'" font-size="12.5" font-weight="700" fill="var(--ink)">Таны дундаж: '+Math.round(med*100)+'%</text>')
+    + circles + '</svg>';
+  var pathCard = '<div class="panel path-card" style="margin-top:14px"><header><h3>Ашигтай арилжаагаа хаана хаасан бэ?</h3>'
+    + '<span class="legend"><span><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--warn)"></i>эрт</span><span><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--win)"></i>хагасаас цааш</span><span><i style="display:inline-block;width:10px;height:10px;background:var(--win);transform:rotate(45deg)"></i>TP-д хүрсэн</span></span></header>'
+    + pathSvg + '<p class="cap">Цэг бүр = нэг ашигтай арилжаа. Цэг дээр хулганаа аваачвал дэлгэрэнгүй харагдана.</p></div>';
+
+  /* 5) санааны эх сурвалж */
+  var nOwn = H.own.length, nCop = H.copied.length, nUn = H.untagged;
+  var srcCard = '<div class="panel"><header><h3>Хэний санаагаар орсон бэ?</h3></header>'
+    + '<div class="donut-wrap">'+donut([{v:nOwn,c:"var(--accent)",t:"Өөрийн"},{v:nCop,c:C_LOSS,t:"Бусдын"},{v:nUn,c:"var(--line-strong)",t:"Тэмдэглээгүй"}],104,"Санааны эх сурвалж")
+    + '<div class="src-legend" style="flex:1">'
+      + '<div><i style="background:var(--accent)"></i>Өөрийн<b>'+nOwn+'</b></div>'
+      + '<div><i style="background:var(--loss)"></i>Бусдын<b>'+nCop+'</b></div>'
+      + '<div><i style="background:var(--line-strong)"></i>Тэмдэглээгүй<b>'+nUn+'</b></div>'
+    + '</div></div>'
+    + (nOwn + nCop < 3 ? '<p class="dim" style="font-size:12.5px;margin:12px 0 0">Шинэ арилжаандаа «Санааны эх сурвалж»-ийг сонгоод явбал энд үр дүн нь харьцуулагдана.</p>'
+        : '<div class="cmp" style="margin-top:14px">'
+          + '<div class="cmp-row"><span>Өөрийн санаа · үр дүн</span><b class="'+cls(stats(H.own).pl)+'">'+signed(stats(H.own).pl)+'</b></div>'
+          + '<div class="cmp-row"><span>Бусдын санаа · үр дүн</span><b class="'+cls(stats(H.copied).pl)+'">'+signed(stats(H.copied).pl)+'</b></div></div>')
+    + '</div>';
+
+  /* 6) засах 4 алхам — дүрс + богино үг */
+  function ic(path){ return '<svg viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="10" fill="var(--accent-soft)"/><g fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+path+'</g></svg>'; }
+  var fixes = [
+    [ic('<rect x="11" y="7" width="12" height="20" rx="2.5"/><path d="M9 9 L25 25"/>'), "Signal групп хаа", "арилжаа нээлттэй үед"],
+    [ic('<circle cx="17" cy="18" r="8"/><path d="M17 14 V18 L20 20 M15 7 H19"/>'), "60 сек хүлээ", "хаахаасаа өмнө"],
+    [ic('<circle cx="17" cy="17" r="8"/><path d="M17 9 V25"/><path d="M17 9 A8 8 0 0 1 17 25 Z" fill="var(--accent)" stroke="none"/>'), "1R-д хагасыг хаа", "SL-ээ оролт руу зөө"],
+    [ic('<path d="M10 17 L15 22 L24 12"/>'), "Checklist 4+", "үгүй бол орохгүй"]
+  ].map(function(x){ return '<div class="fix">'+x[0]+'<div><b>'+x[1]+'</b><small>'+x[2]+'</small></div></div>'; }).join("");
+  var fixCard = '<div class="panel"><header><h3>Дараагийн арилжаанд</h3></header><div class="fixes">'+fixes+'</div></div>';
+
+  /* 7) долоо хоног бүрээр */
   var weeks = {};
   H.list.forEach(function(t){ var k = mondayOf(t.date); (weeks[k] = weeks[k] || []).push(t); });
   var wk = Object.keys(weeks).sort().reverse().slice(0,8).map(function(k){
     var arr = sorted(weeks[k]), e = arr.filter(isEarly).length, o = arr.filter(isCopied).length;
-    var bars = arr.map(function(t){ return '<span class="'+(isCopied(t)?"o":isEarly(t)?"e":"ok")+'" title="'+esc(t.date+" "+(t.time||"")+" · "+signed(calc(t).pl))+'"></span>'; }).join("");
-    var lost = arr.filter(function(t){ return isEarly(t) && calc(t).pl > 0; }).reduce(function(a,t){ return a + leftOnTable(t); },0);
+    var bars = arr.map(function(t){ return '<span class="'+(isCopied(t)?"dd-cop":isEarly(t)?"dd-bad":"dd-ok")+'" title="'+esc(t.date+" "+(t.time||"")+" · "+signed(calc(t).pl))+'"></span>'; }).join("");
     return '<div class="wk-row"><span class="dim">'+esc(k.slice(5).replace("-","/"))+' · 7 хоног</span><div class="wk-bars">'+bars+'</div>'
-      + '<span style="text-align:right">'+(e||o ? '<b class="neg">'+e+'</b> эрт'+(o?' · <b class="neg">'+o+'</b> хуулбар':'')+(lost>0.005?'<br><span class="dim">'+money(lost)+' боломж</span>':'') : '<b class="pos">Цэвэр</b>')+'</span></div>';
+      + '<span style="text-align:right;font-weight:700">'+(e||o ? '<span class="neg">'+(e+o)+' алдаа</span>' : '<span class="pos">Цэвэр</span>')+'</span></div>';
   }).join("");
 
-  var rows = sorted(H.early).reverse().slice(0,20).map(function(t){
+  /* 8) дэлгэрэнгүй хүснэгт (нуусан) */
+  var rows = sorted(H.early).reverse().map(function(t){
     var c = calc(t), fr = tpFrac(t), x = exitInfo(t);
     return '<tr class="row" data-id="'+esc(t.id)+'">'
       + '<td style="white-space:nowrap">'+esc(t.date)+' <span class="dim">'+esc(t.time||"")+'</span></td>'
       + '<td><span class="pill '+(t.dir==="buy"?"buy":"sell")+'">'+(t.dir==="buy"?"Buy":"Sell")+'</span></td>'
       + '<td class="num">'+(fr===null?"—":Math.round(fr*100)+"%")+'</td>'
       + '<td class="num '+cls(c.pl)+'" style="font-weight:700">'+signed(c.pl)+'</td>'
-      + '<td class="num neg">'+(c.pl>0 && leftOnTable(t)>0.005 ? money(leftOnTable(t)) : "—")+'</td>'
-      + '<td>'+esc(exitLabel(t))+(x.auto?' <span class="dim">· автомат</span>':'')+(isCopied(t)?' <span class="pill warn">хуулбар</span>':'')+'</td></tr>';
+      + '<td>'+esc(exitLabel(t))+(x.auto?' <span class="dim">· автомат</span>':'')+'</td></tr>';
   }).join("");
 
-  var bestTxt = H.best ? 'TP хүртэл барьсан хамгийн сайн арилжаа тань <b class="pos">'+signed(calc(H.best).pl)+'</b> ('+esc(H.best.date)+').' : '';
-
-  return '<div class="sect-head" style="margin-top:0"><span class="eyebrow">Давтагддаг 2 алдаа</span><span class="rule"></span>'
-    + '<span class="dim">'+H.list.length+' хаагдсан арилжаа</span></div>'
-    + kpiRow([
-        {k:"Ашгаа эрт таслсан", v:H.earlyWins.length+" / "+H.winsTP.length, c:H.earlyWins.length?"neg":"pos", n:"TP-тэй ашигтай арилжаанаас"},
-        {k:"TP хүртэлх алдсан боломж", v:money(H.left), c:H.left>0?"neg":"", n:"үнэ TP-д хүрсэн бол"},
-        {k:"Бусдыг дагасан", v:String(H.copied.length), c:H.copied.length?"neg":"", n:H.copied.length ? signed(sCop.pl)+" үр дүн" : (H.untagged ? H.untagged+" арилжаанд эх сурвалж тэмдэглээгүй" : "Нэг ч удаа дагаагүй")},
-        {k:"Алдаагүй өдөр дараалан", v:String(H.streak), c:H.streak>=3?"pos":"", n:"сүүлийн "+H.days+" арилжааны өдрөөс"}
-      ])
-
-    + '<div class="grid cols-2" style="margin-top:16px">'
-      + '<div class="panel habit-card"><header><h3>1. Ашгаа эрт таслах</h3><span class="pill warn">'+H.earlyWins.length+' удаа</span></header>'
-        + '<p class="lead">Ашигтай арилжаагаа TP-ийн дунджаар <b>'+(H.medFrac===null?"—":Math.round(H.medFrac*100)+"%")+'</b>-д хааж байна. Харин алдагдлаа ихэвчлэн SL хүртэл бүтэн авдаг — энэ хоёрын зөрүү данс тань өсөхгүй байгаа гол шалтгаан. '+bestTxt+'</p>'
-        + '<div class="vs">'
-          + '<div><em>Эрт хаасан ('+sEW.n+')</em><b class="'+cls(avg(H.earlyWins))+'">'+signed(avg(H.earlyWins))+'</b><small>нэг арилжаанд дунджаар</small></div>'
-          + '<div><em>TP хүртэл барьсан ('+sHeld.n+')</em><b class="'+cls(avg(H.held))+'">'+signed(avg(H.held))+'</b><small>нэг арилжаанд дунджаар</small></div>'
-        + '</div>'
-        + '<ul class="fix-list">'
-          + '<li><i>1</i><span>Орсны дараа SL, TP-гээ тавиад <b>графикаа багасга</b>. Гараар хаахыг зөвхөн бүтэц эсрэг эвдэрсэн эсвэл том мэдээ ойртсон үед зөвшөөр.</span></li>'
-          + '<li><i>2</i><span>Хаах гэж байвал <b>60 секунд хүлээ</b>, шалтгаанаа тэмдэглэлд бич. Бичиж чадахгүй бол хаахгүй.</span></li>'
-          + '<li><i>3</i><span>Тэвчих хэцүү бол <b>1R дээр хагасыг хаагаад SL-ээ оролт руу зөө</b> — үлдсэнийг TP хүртэл орхи.</span></li>'
-        + '</ul></div>'
-      + '<div class="panel habit-card"><header><h3>2. Бусдын оролтыг хуулах</h3><span class="pill warn">'+H.copied.length+' удаа</span></header>'
-        + '<p class="lead">Бусдын санааг харж ороод, эсрэг харсан хүнийг хараад гарах нь таны өөрийн төлөвлөгөөг хоёр талаас нь эвддэг. Арилжаа бүрт «Санааны эх сурвалж»-ийг тэмдэглэвэл энд өөрийн ба бусдын санааны үр дүнг харьцуулна.</p>'
-        + '<div class="vs">'
-          + '<div><em>Өөрийн шинжилгээ ('+sOwn.n+')</em><b class="'+cls(sOwn.pl)+'">'+(sOwn.n?signed(sOwn.pl):"—")+'</b><small>'+(sOwn.n?pct(sOwn.winRate)+" ялалт":"тэмдэглэгдээгүй")+'</small></div>'
-          + '<div><em>Бусдын санаа ('+sCop.n+')</em><b class="'+cls(sCop.pl)+'">'+(sCop.n?signed(sCop.pl):"—")+'</b><small>'+(sCop.n?pct(sCop.winRate)+" ялалт":"тэмдэглэгдээгүй")+'</small></div>'
-        + '</div>'
-        + '<ul class="fix-list">'
-          + '<li><i>1</i><span>Бусдын санаа зөвхөн <b>сэдэл</b>. Өөрийн checklist-ээс <b>4+</b> биелээгүй бол орохгүй — «Шинэ бичлэг» дээр автоматаар сануулна.</span></li>'
-          + '<li><i>2</i><span>Орохоосоо өмнө «яагаад орж байна, хаана буруу болох вэ» гэдгийг <b>нэг өгүүлбэрээр</b> бич.</span></li>'
-          + '<li><i>3</i><span>Арилжаа нээлттэй үед <b>signal групп, бусдын графикийг хаа</b> — мэдэгдлийг нь чимээгүй болго.</span></li>'
-        + '</ul></div>'
-    + '</div>'
-
+  return '<div class="h-hero">'+tile1+tile2+tile3+'</div>'
+    + pathCard
+    + '<div class="h-grid2">'+srcCard+fixCard+'</div>'
     + '<div class="sect-head"><span class="eyebrow">Долоо хоног бүрээр</span><span class="rule"></span>'
-      + '<span class="legend"><span><i style="background:var(--warn)"></i>эрт хаасан</span><span><i style="background:var(--loss)"></i>хуулбар</span><span><i style="background:var(--win-soft);border:1px solid var(--win)"></i>цэвэр</span></span></div>'
+      + '<span class="legend"><span><span class="day-dots"><span class="dd-ok"></span></span>цэвэр</span><span><span class="day-dots"><span class="dd-bad"></span></span>эрт хаасан</span><span><span class="day-dots"><span class="dd-cop"></span></span>хуулбар</span></span></div>'
     + '<div class="panel" style="padding-top:6px;padding-bottom:6px">'+wk+'</div>'
-
-    + '<div class="sect-head"><span class="eyebrow">Эрт хаасан арилжаанууд</span><span class="rule"></span>'
-    + '<span class="dim">Гараар тэмдэглээгүй бол «TP-ийн хагаст хүрээгүй ашигтай» арилжааг автоматаар тооцно</span></div>'
-    + (rows ? '<div class="table-scroll"><table style="min-width:640px"><thead><tr><th>Огноо</th><th>Чиглэл</th><th style="text-align:right">TP-ийн</th><th style="text-align:right">Үр дүн</th><th style="text-align:right" title="Хаасан цэгээс TP хүртэлх зай — үнэ TP-д хүрсэн бол">TP хүртэл</th><th>Шалтгаан</th></tr></thead><tbody>'+rows+'</tbody></table></div>'
-            : '<div class="panel"><div class="empty">Эрт хаасан арилжаа алга — сайн байна!</div></div>');
+    + (rows ? '<details class="more"><summary>Эрт хаасан арилжаа бүрээр харах ('+H.early.length+')</summary>'
+        + '<div class="table-scroll"><table style="min-width:560px"><thead><tr><th>Огноо</th><th>Чиглэл</th><th style="text-align:right">TP-ийн</th><th style="text-align:right">Үр дүн</th><th>Шалтгаан</th></tr></thead><tbody>'+rows+'</tbody></table></div></details>' : '');
 }
 
 /* ================= эдийн засгийн мэдээ ================= */
@@ -1676,7 +1812,7 @@ function viewForm(){
   var sel = function(arr, cur, empty){
     return (empty?'<option value="">—</option>':'')+arr.map(function(x){return '<option'+(cur===x?' selected':'')+'>'+esc(x)+'</option>'}).join("");
   };
-  return '<form id="tradeForm" class="grid" style="gap:16px">'
+  return shotPanel() + '<form id="tradeForm" class="grid" style="gap:16px">'
   + '<div class="panel"><header><h3>Нөхцөл байдал</h3><span class="eyebrow">1 / 4</span></header>'
     + '<div class="form-grid">'
       + f("date","Огноо",'<input type="date" name="date" value="'+esc(t.date||today)+'" required>')
@@ -1760,9 +1896,10 @@ function viewSettings(){
   + '</div>'
   + (function(){
       var B = botCfg();
-      return '<div class="panel"><header><h3>Ноти туслах</h3><span class="dim">дэлгэц дээрх сануулагч</span></header>'
+      return '<div class="panel"><header><h3>Juni туслах</h3><span class="dim">дэлгэц дээрх сануулагч</span></header>'
         + '<div class="checks">'
-          + '<label class="check"><input type="checkbox" id="botOn"'+(B.on?" checked":"")+'><span>Нотиг харуулах — өдрийн арилжааны тоо, сессийн цаг, ойртож буй мэдээ, алдааны сануулга</span></label>'
+          + '<label class="check"><input type="checkbox" id="botOn"'+(B.on?" checked":"")+'><span>Juni-г харуулах — өдрийн арилжааны тоо, сессийн цаг, ойртож буй мэдээ, алдааны сануулга</span></label>'
+          + '<label class="check"><input type="checkbox" id="botRoam"'+(B.roam?" checked":"")+'><span>Дэлгэц дээгүүр алхаж явах (чирж дуртай газраа тавьж болно)</span></label>'
           + '<label class="check"><input type="checkbox" id="botNotify"'+(B.notify?" checked":"")+'><span>Өөр таб дээр байхад хөтчийн мэдэгдэл илгээх</span></label>'
         + '</div>'
         + '<div class="form-grid" style="margin-top:14px">'
@@ -1989,6 +2126,523 @@ function runImport(){
   setTimeout(function(){ botSay(true); }, 900);
 }
 
+/* ================= Зургаас арилжаа таних ================= */
+var shot = shot || {hint:"", savedId:"", filled:[], sample:null, ready:false, lim:null, busy:false, ctl:null, results:null, msg:"", err:"", thumbs:[]};
+function shotInit(){
+  if(!(window.claude && window.claude.use)){ shot.ready = true; shot.why = "nohost"; return; }
+  window.claude.use("sample").then(function(s){
+    shot.sample = s; shot.ready = true; if(!s) shot.why = "nosample";
+    if(s && typeof s.limits === "function") return s.limits().then(function(l){ shot.lim = l || null; if(l && !l.images) shot.why = "noimages"; }).catch(function(){ shot.lim = null; });
+  }).catch(function(){ shot.ready = true; shot.why = "nosample"; })
+    .then(function(){ if(state.tab==="form") shotPaint(); });
+}
+/* limits() байхгүй/алдаатай үед ч оролдоно — дэмжихгүй бол дуудлага өөрөө images_unavailable буцаана */
+shotInit();
+function shotCan(){ return !!(shot.sample && typeof shot.sample.json === "function" && !(shot.lim && !shot.lim.images)); }
+function shotPanel(){
+  if(state.editing && state.editing.id !== shot.savedId) return "";
+  return '<div class="panel shot" id="shotBox">'+shotInner()+'</div>';
+}
+function shotInner(){
+  var head = '<header><h3>Зургаас автоматаар бөглөх</h3><span class="eyebrow">MT5 · TradingView</span></header>';
+  var pasteTip = '<div class="shot-alt"><b>Зураггүй, хамгийн хурдан арга:</b> MT5-ийн History дээр мөрүүдээ сонгоод <kbd>Ctrl</kbd>+<kbd>C</kbd> → энэ хуудсан дээр (бичих талбар биш газар) дараад <kbd>Ctrl</kbd>+<kbd>V</kbd>. Шууд тэмдэглэнэ.</div>';
+  if(shot.ready && !shotCan() && !ocrOk()){
+    var why = shot.why === "nohost" ? "Энэ хуудас Claude дотор нээгдээгүй тул (GitHub хувилбар) зураг уншуулах боломжгүй."
+      : shot.why === "noimages" ? "Энэ Claude апп/хөтөч хуудаснаас зураг илгээхийг одоогоор дэмжихгүй байна. claude.ai-г Chrome хөтөч дээр нээгээд оролдоорой."
+      : "Энэ харагдацад Claude-д хандах эрх нээгдсэнгүй. Хуудсаа дахин ачаалаад үзээрэй.";
+    return head + '<div class="dim" style="font-size:13px">'+why+' <span style="opacity:.7">(код: '+esc(shot.why||"?")+')</span></div>' + pasteTip
+      + (shot.err ? '<div class="src-warn on" style="margin-top:12px"><span>!</span><span>'+esc(shot.err)+'</span></div>' : '')
+      + (shot.msg ? '<div class="shot-ok"><div>'+shot.msg+'</div></div>' : '')
+      + (shot.results && shot.results.length > 1 ? shotList() : '');
+  }
+  var thumbs = shot.thumbs.length ? '<div class="shot-thumbs">'+shot.thumbs.map(function(u){ return '<img src="'+u+'" alt="">'; }).join("")+'</div>' : "";
+  if(shot.busy){
+    return head + '<div class="shot-busy">'+thumbs
+      + '<div class="shot-status"><span class="spin" aria-hidden="true"></span><b>Juni зургийг уншиж байна…</b><span class="dim">'+(shotCan() ? 'Ихэвчлэн 10–40 секунд' : 'Анх удаа ~10–20 секунд, дараа нь хурдан')+'</span></div>'
+      + (shotCan() ? '<button type="button" class="btn sm ghost" id="shotStop">Зогсоох</button>' : '') + '</div>';
+  }
+  var max = shot.lim && shot.lim.images ? shot.lim.images.maxCount : 5;
+  var out = head
+    + '<label class="drop shot-drop" id="shotDrop">'
+      + '<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M4 7h3l2-2.5h6L17 7h3v12H4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.6" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>'
+      + '<b>Арилжааныхаа зургийг энд чирж оруул</b>'
+      + '<span class="dim">дарж сонгох эсвэл <kbd>Ctrl</kbd>+<kbd>V</kbd> · нэг дор '+max+' хүртэл зураг</span>'
+      + '<input type="file" id="shotFile" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden></label>'
+    + '<div class="shot-tip">'
+      + '<span>Бүтэн History-гээ явуулсан ч болно — бүртгэгдсэнийг алгасаад зөвхөн шинийг нэмнэ.'+(shotCan() ? ' Зарим мөрийг <b class="neg">улаанаар хүрээлж</b> тэмдэглэвэл зөвхөн тэдгээрийг авна.' : ' MT5 компьютерийн History цонхны зургийг сайн уншина — мөрүүд дээгүүр зурахгүй байхад хамгийн зөв.')+'</span>'
+      + (shotCan() ? '<input type="text" id="shotHint" maxlength="200" placeholder="Нэмэлт заавар (заавал биш): ж. «зөвхөн сүүлийн 2»" value="'+esc(shot.hint)+'">' : '')
+    + '</div>' + pasteTip;
+  if(shot.err) out += '<div class="src-warn on" style="margin-top:12px"><span>!</span><span>'+esc(shot.err)+'</span></div>';
+  if(shot.msg) out += '<div class="shot-ok">'+thumbs+'<div>'+shot.msg+'</div></div>';
+  if(shot.results && shot.results.length > 1) out += shotList();
+  return out;
+}
+function shotPaint(){
+  var box = document.getElementById("shotBox");
+  if(box) box.innerHTML = shotInner();
+}
+function shotDup(t){
+  return state.trades.filter(function(x){
+    if(x.id === t.id) return true;
+    return x.date === t.date && x.dir === t.dir && Math.abs(num(x.entry) - num(t.entry)) < 0.005
+      && (!t.time || !x.time || x.time === t.time);
+  })[0] || null;
+}
+function shotList(){
+  var rows = shot.results;
+  return '<div class="table-scroll" style="margin-top:12px"><table style="min-width:600px"><thead><tr>'
+    + '<th>Огноо</th><th>Хэрэгсэл</th><th>Чиглэл</th><th style="text-align:right">Лот</th><th style="text-align:right">Оролт</th><th style="text-align:right">Гарсан</th><th style="text-align:right">P/L</th><th></th></tr></thead><tbody>'
+    + rows.map(function(t, i){
+        var c = calc(t), dup = t._dup;
+        return '<tr><td class="mono">'+esc(t.date)+' <span class="dim">'+esc(t.time||"")+'</span></td>'
+          + '<td>'+esc(t.symbol)+'</td>'
+          + '<td><span class="pill '+(t.dir==="buy"?"buy":"sell")+'">'+(t.dir==="buy"?"Buy":"Sell")+'</span></td>'
+          + '<td class="num">'+num(t.lot).toFixed(2)+'</td><td class="num">'+num(t.entry).toFixed(2)+'</td>'
+          + '<td class="num">'+(t.exit===""?'<span class="dim">нээлттэй</span>':num(t.exit).toFixed(2))+'</td>'
+          + '<td class="num '+cls(c.pl)+'">'+(t.exit===""?"—":signed(c.pl))+'</td>'
+          + '<td style="text-align:right">'+(dup ? '<span class="dim" style="font-size:12px">бүртгэгдсэн</span>'
+              : '<button type="button" class="btn sm" data-shot-edit="'+esc(t.id)+'">Тэмдэглэл нэмэх</button>')+'</td></tr>';
+      }).join("")
+    + '</tbody></table></div>';
+}
+function shotPrompt(){
+  var off = num(state.settings.serverUtcOffset);
+  return [
+    "You read screenshots of a trader's trades and return them as data. The trader trades mostly XAUUSD (gold) and sometimes GBPJPY on MetaTrader 5 (Exness).",
+    "The images may be: MT5 desktop or mobile History / Trade (positions) lists, a single position's detail view, a deal/position confirmation, or a TradingView / MT5 chart with a long/short position tool or entry, SL and TP lines.",
+    "Today's date is "+ymd(new Date())+". Times shown in MT5 are broker server time (UTC+"+off+"); copy them exactly as shown, do not convert.",
+    "Return every distinct trade (position) you can see. Read only what is visible. Use null for anything not visible; never invent values.",
+    "Field rules:",
+    "- symbol: return \"XAUUSD\" or \"GBPJPY\". Exness shows gold as \"gold\" or \"XAUUSDm\" - return \"XAUUSD\". Drop broker suffixes like m or .m.",
+    "- dir: \"buy\" or \"sell\".",
+    "- lot: volume in lots (0.01 = 0.01).",
+    "- entry: open price. exit: close price, or null if the trade is still open.",
+    "- sl / tp: stop loss / take profit prices, null if not shown or 0.",
+    "- open_date / close_date: \"YYYY-MM-DD\" (MT5 shows 2026.10.08). open_time / close_time: \"HH:MM\" 24h.",
+    "- profit: the profit number shown for the trade in account currency (negative for a loss), before commission and swap. commission, swap: numbers if shown, else null.",
+    "- ticket: position/order ticket number as a string if visible (e.g. \"#123456789\" -> \"123456789\").",
+    "- closed_by: \"tp\" or \"sl\" if the screenshot marks the close as take profit / stop loss, else null. In MT5 History a red-highlighted S/L cell means it closed at stop loss, a green-highlighted T/P cell means take profit; [sl] / [tp] in the comment means the same.",
+    "- An MT5 History row reads: Time (open), Symbol, Ticket, Type, Volume, Price (open), S/L, T/P, Time (close), Price (close), Profit, Change.",
+    "For an MT5 History list where a position shows as two deals (in and out), merge them into one trade. Ignore the summary line (Profit / Credit / Deposit / Balance).",
+    "IMPORTANT: if the trader has marked some rows by hand (a drawn circle, outline, underline, arrow or highlight, usually red), return ONLY the marked trades. A hand-drawn line may cross the text: read the numbers through it carefully. If nothing is marked, return all trades.",
+    (shot.hint ? "The trader's own instruction (Mongolian, follow it when choosing which trades to return): "+shot.hint.slice(0,300) : ""),
+    "Reply with only this JSON, no other text:",
+    '{"trades":[{"symbol":"XAUUSD","dir":"buy","lot":0.02,"entry":4012.35,"exit":4020.10,"sl":4005.00,"tp":4030.00,"open_date":"2026-10-08","open_time":"09:41","close_date":"2026-10-08","close_time":"10:15","profit":15.50,"commission":null,"swap":null,"ticket":"123456789","closed_by":null}],"note":"one short sentence in Mongolian about anything unclear, or empty string"}',
+    "If the images show no trades at all, reply {\"trades\":[],\"note\":\"<one short Mongolian sentence saying what the image seems to show>\"}."
+  ].join("\n");
+}
+function shotNum(v){ if(v === null || v === undefined || v === "") return null; var n = mtNum(v); return isFinite(n) ? n : null; }
+function shotTrade(r){
+  var sym = String(r.symbol || "XAUUSD").toUpperCase().replace(/[^A-Z]/g,"");
+  sym = (/GOLD|XAU/.test(sym) ? "XAUUSD" : sym.slice(0,6)) || "XAUUSD";
+  var dir = /sell/i.test(String(r.dir||"")) ? "sell" : "buy";
+  var dOk = function(s){ return /^\d{4}-\d{2}-\d{2}$/.test(String(s||"")) ? String(s) : ""; };
+  var tOk = function(s){ var m = String(s||"").match(/^(\d{1,2}):(\d{2})/); return m ? pad2(+m[1])+":"+m[2] : ""; };
+  var entry = shotNum(r.entry), exit = shotNum(r.exit), sl = shotNum(r.sl), tp = shotNum(r.tp);
+  var profit = shotNum(r.profit), comm = shotNum(r.commission) || 0, swap = shotNum(r.swap) || 0;
+  var ticket = String(r.ticket||"").replace(/[^0-9A-Za-z]/g,"");
+  var date = dOk(r.open_date) || dOk(r.close_date) || ymd(new Date()), time = tOk(r.open_time);
+  var t = {
+    id: ticket ? "mt5-"+ticket : "t-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),
+    imported:true, journaled:false, symbol:sym,
+    date:date, time:time, closeDate:dOk(r.close_date), closeTime:tOk(r.close_time),
+    dir:dir, lot: shotNum(r.lot) || 0.01, entry: entry || 0,
+    sl: sl || 0, tp: tp || 0, exit: exit === null ? "" : exit,
+    fees: (comm || swap) ? -(comm + swap) : 0,
+    plOverride: profit === null ? "" : Math.round((profit + comm + swap)*100)/100,
+    session: time ? autoSession(time, state.settings.serverUtcOffset) : "",
+    setup:"", tf:"", bias:"", checks:{}, mistakes:[], emoBefore:"", emoAfter:"", confidence:0, notes:"", chart:"",
+    ideaSrc:"", exitReason:""
+  };
+  var cb = String(r.closed_by||"").toLowerCase();
+  if(cb === "tp" || cb === "sl") t.exitReason = cb;
+  else if(t.exit !== "" && t.tp && Math.abs(t.exit - t.tp) <= 0.3) t.exitReason = "tp";
+  else if(t.exit !== "" && t.sl && Math.abs(t.exit - t.sl) <= 0.3) t.exitReason = "sl";
+  return t;
+}
+function shotFilled(t){
+  return ["date","time","dir","lot","entry","sl","tp","exit","fees","plOverride","session","exitReason"].filter(function(k){
+    return t[k] !== "" && t[k] !== 0 && t[k] !== null && t[k] !== undefined;
+  });
+}
+function shotEdit(id){
+  var t = state.trades.filter(function(x){ return x.id === id; })[0]; if(!t) return;
+  shot.savedId = id; shot.filled = shotFilled(t);
+  state.editing = t; state.tab = "form";
+}
+function shotMark(){
+  var form = document.getElementById("tradeForm");
+  if(!form || !state.editing || state.editing.id !== shot.savedId) return;
+  shot.filled.forEach(function(k){ var el = form.elements[k]; if(el) el.classList.add("ai-fill"); });
+}
+function shotApply(trades, note){
+  trades.forEach(function(t){ t._dup = shotDup(t); });
+  var fresh = trades.filter(function(t){ return !t._dup; });
+  state.usingDemo = false;
+  fresh.forEach(function(t){ var c = Object.assign({}, t); delete c._dup; putTrade(c); });
+  shot.results = trades.length > 1 ? trades : null;
+  if(trades.length === 1 && trades[0]._dup){
+    var dup = trades[0]._dup;
+    shot.msg = "<b>Энэ арилжаа аль хэдийн бүртгэгдсэн байна</b> ("+esc(dup.date)+" "+esc(dup.time||"")+"). <button type=\"button\" class=\"btn sm\" data-shot-edit=\""+esc(dup.id)+"\">Тэмдэглэл нэмэх</button>";
+    state.editing = null; state.tab = "form";
+  } else if(trades.length === 1){
+    var t1 = fresh[0], c1 = calc(t1);
+    shotEdit(t1.id);
+    shot.msg = "<b>Тэмдэглэлд нэмэгдлээ ✓</b> "+esc(t1.symbol)+" "+(t1.dir==="buy"?"Buy":"Sell")+" "+num(t1.lot).toFixed(2)+" · "
+      + (t1.exit==="" ? "нээлттэй" : '<span class="'+cls(c1.pl)+'">'+signed(c1.pl)+'</span>')
+      + "<br>Нэмж бичих зүйл байвал доор бичээд <b>Хадгалах</b> дар. Бичихгүй бол ингээд үлдээж болно.";
+  } else {
+    state.editing = null; state.tab = "form";
+    shot.msg = "<b>"+fresh.length+" арилжаа тэмдэглэлд нэмэгдлээ ✓</b>"+(trades.length-fresh.length ? " · "+(trades.length-fresh.length)+" нь аль хэдийн бүртгэгдсэн байсан" : "")+". Аль нэгэнд нь бичих зүйл байвал «Тэмдэглэл нэмэх» дар.";
+  }
+  if(note) shot.msg += '<div class="dim" style="margin-top:4px;font-size:12.5px">Juni: '+esc(note)+'</div>';
+  render();
+  if(fresh.length) setTimeout(function(){ botSay(true); }, 900);
+}
+/* ---------- Claude-гүй үед (GitHub): хөтөч дотор OCR ---------- */
+var ocr = {p:null};
+/* Claude зураг авахгүй бол (эсвэл GitHub дээр) хөтөч дотор OCR-оор уншина */
+function ocrOk(){ return shot.ready && !shotCan(); }
+function ocrCfg(){
+  if(window.__ocrBase) return {base: window.__ocrBase, opts: window.__ocrOpts || {}};
+  if(shot.why !== "nohost"){
+    /* Claude artifact: OCR файлууд хуудастай хамт нийтлэгдсэн (ocr/…) */
+    var b = new URL("ocr/", location.href).href;
+    return {base: b, langFile: b+"eng-traineddata.wasm", opts: {workerPath: b+"worker.min.js", corePath: b, workerBlobURL: false}};
+  }
+  return {base: "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/", opts: {}};
+}
+function ocrSeedLang(url){
+  var KEY = "./eng.traineddata";
+  function open(){
+    return new Promise(function(res, rej){
+      var rq = indexedDB.open("keyval-store");
+      rq.onupgradeneeded = function(){ rq.result.createObjectStore("keyval"); };
+      rq.onsuccess = function(){ res(rq.result); };
+      rq.onerror = function(){ rej(rq.error); };
+    });
+  }
+  function tx(db, mode, fn){
+    return new Promise(function(res, rej){
+      var t = db.transaction("keyval", mode), st = t.objectStore("keyval"), rq = fn(st);
+      t.oncomplete = function(){ res(rq && rq.result); };
+      t.onerror = t.onabort = function(){ rej(t.error); };
+    });
+  }
+  return open().then(function(db){
+    return tx(db, "readonly", function(st){ return st.get(KEY); }).then(function(have){
+      if(have && have.length > 1000000){ db.close(); return; }
+      return fetch(url).then(function(r){ if(!r.ok) throw new Error("lang "+r.status); return r.arrayBuffer(); })
+        .then(function(buf){ return tx(db, "readwrite", function(st){ return st.put(new Uint8Array(buf), KEY); }); })
+        .then(function(){ db.close(); });
+    });
+  });
+}
+function ocrWorker(){
+  if(ocr.p) return ocr.p;
+  var cfg = ocrCfg(), base = cfg.base;
+  ocr.p = new Promise(function(res, rej){
+    if(window.Tesseract) return res(window.Tesseract);
+    var s = document.createElement("script");
+    s.src = base + "tesseract.min.js";
+    s.onload = function(){ window.Tesseract ? res(window.Tesseract) : rej(new Error("load")); };
+    s.onerror = function(){ rej(new Error("load")); };
+    document.head.appendChild(s);
+  }).then(function(T){
+    var mk = function(lang){ return T.createWorker(lang, 1, Object.assign({errorHandler:function(){ ocr.p = null; }}, cfg.opts)); };
+    if(!cfg.langFile) return mk("eng");
+    /* artifact .gz файл үйлчилдэггүй тул хэлний өгөгдлийг .wasm нэрээр нийтэлсэн.
+       Tesseract-ийн өөрийн кэш (IndexedDB keyval-store/keyval, түлхүүр "./eng.traineddata")-д урьдчилан хийж өгнө. */
+    return ocrSeedLang(cfg.langFile).then(function(){ return mk("eng"); });
+  }).then(function(w){
+    return w.setParameters({tessedit_pageseg_mode:"6", preserve_interword_spaces:"1"}).then(function(){ return w; });
+  });
+  ocr.p.catch(function(){ ocr.p = null; });
+  return ocr.p;
+}
+/* зургийг саарал болгож, харанхуй дэвсгэрийг урвуулаад Lanczos3-аар 3 дахин томруулна (OCR-т хамгийн тод) */
+function lanczosW(n, N){
+  var k = N / n, idx = new Int32Array(N*6), wt = new Float32Array(N*6);
+  for(var x = 0; x < N; x++){
+    var c = (x + 0.5) / k - 0.5, f = Math.floor(c), sum = 0;
+    for(var t = 0; t < 6; t++){
+      var j = f - 2 + t, d = c - j, w;
+      if(d === 0) w = 1;
+      else if(Math.abs(d) >= 3) w = 0;
+      else { var pd = Math.PI * d; w = 3 * Math.sin(pd) * Math.sin(pd/3) / (pd*pd); }
+      idx[x*6+t] = j < 0 ? 0 : (j >= n ? n-1 : j); wt[x*6+t] = w; sum += w;
+    }
+    for(t = 0; t < 6; t++) wt[x*6+t] /= sum;
+  }
+  return {idx:idx, wt:wt};
+}
+function ocrPrep(file){
+  return new Promise(function(res, rej){
+    var url = URL.createObjectURL(file), img = new Image();
+    img.onload = function(){
+      URL.revokeObjectURL(url);
+      var w = img.width, h = img.height;
+      var c0 = document.createElement("canvas"); c0.width = w; c0.height = h;
+      var x0 = c0.getContext("2d"); x0.drawImage(img, 0, 0);
+      var p = x0.getImageData(0, 0, w, h).data, g = new Float32Array(w*h), sum = 0, i;
+      for(i = 0; i < w*h; i++){ g[i] = 0.299*p[i*4] + 0.587*p[i*4+1] + 0.114*p[i*4+2]; sum += g[i]; }
+      var dark = sum / (w*h) < 128;
+      /* гараар зурсан тод улаан зураасыг (r>180, g,b<70) дэвсгэр болгоно — улаан текст (g≈96), улаан нүд (r<160) хэвээр */
+      for(i = 0; i < w*h; i++){ if(p[i*4] > 180 && p[i*4+1] < 70 && p[i*4+2] < 70) g[i] = dark ? 0 : 255; }
+      if(dark) for(i = 0; i < w*h; i++) g[i] = 255 - g[i];
+      var k = Math.max(1, Math.min(3, 9000 / w, 6000 / h)), W = Math.round(w*k), H = Math.round(h*k);
+      var hx = lanczosW(w, W), vy = lanczosW(h, H), tmp = new Float32Array(W*h), x, y, t, a;
+      for(y = 0; y < h; y++){ var row = y*w;
+        for(x = 0; x < W; x++){ a = 0; for(t = 0; t < 6; t++) a += g[row + hx.idx[x*6+t]] * hx.wt[x*6+t]; tmp[y*W + x] = a; } }
+      var cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+      var cx = cv.getContext("2d"), out = cx.createImageData(W, H), o = out.data;
+      for(y = 0; y < H; y++){
+        for(x = 0; x < W; x++){
+          a = 0; for(t = 0; t < 6; t++) a += tmp[vy.idx[y*6+t]*W + x] * vy.wt[y*6+t];
+          a = a < 0 ? 0 : (a > 255 ? 255 : a);
+          var q = (y*W + x)*4; o[q] = o[q+1] = o[q+2] = a; o[q+3] = 255;
+        }
+      }
+      cx.putImageData(out, 0, 0);
+      res(cv);
+    };
+    img.onerror = function(){ URL.revokeObjectURL(url); rej(new Error("img")); };
+    img.src = url;
+  });
+}
+function ocrSym(s){ return /gbp|jpy/i.test(s||"") ? "GBPJPY" : "XAUUSD"; }
+/* OCR-оор уншсан MT5 History мөрүүд */
+function parseOcrRows(text){
+  var out = [], tried = 0;
+  text.split(/\r?\n/).forEach(function(line){
+    if(/\d{4}\D\d{2}\D\d{2}/.test(line) && /\b(buy|sell)\b/i.test(line)) tried++;
+    var m = line.match(/(\d{4})[.\-\/:](\d{2})[.\-\/:](\d{2})\s+(\d{2}):(\d{2})(?::\d{2})?/g);
+    if(!m || m.length < 2) return;
+    var ti = line.search(/\b(buy|sell)\b/i); if(ti < 0) return;
+    var od = mtDate(m[0].replace(/[:\-\/](?=\d{2}[.\-\/:]\d{2}\s)/, ".").replace(/^(\d{4})\D(\d{2})\D(\d{2})/, "$1.$2.$3"));
+    var cd = mtDate(m[1].replace(/^(\d{4})\D(\d{2})\D(\d{2})/, "$1.$2.$3"));
+    if(!od || !cd) return;
+    var i0 = line.indexOf(m[0]) + m[0].length, i1 = line.indexOf(m[1], i0);
+    var head = line.slice(i0, ti), dir = /sell/i.test(line.substr(ti, 4)) ? "sell" : "buy";
+    var mid = line.slice(ti + 4, i1).match(/-?\d+(?:\.\d+)?/g) || [];
+    var tail = (line.slice(i1 + m[1].length).replace(/-?\d+(?:\.\d+)?\s*%/g, "").match(/-?\d+(?:\.\d+)?/g) || []);
+    var ticket = (head.match(/\d{6,}/) || [""])[0];
+    var lot = num(mid[0]), entry = num(mid[1]), sl = 0, tp = 0;
+    mid.slice(2, 4).forEach(function(v){
+      v = num(v); if(!v) return;
+      var below = v < entry;
+      if((dir === "buy") === below) sl = v; else tp = v;
+    });
+    var exit = num(tail[0]), profit = tail.length >= 2 ? num(tail[tail.length-1]) : null;
+    var extra = tail.slice(1, -1).reduce(function(a, v){ return a + num(v); }, 0);
+    if(!(entry > 0 && exit > 0 && lot > 0 && lot < 100)) return;
+    var sym = ocrSym(head);
+    var t = {
+      id: ticket ? "mt5-"+ticket : "mt5-"+(od.date+od.time+entry).replace(/[^0-9A-Za-z]/g,""),
+      imported:true, journaled:false, symbol:sym,
+      date:od.date, time:od.time, closeDate:cd.date, closeTime:cd.time,
+      dir:dir, lot:lot, entry:entry, sl:sl, tp:tp, exit:exit,
+      fees:-extra, plOverride: profit === null ? "" : Math.round((profit + extra)*100)/100,
+      session:autoSession(od.time, state.settings.serverUtcOffset), setup:"", tf:"", bias:"", checks:{}, mistakes:[],
+      emoBefore:"", emoAfter:"", confidence:0, notes:"", chart:"", ideaSrc:"", exitReason:""
+    };
+    /* алтан дээр ашгийг үнээс шалгах — таарахгүй бол үнээр бодно */
+    if(sym === "XAUUSD" && profit !== null){
+      var exp = (exit - entry) * (dir === "buy" ? 1 : -1) * lot * CONTRACT;
+      if(Math.abs(profit - exp) > Math.max(0.08, Math.abs(exp) * 0.04)){ t.plOverride = ""; t._warn = true; }
+    }
+    if(sl && Math.abs(exit - sl) <= 0.3) t.exitReason = "sl";
+    else if(tp && Math.abs(exit - tp) <= 0.3) t.exitReason = "tp";
+    out.push(t);
+  });
+  out.skipped = Math.max(0, tried - out.length);
+  return out;
+}
+function ocrRead(files){
+  var all = [], skipped = 0;
+  var guard = new Promise(function(_, rej){ setTimeout(function(){ rej(new Error("timeout")); }, 120000); });
+  return Promise.race([guard, ocrWorker()]).then(function(w){
+    return files.reduce(function(pr, f){
+      return pr.then(function(){ return ocrPrep(f); })
+               .then(function(cv){ return w.recognize(cv); })
+               .then(function(r){ var rows = parseOcrRows((r && r.data && r.data.text) || ""); skipped += rows.skipped || 0; all = all.concat(rows); });
+    }, Promise.resolve());
+  }).then(function(){
+    return Promise.race([guard, Promise.resolve()]);
+  }).then(function(){
+    var seen = {};
+    var res = all.filter(function(t){ if(seen[t.id]) return false; seen[t.id] = 1; return true; });
+    res.skipped = skipped;
+    return res;
+  });
+}
+function shotRead(files){
+  files = Array.prototype.filter.call(files || [], function(f){ return /^image\//.test(f.type); });
+  if(!files.length){ toast("Зураг олдсонгүй"); return; }
+  if(shot.busy) return;
+  if(!shotCan() && !ocrOk()){ toast("Зураг уншуулах боломжгүй — MT5 мөрүүдээ Ctrl+C хийгээд буулгаарай"); return; }
+  var max = (shot.lim && shot.lim.images && shot.lim.images.maxCount) || 5;
+  if(files.length > max){ files = files.slice(0, max); toast("Эхний "+max+" зургийг уншина"); }
+  shot.thumbs.forEach(function(u){ try{ URL.revokeObjectURL(u); }catch(e){} });
+  shot.thumbs = files.map(function(f){ return URL.createObjectURL(f); });
+  shot.busy = true; shot.err = ""; shot.msg = ""; shot.results = null;
+  if(state.tab !== "form"){ state.editing = null; state.tab = "form"; render(); } else shotPaint();
+  if(!shotCan()){
+    shot.ctl = null;
+    ocrRead(files).then(function(trades){
+      shot.busy = false;
+      if(!trades.length){
+        shot.err = "Зурагнаас арилжаа уншиж чадсангүй. MT5 компьютерийн History цонхны мөрүүд бүтэн, дээгүүр нь зураасгүй харагдахаар дэлгэцийн зураг аваарай.";
+        if(state.tab==="form") shotPaint(); return;
+      }
+      var warn = trades.filter(function(t){ return t._warn; }), sk = trades.skipped || 0;
+      trades.forEach(function(t){ delete t._warn; });
+      var nt = [];
+      if(warn.length) nt.push(warn.map(function(t){ return t.date+" "+t.time; }).join(", ")+" — ашгийн тоог тод уншиж чадсангүй, үнээр нь бодлоо. Шалгаарай.");
+      if(sk) nt.push(sk+" мөр бүдэг/дээгүүр нь зурсан тул уншиж чадсангүй — тэр мөрийг зураасгүйгээр дахин явуулаарай.");
+      shotApply(trades, nt.join(" "));
+    }).catch(function(e){
+      shot.busy = false; ocr.p = null;
+      try{ console.error("OCR", e); }catch(x){}
+      shot.err = "Текст таних хэрэгслийг ажиллуулж чадсангүй. Дахин оролдох эсвэл MT5 мөрүүдээ Ctrl+C хийгээд буулгаарай. (код: ocr-"+String((e && (e.message||e.type)) || e || "?").slice(0,60)+")";
+      if(state.tab==="form") shotPaint();
+    });
+    return;
+  }
+  var ctl = new AbortController(); shot.ctl = ctl;
+  shot.sample.json(shotPrompt(), {images: files, signal: ctl.signal, modelTier: "default"})
+    .then(function(res){
+      var list = (res && Array.isArray(res.trades)) ? res.trades : (Array.isArray(res) ? res : []);
+      var note = res && typeof res.note === "string" ? res.note.trim() : "";
+      var trades = list.map(shotTrade).filter(function(t){ return t.entry > 0; });
+      shot.busy = false;
+      if(!trades.length){
+        shot.err = "Арилжаа олж уншсангүй." + (note ? " "+note : " MT5-ийн History эсвэл арилжааны дэлгэрэнгүй зургийг оруулна уу.");
+        if(state.tab==="form") shotPaint(); return;
+      }
+      shotApply(trades, note);
+    })
+    .catch(function(e){
+      shot.busy = false;
+      var code = e && e.code;
+      if(code === "cancelled"){ shot.err = ""; }
+      else if(code === "images_unavailable"){ shot.why = "noimages"; shot.lim = {images:null}; shot.err = ""; shotRead(files); return; }
+      else if(code === "not_granted" || code === "sampling_disabled" || code === "not_declared" || code === "capability_disabled" || code === "capability_removed"){
+        shot.err = "Claude-д зураг уншуулах зөвшөөрөл өгөөгүй тул ажиллахгүй байна. Хуудсаа дахин ачаалаад «Allow» дарвал ажиллана.";
+      }
+      else if(code === "rate_limited") shot.err = "Хэт олон удаа илгээлээ — хэсэг хүлээгээд дахин оролдоорой.";
+      else if(code === "image_rejected") shot.err = "Энэ зургийг хүлээж авсангүй (хэт том эсвэл өөр төрлийн файл). PNG/JPG дэлгэцийн зураг оруулна уу.";
+      else if(code === "invalid_json") shot.err = "Зургийг уншсан ч үр дүнг ойлгосонгүй. Дахин оролдоод үзээрэй.";
+      else if(code === "session_expired") shot.err = "Claude-ээс гарсан байна — дахин нэвтэрнэ үү.";
+      else shot.err = "Түр алдаа гарлаа. Дахин оролдоод үзээрэй.";
+      if(code && code !== "cancelled" && shot.err) shot.err += " (код: "+code+")";
+      if(state.tab==="form") shotPaint();
+    });
+}
+document.getElementById("view").addEventListener("change", function(e){
+  if(e.target.id === "shotFile" && e.target.files && e.target.files.length) shotRead(e.target.files);
+});
+document.getElementById("view").addEventListener("click", function(e){
+  var b = e.target.closest("button"); if(!b) return;
+  if(b.id === "shotStop"){ if(shot.ctl) shot.ctl.abort(); return; }
+  if(b.dataset.shotEdit){
+    shotEdit(b.dataset.shotEdit);
+    shot.msg = "<b>"+esc(state.editing.date)+" "+esc(state.editing.time||"")+"</b> арилжаанд тэмдэглэл нэмж байна. Бичээд <b>Хадгалах</b> дар.";
+    render(); window.scrollTo({top:0, behavior:"smooth"});
+  }
+});
+document.getElementById("shotBtn").addEventListener("click", function(){
+  if(shot.ready && !shotCan() && !ocrOk()){ state.editing = null; state.tab = "form"; render(); window.scrollTo({top:0}); return; }
+  document.getElementById("shotTopFile").click();
+});
+document.getElementById("shotTopFile").addEventListener("change", function(e){
+  if(e.target.files && e.target.files.length) shotRead(e.target.files);
+  e.target.value = "";
+});
+/* зургийг хуудасны хаана ч чирж оруулж болно */
+function hasImgDrag(e){ var t = e.dataTransfer && e.dataTransfer.types; return t && Array.prototype.indexOf.call(t, "Files") >= 0; }
+document.addEventListener("dragover", function(e){
+  if(!hasImgDrag(e) || e.target.closest("#drop")) return;
+  e.preventDefault(); document.body.classList.add("drag-img");
+});
+document.addEventListener("dragleave", function(e){ if(!e.relatedTarget) document.body.classList.remove("drag-img"); });
+document.addEventListener("drop", function(e){
+  document.body.classList.remove("drag-img");
+  if(!hasImgDrag(e) || e.target.closest("#drop") || e.target.closest("#shotDrop")) return;
+  var fs = Array.prototype.filter.call(e.dataTransfer.files || [], function(f){ return /^image\//.test(f.type); });
+  if(!fs.length) return;
+  e.preventDefault(); shotRead(fs);
+});
+document.getElementById("view").addEventListener("dragover", function(e){
+  var d = e.target.closest("#shotDrop"); if(!d) return;
+  e.preventDefault(); d.classList.add("over");
+});
+document.getElementById("view").addEventListener("dragleave", function(e){
+  var d = e.target.closest("#shotDrop"); if(d) d.classList.remove("over");
+});
+document.getElementById("view").addEventListener("drop", function(e){
+  var d = e.target.closest("#shotDrop"); if(!d) return;
+  e.preventDefault(); d.classList.remove("over");
+  if(e.dataTransfer && e.dataTransfer.files) shotRead(e.dataTransfer.files);
+});
+document.addEventListener("paste", function(e){
+  var items = (e.clipboardData && e.clipboardData.items) || [], files = [];
+  for(var i=0;i<items.length;i++){ if(items[i].kind === "file" && /^image\//.test(items[i].type)){ var f = items[i].getAsFile(); if(f) files.push(f); } }
+  if(files.length){
+    if(!shotCan() && !ocrOk()){ toast("Зураг уншуулах боломжгүй — MT5 мөрүүдээ Ctrl+C хийгээд буулгаарай"); return; }
+    e.preventDefault(); shotRead(files); return;
+  }
+  var tg = e.target, typing = tg && (tg.tagName === "INPUT" || tg.tagName === "TEXTAREA" || tg.isContentEditable);
+  if(typing) return;
+  var txt = e.clipboardData ? e.clipboardData.getData("text/plain") : "";
+  if(!txt || !/(buy|sell)/i.test(txt)) return;
+  var rows = parseMt5(txt);
+  if(!rows.length) rows = parseMt5Rows(txt);
+  if(!rows.length){ toast("Буулгасан текстээс арилжаа олдсонгүй"); return; }
+  e.preventDefault();
+  shot.err = ""; shot.thumbs = [];
+  shotApply(rows.map(function(t){ var sym = String(t.symbol||"").toUpperCase(); if(/GOLD|XAU/.test(sym)) t.symbol = "XAUUSD"; return t; }), "");
+});
+/* MT5 History-оос гарчиггүй хуулсан мөрүүд: Time Symbol Ticket Type Volume Price S/L T/P Time Price [Commission Swap] Profit [Change] */
+function parseMt5Rows(text){
+  var out = [];
+  text.split(/\r?\n/).forEach(function(line){
+    if(!line.trim()) return;
+    var c = line.split("\t").map(function(x){ return x.trim(); });
+    if(c.length < 8) c = line.trim().split(/\s{2,}|\t/);
+    var di = [];
+    c.forEach(function(v, i){ if(/^\d{4}[.\-\/]\d{2}[.\-\/]\d{2}/.test(v)) di.push(i); });
+    var ti = -1; c.forEach(function(v, i){ if(ti < 0 && /^(buy|sell)\b/i.test(v)) ti = i; });
+    if(di.length < 1 || ti < 0) return;
+    var od = mtDate(c[di[0]]), cd = di[1] !== undefined ? mtDate(c[di[1]]) : null;
+    var mid = c.slice(ti+1, di[1] !== undefined ? di[1] : c.length);   /* volume, price, sl, tp */
+    var tail = di[1] !== undefined ? c.slice(di[1]+1) : [];             /* close price, [comm, swap], profit, [change %] */
+    tail = tail.filter(function(v){ return v !== "" && !/%$/.test(v); });
+    var sym = "", ticket = "";
+    c.slice(di[0]+1, ti).forEach(function(v){ if(/^\d{5,}$/.test(v)) ticket = v; else if(v) sym = v; });
+    var profit = tail.length >= 2 ? mtNum(tail[tail.length-1]) : 0;
+    var extra = tail.slice(1, -1).reduce(function(a, v){ return a + mtNum(v); }, 0);
+    var t = {
+      id: ticket ? "mt5-"+ticket : "mt5-"+(od.date+od.time+sym+mid[1]).replace(/[^0-9A-Za-z]/g,""),
+      imported:true, journaled:false, symbol: sym || "XAUUSD",
+      date:od.date, time:od.time, closeDate:cd?cd.date:"", closeTime:cd?cd.time:"",
+      dir: /sell/i.test(c[ti]) ? "sell" : "buy",
+      lot: mtNum(mid[0]), entry: mtNum(mid[1]), sl: mtNum(mid[2]), tp: mtNum(mid[3]),
+      exit: tail.length ? mtNum(tail[0]) : "",
+      fees: -extra, plOverride: tail.length >= 2 ? Math.round((profit + extra)*100)/100 : "",
+      session: autoSession(od.time, state.settings.serverUtcOffset), setup:"", tf:"", bias:"", checks:{}, mistakes:[],
+      emoBefore:"", emoAfter:"", confidence:0, notes:"", chart:"", ideaSrc:"", exitReason:""
+    };
+    if(t.exit !== "" && t.sl && Math.abs(t.exit - t.sl) <= 0.3) t.exitReason = "sl";
+    else if(t.exit !== "" && t.tp && Math.abs(t.exit - t.tp) <= 0.3) t.exitReason = "tp";
+    if(t.entry > 0) out.push(t);
+  });
+  return out;
+}
+document.getElementById("view").addEventListener("input", function(e){
+  if(e.target.id === "shotHint") shot.hint = e.target.value;
+});
+
 /* ================= render ================= */
 var TITLES = {dash:"Самбар", cal:"P&L хуанли", analytics:"Шинжилгээ", playbook:"Стратегийн ном", rules:"Миний дүрэм", habits:"Миний алдаа",
               trades:"Арилжаанууд", form:"Шинэ бичлэг", import:"MT5 импорт", settings:"Тохиргоо"};
@@ -2021,7 +2675,7 @@ function render(){
     if(b.dataset.tab===state.tab) b.setAttribute("aria-current","true");
     else b.removeAttribute("aria-current");
   });
-  if(state.tab==="form") updateCalcbar();
+  if(state.tab==="form"){ updateCalcbar(); shotMark(); }
   var bx = document.getElementById("bot");
   if(bx && !botCfg().on){ bx.hidden = true; bx.classList.remove("talk"); }
 }
@@ -2057,7 +2711,7 @@ document.getElementById("view").addEventListener("click", function(e){
     state.calDay = state.calDay === day.dataset.day ? null : day.dataset.day;
     render(); return;
   }
-  var row = e.target.closest("tr.row, .recent-row");
+  var row = e.target.closest("tr.row, .recent-row, .pt");
   if(row && !e.target.closest("button")){
     if(state.tab === "cal" || state.tab === "dash" || state.tab === "habits"){ state.tab = "trades"; state.openRow = row.dataset.id; render(); return; }
     state.openRow = state.openRow === row.dataset.id ? null : row.dataset.id;
@@ -2232,6 +2886,7 @@ document.getElementById("view").addEventListener("submit", function(e){
   var t = formTrade(e.target);
   if(!t.entry || !t.sl){ toast("Оролт болон SL-ээ оруулна уу"); return; }
   var wasEdit = !!state.editing;
+  if(wasEdit && state.editing.id === shot.savedId){ shot.savedId = ""; shot.filled = []; shot.msg = ""; shot.results = null; }
   state.editing = null; state.usingDemo = false;
   putTrade(t);
   state.tab = "trades"; state.openRow = t.id; state.calMonth = null; state.calDay = null;
@@ -2260,12 +2915,12 @@ function copyCsv(csv){
   }catch(e){ toast("CSV гаргаж чадсангүй"); }
 }
 
-/* ================= Ноти туслах ================= */
+/* ================= Juni туслах ================= */
 var bot = {last:0, tip:0, spoken:{}, hideT:null};
 try{ bot.last = num(localStorage.getItem("xau_bot_last")); bot.tip = num(localStorage.getItem("xau_bot_tip")); }catch(e){}
 function botCfg(){
   var b = state.settings.bot || {};
-  return {on: b.on !== false, every: num(b.every) || 60, notify: !!b.notify};
+  return {on: b.on !== false, every: num(b.every) || 60, notify: !!b.notify, roam: b.roam !== false};
 }
 function botTips(){
   var H = habitStats(), tips = [
@@ -2275,7 +2930,7 @@ function botTips(){
     "Тэвчих хэцүү бол 1R дээр хагасыг хаагаад SL-ээ оролт руу зөө ♡",
     "Эсрэг харсан хүн үргэлж байна. Таны SL, TP л шийднэ."
   ];
-  if(H.left > 0.5) tips.push("Эрт хаасан арилжаанууд TP хүртэл явсан бол <b>"+money(H.left)+"</b> илүү олох байсан.");
+  if(H.earlyWins.length) tips.push("<b>"+H.earlyWins.length+"</b> удаа ашгаа TP-ийн хагаст хүрэхээс өмнө хаасан. Энэ удаад тэвчье!");
   if(H.best) tips.push("TP хүртэл барьсан арилжаа чинь <b>"+signed(calc(H.best).pl)+"</b> өгсөн шүү. Тэвчээр = ашиг.");
   if(H.streak >= 2) tips.push("Алдаагүй <b>"+H.streak+"</b> өдөр дараалан! Энэ цувралаа үргэлжлүүлье ♡");
   return tips;
@@ -2313,44 +2968,146 @@ function botLines(){
   var tips = botTips();
   return head.slice(0, 2).concat(['<p>'+tips[bot.tip % tips.length]+'</p>']);
 }
+/* ---- Juni-гийн байрлал: алхах, чирэх ---- */
+var botPos = null, botEntered = false, botDrag = null, botWalkT = null, botLastMove = Date.now();
+var botReduce = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+function botBox(){ return document.getElementById("bot"); }
+function botSize(){ var b = botBox(); return {w: b.offsetWidth || 72, h: b.offsetHeight || 76}; }
+function botClamp(p){
+  var s = botSize();
+  return {x: Math.max(6, Math.min(window.innerWidth - s.w - 6, p.x)), y: Math.max(6, Math.min(window.innerHeight - s.h - 6, p.y))};
+}
+function botHome(){
+  try{
+    var o = JSON.parse(localStorage.getItem("xau_bot_pos") || "null");
+    if(o && isFinite(o.fx) && isFinite(o.fy)) return botClamp({x: o.fx*window.innerWidth, y: o.fy*window.innerHeight});
+  }catch(e){}
+  var s = botSize();
+  return botClamp({x: window.innerWidth - s.w - 20, y: window.innerHeight - s.h - 16});
+}
+function botSave(){
+  try{ localStorage.setItem("xau_bot_pos", JSON.stringify({fx: botPos.x/window.innerWidth, fy: botPos.y/window.innerHeight})); }catch(e){}
+}
+function botSide(){
+  var b = botBox();
+  b.classList.toggle("bl", botPos.x < window.innerWidth/2);
+  b.classList.toggle("below", botPos.y < 230);
+}
+function botPlace(p, secs){
+  var b = botBox(), to = botClamp(p);
+  clearTimeout(botWalkT);
+  if(secs && !botReduce){
+    if(botPos) b.classList.toggle("flip", to.x < botPos.x);
+    b.style.setProperty("--walk", secs+"s");
+    b.classList.add("walking");
+    void b.offsetWidth;
+    botWalkT = setTimeout(function(){ b.classList.remove("walking"); b.classList.remove("flip"); }, secs*1000 + 60);
+  } else {
+    b.classList.remove("walking");
+  }
+  botPos = to;
+  b.style.left = to.x+"px"; b.style.top = to.y+"px";
+  botSide();
+  botLastMove = Date.now();
+}
+function botWalkTo(p, speed){
+  var to = botClamp(p), d = botPos ? Math.hypot(to.x-botPos.x, to.y-botPos.y) : 0;
+  botPlace(to, Math.min(8, Math.max(0.6, d/(speed||110))));
+}
+function botEnter(){
+  var b = botBox();
+  b.hidden = false;
+  var home = botHome();
+  if(botReduce){ botPlace(home); botEntered = true; return; }
+  b.classList.remove("walking");
+  botPos = {x: -80, y: home.y};
+  b.style.left = "-80px"; b.style.top = home.y+"px";
+  botSide(); void b.offsetWidth;
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ botWalkTo(home, 420); }); });
+  botEntered = true;
+}
+function botRoam(){
+  var B = botCfg(), b = botBox();
+  if(!B.on || !B.roam || botReduce || !botPos || botDrag || document.hidden) return;
+  if(b.classList.contains("talk") || b.classList.contains("walking")) return;
+  if(Date.now() - botLastMove < 20000 || Math.random() > 0.45) return;
+  var s = botSize(), spanX = window.innerWidth - s.w - 12;
+  var tx = 6 + Math.random()*spanX;
+  if(Math.abs(tx - botPos.x) < 140) tx = botPos.x > window.innerWidth/2 ? botPos.x - 280 : botPos.x + 280;
+  botWalkTo({x: tx, y: botPos.y}, 95);
+  setTimeout(function(){ if(botPos) botSave(); }, 9000);
+}
+(function(){
+  var btn = document.getElementById("botBtn");
+  btn.addEventListener("pointerdown", function(e){
+    if(e.button !== undefined && e.button !== 0) return;
+    var b = botBox();
+    b.classList.remove("walking"); clearTimeout(botWalkT);
+    var r = b.getBoundingClientRect();
+    botDrag = {sx: e.clientX, sy: e.clientY, ox: r.left, oy: r.top, moved: false};
+    try{ btn.setPointerCapture(e.pointerId); }catch(err){}
+  });
+  btn.addEventListener("pointermove", function(e){
+    if(!botDrag) return;
+    var dx = e.clientX - botDrag.sx, dy = e.clientY - botDrag.sy;
+    if(!botDrag.moved && Math.hypot(dx, dy) < 6) return;
+    botDrag.moved = true; botBox().classList.add("dragging");
+    botPlace({x: botDrag.ox + dx, y: botDrag.oy + dy});
+  });
+  function end(){
+    if(!botDrag) return;
+    var moved = botDrag.moved; botDrag = null;
+    botBox().classList.remove("dragging");
+    if(moved) botSave(); else botSay(false);
+  }
+  btn.addEventListener("pointerup", end);
+  btn.addEventListener("pointercancel", end);
+  btn.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); botSay(false); } });
+  window.addEventListener("resize", function(){ if(botPos) botPlace(botPos); });
+})();
 function botSay(run){
-  var B = botCfg(), box = document.getElementById("bot");
+  var B = botCfg(), box = botBox();
   if(!box || !B.on) return;
-  var lines = botLines();
-  document.getElementById("botMsg").innerHTML = lines.join("");
+  document.getElementById("botMsg").innerHTML = botLines().join("");
   document.getElementById("botTime").textContent = ubOf(Date.now()).time + " УБ";
+  if(!botEntered) botEnter();
+  else if(run && !botReduce && !box.classList.contains("walking")){
+    box.classList.remove("hop"); void box.offsetWidth; box.classList.add("hop");
+    setTimeout(function(){ box.classList.remove("hop"); }, 600);
+  }
   box.hidden = false;
-  if(run){ box.classList.remove("run"); void box.offsetWidth; box.classList.add("run"); setTimeout(function(){ box.classList.remove("run"); }, 2600); }
   box.classList.add("talk");
+  box.classList.toggle("worry", document.getElementById("botMsg").innerHTML.indexOf('class="hi"') >= 0);
+  box.classList.add("speaking"); clearTimeout(bot.spkT);
+  bot.spkT = setTimeout(function(){ box.classList.remove("speaking"); }, 2800);
   clearTimeout(bot.hideT);
-  bot.hideT = setTimeout(function(){ box.classList.remove("talk"); }, 25000);
+  bot.hideT = setTimeout(function(){ box.classList.remove("talk"); box.classList.remove("worry"); }, 25000);
   bot.last = Date.now(); bot.tip++;
   try{ localStorage.setItem("xau_bot_last", String(bot.last)); localStorage.setItem("xau_bot_tip", String(bot.tip)); }catch(e){}
   if(B.notify && document.hidden && typeof Notification !== "undefined" && Notification.permission === "granted"){
-    try{ new Notification("Ноти · Trade notes", {body: document.getElementById("botMsg").textContent.slice(0, 220)}); }catch(e){}
+    try{ new Notification("Juni · Trade notes", {body: document.getElementById("botMsg").textContent.slice(0, 220)}); }catch(e){}
   }
 }
 function botTick(){
-  var B = botCfg(), box = document.getElementById("bot");
+  var B = botCfg(), box = botBox();
   if(!B.on){ if(box) box.hidden = true; return; }
   var soon = botSoonEvent(15);
   if(soon && !bot.spoken[soon.code+soon.t_ms]){ bot.spoken[soon.code+soon.t_ms] = 1; botSay(true); return; }
   if(Date.now() - bot.last >= B.every*60000) botSay(true);
 }
-document.getElementById("botBtn").addEventListener("click", function(){ botSay(false); });
-document.getElementById("botOk").addEventListener("click", function(){ document.getElementById("bot").classList.remove("talk"); });
+document.getElementById("botOk").addEventListener("click", function(){ botBox().classList.remove("talk"); botBox().classList.remove("worry"); });
 document.getElementById("botMore").addEventListener("click", function(){ botSay(false); });
 document.getElementById("view").addEventListener("click", function(e){
   if(e.target.id === "saveBot"){
     var notify = document.getElementById("botNotify").checked;
-    state.settings.bot = {on: document.getElementById("botOn").checked, every: num(document.getElementById("botEvery").value) || 60, notify: notify};
+    state.settings.bot = {on: document.getElementById("botOn").checked, every: num(document.getElementById("botEvery").value) || 60, notify: notify, roam: document.getElementById("botRoam").checked};
     if(notify && typeof Notification !== "undefined" && Notification.permission === "default"){
       try{ Notification.requestPermission(); }catch(err){}
     }
     putSettings();
     var box = document.getElementById("bot");
-    if(!state.settings.bot.on){ box.hidden = true; box.classList.remove("talk"); toast("Ноти амарч байна"); }
-    else { toast("Нотигийн тохиргоо хадгалагдлаа"); botSay(true); }
+    if(!state.settings.bot.on){ box.hidden = true; box.classList.remove("talk"); toast("Juni амарч байна"); }
+    else { toast("Juni-гийн тохиргоо хадгалагдлаа"); botSay(true); }
     return;
   }
   if(e.target.id === "botTest"){ botSay(true); }
@@ -2369,6 +3126,7 @@ render();
 initStore();
 setTimeout(function(){ botSay(true); }, 3200);
 setInterval(botTick, 30000);
+setInterval(botRoam, 12000);
 </script>
 </body>
 </html>
