@@ -639,7 +639,7 @@ function labelOf(pairs, k){ for(var i=0;i<pairs.length;i++){ if(pairs[i][0]===k)
 var state = {
   tab:"dash",
   trades:[],
-  settings:{balance:10000, account:"Exness Standard · Demo", deposits:[], serverUtcOffset:3,
+  settings:{balance:10000, account:"Миний данс", deposits:[], serverUtcOffset:3,
             riskPct:2, maxTrades:3, sessionHours:2, checklist:DEFAULT_CHECKLIST.slice(),
             bot:{on:true, every:60, notify:false, roam:true}},
   usingDemo:true,
@@ -2079,7 +2079,21 @@ function parseMt5(text){
     });
   }
   out.deposits = parseDeposits(rows);
+  out.account = parseAccount(rows);
   return out;
+}
+/* Тайлангийн толгойноос данс: "Company: XM Global Limited", "Account: 302773816 (USD, XMGlobal-MT5 6, real, Hedge)" */
+function parseAccount(rows){
+  var comp = "", acc = "";
+  for(var i=0;i<Math.min(rows.length, 30);i++){
+    var r = rows[i] || [], k = String(r[0]||"").toLowerCase();
+    if(/^(company|компания)/.test(k)) comp = String(r[1]||"").trim();
+    if(/^(account|счет|счёт)/.test(k)) acc = String(r[1]||"").replace(/\u00a0/g," ").trim();
+  }
+  if(!comp && !acc) return null;
+  var name = comp.replace(/\b(limited|ltd\.?|llc|inc\.?|corp\.?)$/i,"").trim() || (acc.match(/\(([^,]+),\s*([^,]+)/)||[])[2] || "MT5";
+  var kind = /\breal\b/i.test(acc) ? "Real" : (/\bdemo\b|contest/i.test(acc) ? "Demo" : "");
+  return {label: name + (kind ? " · " + kind : ""), number: (acc.match(/^\d+/)||[""])[0]};
 }
 /* Deals хэсгээс balance + credit гүйлгээ (орлого, бонус, зарлага) — данс = баланс + кредит (эквити) */
 function parseDeposits(rows){
@@ -2108,11 +2122,14 @@ function runImport(){
   var dep = state.settings.deposits || [], depIds = {}, newDep = 0;
   dep.forEach(function(d){ depIds[d.id] = 1; });
   (rows.deposits||[]).forEach(function(d){ if(!depIds[d.id]){ dep.push(d); newDep++; } });
+  if(rows.account && rows.account.label && state.settings.account !== rows.account.label){
+    state.settings.account = rows.account.label; newDep = newDep || -1;
+  }
   if(newDep){
     dep.sort(function(a,b){ return (a.date+a.time).localeCompare(b.date+b.time); });
     state.settings.deposits = dep; putSettings();
   }
-  if(!fresh.length){ toast(newDep ? newDep+" гүйлгээ нэмэгдлээ, шинэ арилжаа алга" : "Шинэ арилжаа алга — бүгд аль хэдийн бүртгэгдсэн"); return; }
+  if(!fresh.length){ state.usingDemo = false; render(); toast(newDep > 0 ? newDep+" гүйлгээ нэмэгдлээ, шинэ арилжаа алга" : "Шинэ арилжаа алга — бүгд аль хэдийн бүртгэгдсэн"); return; }
   state.usingDemo = false;
   fresh.forEach(function(t){
     if(db) db.collection("trades").doc(t.id).set(t).catch(function(){});
@@ -2234,7 +2251,7 @@ function shotPrompt(){
 function shotNum(v){ if(v === null || v === undefined || v === "") return null; var n = mtNum(v); return isFinite(n) ? n : null; }
 function shotTrade(r){
   var sym = String(r.symbol || "XAUUSD").toUpperCase().replace(/[^A-Z]/g,"");
-  sym = (/GOLD|XAU/.test(sym) ? "XAUUSD" : sym.slice(0,6)) || "XAUUSD";
+  sym = (/GOLD|XAU/.test(sym) ? goldSym() : sym.slice(0,6)) || goldSym();
   var dir = /sell/i.test(String(r.dir||"")) ? "sell" : "buy";
   var dOk = function(s){ return /^\d{4}-\d{2}-\d{2}$/.test(String(s||"")) ? String(s) : ""; };
   var tOk = function(s){ var m = String(s||"").match(/^(\d{1,2}):(\d{2})/); return m ? pad2(+m[1])+":"+m[2] : ""; };
@@ -2410,7 +2427,9 @@ function ocrPrep(file){
     img.src = url;
   });
 }
-function ocrSym(s){ return /gbp|jpy/i.test(s||"") ? "GBPJPY" : "XAUUSD"; }
+/* алтны нэрийг дансны бусад арилжаатай ижил болгоно (XM: GOLD) */
+function goldSym(){ return state.trades.some(function(t){ return t.symbol === "GOLD"; }) ? "GOLD" : "XAUUSD"; }
+function ocrSym(s){ return /gbp|jpy/i.test(s||"") ? "GBPJPY" : goldSym(); }
 /* OCR-оор уншсан MT5 History мөрүүд */
 function parseOcrRows(text){
   var out = [], tried = 0;
@@ -2447,7 +2466,7 @@ function parseOcrRows(text){
       emoBefore:"", emoAfter:"", confidence:0, notes:"", chart:"", ideaSrc:"", exitReason:""
     };
     /* алтан дээр ашгийг үнээс шалгах — таарахгүй бол үнээр бодно */
-    if(sym === "XAUUSD" && profit !== null){
+    if(sym !== "GBPJPY" && profit !== null){
       var exp = (exit - entry) * (dir === "buy" ? 1 : -1) * lot * CONTRACT;
       if(Math.abs(profit - exp) > Math.max(0.08, Math.abs(exp) * 0.04)){ t.plOverride = ""; t._warn = true; }
     }
@@ -2601,7 +2620,7 @@ document.addEventListener("paste", function(e){
   if(!rows.length){ toast("Буулгасан текстээс арилжаа олдсонгүй"); return; }
   e.preventDefault();
   shot.err = ""; shot.thumbs = [];
-  shotApply(rows.map(function(t){ var sym = String(t.symbol||"").toUpperCase(); if(/GOLD|XAU/.test(sym)) t.symbol = "XAUUSD"; return t; }), "");
+  shotApply(rows.map(function(t){ var sym = String(t.symbol||"").toUpperCase(); if(/GOLD|XAU/.test(sym)) t.symbol = goldSym(); return t; }), "");
 });
 /* MT5 History-оос гарчиггүй хуулсан мөрүүд: Time Symbol Ticket Type Volume Price S/L T/P Time Price [Commission Swap] Profit [Change] */
 function parseMt5Rows(text){
@@ -2657,7 +2676,7 @@ function render(){
     '<span class="dim">Данс</span> <b class="mono">'+money(startBalance() + s.pl)+'</b>';
 
   document.getElementById("demoNotice").innerHTML = (!state.trades.length && state.usingDemo)
-    ? '<div class="notice"><b>Жишээ өгөгдөл харагдаж байна.</b> Бодит арилжаа биш — эхний бичлэгээ нэмэх эсвэл MT5-аас импортлоход алга болно. <button class="btn sm ghost" id="hideDemo">Хоослох</button></div>'
+    ? '<div class="notice"><b>Жишээ (зохиомол) өгөгдөл харагдаж байна — таны данс биш.</b> Өөрийн арилжааг харах бол «MT5 импорт» дээр MT5-ийн History тайлангаа (.html) оруулна уу, эсвэл Тохиргоо → «Нөөцөөс сэргээх». Бодит арилжаа биш — эхний бичлэгээ нэмэх эсвэл MT5-аас импортлоход алга болно. <button class="btn sm ghost" id="hideDemo">Хоослох</button></div>'
     : "";
 
   var v = document.getElementById("view");
