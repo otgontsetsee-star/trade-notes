@@ -132,6 +132,9 @@ button,input,select,textarea{font:inherit;color:inherit}
   display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
   border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--line);
 }
+.kpis:has(> .kpi:nth-child(6):last-child){grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (min-width:1280px){.kpis:has(> .kpi:nth-child(6):last-child){grid-template-columns:repeat(6,minmax(0,1fr))}}
+@media (max-width:640px){.kpis:has(> .kpi:nth-child(6):last-child){grid-template-columns:repeat(2,minmax(0,1fr))}}
 .kpi{padding:14px 16px;background:var(--surface);display:flex;flex-direction:column;gap:6px;min-height:94px;min-width:0}
 .kpi .k{font-size:12px;font-weight:500;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kpi .v{font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -360,6 +363,72 @@ tr.detail td{background:var(--bg);padding:0}
   .news-head{order:-1}
 }
 
+/* ---------- миний алдаа ---------- */
+.pill.warn{background:color-mix(in srgb, var(--warn) 16%, var(--surface));color:var(--warn)}
+.habit-card{display:flex;flex-direction:column;gap:12px}
+.habit-card .lead{font-size:13.5px;color:var(--ink-2);line-height:1.55;margin:0}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.vs > div{background:var(--bg);padding:11px 13px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.vs b{font-size:17px;font-weight:800;letter-spacing:-.01em}
+.vs em{font-style:normal;font-size:12px;color:var(--ink-3);font-weight:500}
+.vs small{font-size:12px;color:var(--ink-2)}
+.fix-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:13px}
+.fix-list li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;align-items:start}
+.fix-list li i{font-style:normal;width:20px;height:20px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.wk-row{display:grid;grid-template-columns:104px minmax(0,1fr) 120px;gap:12px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+.wk-row:last-child{border-bottom:0}
+.wk-row > span:first-child{white-space:nowrap}
+.wk-bars{display:flex;gap:3px;align-items:center;min-height:14px;flex-wrap:wrap}
+.wk-bars span{width:10px;height:14px;border-radius:3px;display:block}
+.wk-bars .e{background:var(--warn)} .wk-bars .o{background:var(--loss)} .wk-bars .ok{background:var(--win-soft);border:1px solid color-mix(in srgb, var(--win) 35%, transparent)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-3)}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.src-warn{display:none;gap:9px;align-items:flex-start;background:var(--loss-soft);color:var(--loss);border-radius:8px;padding:9px 11px;font-size:12.5px;font-weight:700;margin-top:12px;line-height:1.45}
+.src-warn.on{display:flex}
+.src-warn.soft{background:var(--accent-soft);color:var(--accent)}
+
+/* ---------- Ноти туслах ---------- */
+.bot{position:fixed;right:20px;bottom:16px;z-index:40;display:flex;align-items:flex-end;gap:8px;pointer-events:none}
+.bot[hidden]{display:none}
+.bot-btn{pointer-events:auto;background:none;border:0;padding:0;cursor:pointer;width:64px;height:72px;flex:none;
+  filter:drop-shadow(0 6px 10px rgba(60,40,140,.22));animation:botBob 3.2s ease-in-out infinite}
+.bot-btn svg{width:64px;height:72px;overflow:visible}
+.bot-bubble{
+  pointer-events:auto;position:relative;max-width:270px;background:var(--surface);color:var(--ink);
+  border:1px solid var(--line-strong);border-radius:14px 14px 4px 14px;padding:11px 13px 10px;font-size:13px;line-height:1.5;
+  box-shadow:0 10px 26px rgba(40,25,110,.16);margin-bottom:34px;opacity:0;transform:translateY(6px) scale(.97);
+  transition:opacity .25s ease, transform .25s ease;visibility:hidden
+}
+.bot.talk .bot-bubble{opacity:1;transform:none;visibility:visible}
+.bot-name{font-size:11px;font-weight:800;color:var(--accent);margin-bottom:2px;display:flex;justify-content:space-between;gap:8px}
+.bot-name span{color:var(--ink-3);font-weight:600}
+.bot-msg p{margin:0 0 5px}
+.bot-msg p:last-child{margin:0}
+.bot-msg b{font-weight:800}
+.bot-msg .hi{color:var(--loss)}
+.bot-act{display:flex;gap:6px;margin-top:8px}
+.bot-act button{font-size:11.5px;font-weight:700;border:1px solid var(--line-strong);background:var(--bg);border-radius:999px;padding:2px 10px;cursor:pointer;color:var(--ink-2)}
+.bot-act button:first-child{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.bot.run .bot-btn{animation:botRun 2.4s cubic-bezier(.25,.8,.35,1) both}
+.bot.run .leg-l{animation:legStep .18s ease-in-out infinite alternate}
+.bot.run .leg-r{animation:legStep .18s ease-in-out infinite alternate-reverse}
+.bot.run .bot-bubble{transition-delay:2.2s}
+.bot .eye{transform-box:fill-box;transform-origin:center;animation:blink 4.6s infinite}
+@keyframes botBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes botRun{
+  0%{transform:translateX(calc(-100vw + 40px)) rotate(-4deg)}
+  70%{transform:translateX(10px) rotate(-3deg)}
+  85%{transform:translateX(-4px) rotate(2deg)}
+  100%{transform:translateX(0) rotate(0)}
+}
+@keyframes legStep{from{transform:translateY(0)}to{transform:translateY(-4px)}}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@media (max-width:640px){
+  .bot{right:10px;bottom:10px}
+  .bot-btn,.bot-btn svg{width:50px;height:56px}
+  .bot-bubble{max-width:220px;font-size:12.5px;margin-bottom:26px}
+}
+
 .empty{padding:36px 20px;text-align:center;color:var(--ink-3);font-size:13.5px}
 .toast{
   position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
@@ -402,6 +471,7 @@ tr.detail td{background:var(--bg);padding:0}
       <button data-tab="analytics">Шинжилгээ</button>
       <button data-tab="playbook">Стратегийн ном</button>
       <button data-tab="rules">Миний дүрэм</button>
+      <button data-tab="habits">Миний алдаа</button>
       <div class="sep">Бүртгэл</div>
       <button data-tab="trades">Арилжаанууд</button>
       <button data-tab="form">Шинэ бичлэг</button>
@@ -432,6 +502,34 @@ tr.detail td{background:var(--bg);padding:0}
   </div>
 </div>
 
+<div class="bot" id="bot" hidden>
+  <div class="bot-bubble" role="status" aria-live="polite">
+    <div class="bot-name">Ноти <span id="botTime"></span></div>
+    <div class="bot-msg" id="botMsg"></div>
+    <div class="bot-act"><button type="button" id="botOk">Ойлголоо</button><button type="button" id="botMore">Өөр зөвлөгөө</button></div>
+  </div>
+  <button type="button" class="bot-btn" id="botBtn" aria-label="Ноти туслах — сануулга харах">
+    <svg viewBox="0 0 64 72" aria-hidden="true">
+      <defs><linearGradient id="notiG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5B4FE6"/><stop offset=".6" stop-color="#9A72F0"/><stop offset="1" stop-color="#E7A3E6"/></linearGradient></defs>
+      <rect class="leg-l" x="19" y="58" width="8" height="11" rx="4" fill="#4A3FC9"/>
+      <rect class="leg-r" x="37" y="58" width="8" height="11" rx="4" fill="#4A3FC9"/>
+      <rect x="6" y="8" width="52" height="54" rx="15" fill="url(#notiG)"/>
+      <rect x="12" y="17" width="40" height="38" rx="10" fill="#FFFFFF"/>
+      <g fill="#F3EEFF" stroke="#4A3FC9" stroke-width="1.6">
+        <rect x="15" y="3" width="5" height="11" rx="2.5"/><rect x="24" y="3" width="5" height="11" rx="2.5"/>
+        <rect x="35" y="3" width="5" height="11" rx="2.5"/><rect x="44" y="3" width="5" height="11" rx="2.5"/>
+      </g>
+      <ellipse class="eye" cx="25" cy="33" rx="3.2" ry="3.8" fill="#2A2458"/>
+      <ellipse class="eye" cx="39" cy="33" rx="3.2" ry="3.8" fill="#2A2458"/>
+      <circle cx="26.2" cy="31.6" r="1.1" fill="#fff"/><circle cx="40.2" cy="31.6" r="1.1" fill="#fff"/>
+      <ellipse cx="19.5" cy="40.5" rx="3.6" ry="2.1" fill="#FF9EC4" opacity=".85"/>
+      <ellipse cx="44.5" cy="40.5" rx="3.6" ry="2.1" fill="#FF9EC4" opacity=".85"/>
+      <path d="M28.5 41.5 Q32 45.5 35.5 41.5" fill="none" stroke="#2A2458" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M16 49 H48" stroke="#E6E0FC" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+</div>
+
 <script>
 /* ================= тогтмолууд ================= */
 var CONTRACT = 100; // XAUUSD: 1 лот = 100 унц
@@ -451,13 +549,18 @@ var DEFAULT_CHECKLIST = [
 ];
 var RULES = DEFAULT_CHECKLIST.slice();   // орохын өмнөх checklist — тохиргооноос ачаалагдана
 var WD = ["Ням","Даваа","Мягмар","Лхагва","Пүрэв","Баасан","Бямба"];
+var IDEA_SRC = [["own","Өөрийн шинжилгээ"],["others","Бусдын санаа / signal"]];
+var EXIT_REASONS = [["tp","TP-д хүрсэн"],["sl","SL-д хүрсэн"],["plan","Төлөвлөгөөт гаралт (бүтэц эвдэрсэн, мэдээ)"],
+                    ["early_others","Бусдын арилжааг хараад эрт хаасан"],["early_fear","Айж / сандарч эрт хаасан"],["other","Бусад"]];
+function labelOf(pairs, k){ for(var i=0;i<pairs.length;i++){ if(pairs[i][0]===k) return pairs[i][1]; } return ""; }
 
 /* ================= төлөв ================= */
 var state = {
   tab:"dash",
   trades:[],
   settings:{balance:10000, account:"Exness Standard · Demo", deposits:[], serverUtcOffset:3,
-            riskPct:2, maxTrades:3, sessionHours:2, checklist:DEFAULT_CHECKLIST.slice()},
+            riskPct:2, maxTrades:3, sessionHours:2, checklist:DEFAULT_CHECKLIST.slice(),
+            bot:{on:true, every:60, notify:false}},
   usingDemo:true,
   storeReady:false,
   storeMode:"local",
@@ -550,6 +653,37 @@ function gradeOf(t){
 function followed(t){
   var c = compOf(t);
   return c.v.length === 0 && c.riskPct !== null && (!journaled(t) || calc(t).passed >= RULES.length);
+}
+
+/* ================= давтагддаг алдаа: эрт хаах, бусдыг дагах ================= */
+/* TP хүртэлх зайны хэдэн хувийг авсан (null = тодорхойгүй) */
+function tpFrac(t){
+  if(!num(t.tp) || !num(t.entry) || t.exit === "" || t.exit === undefined || t.exit === null) return null;
+  var s = t.dir === "buy" ? 1 : -1, full = (num(t.tp) - num(t.entry)) * s;
+  if(full <= 0) return null;
+  return (num(t.exit) - num(t.entry)) * s / full;
+}
+/* Гарсан шалтгаан — гараар тэмдэглээгүй бол ашигтай боловч TP-ийн хагаст хүрээгүйг «эрт хаасан» гэж автоматаар үзнэ */
+function exitInfo(t){
+  if(t.exitReason) return {reason:t.exitReason, auto:false};
+  var c = calc(t); if(c.open) return {reason:"", auto:false};
+  var fr = tpFrac(t);
+  if(c.pl > 0 && fr !== null && fr < 0.5) return {reason:"early", auto:true};
+  if(fr !== null && fr >= 0.95) return {reason:"tp", auto:true};
+  return {reason:"", auto:false};
+}
+function isEarly(t){ var r = exitInfo(t).reason; return r === "early" || r === "early_others" || r === "early_fear"; }
+function isCopied(t){ return t.ideaSrc === "others"; }
+function leftOnTable(t){
+  var fr = tpFrac(t); if(fr === null || fr >= 1) return 0;
+  var C = contractFor(t.symbol); if(!C) return 0;
+  var s = t.dir === "buy" ? 1 : -1;
+  return Math.max(0, (num(t.tp) - num(t.exit)) * s * C * num(t.lot));
+}
+function exitLabel(t){
+  var x = exitInfo(t);
+  if(x.reason === "early") return "Эрт хаасан";
+  return labelOf(EXIT_REASONS, x.reason);
 }
 
 /* ================= дүрмийн автомат шалгалт ================= */
@@ -1079,6 +1213,109 @@ function disciplineCard(title, s, color){
     + '</div></div>';
 }
 
+/* ================= харагдац: миний алдаа ================= */
+function mondayOf(date){
+  var d = new Date(date+"T00:00:00Z"); if(isNaN(d)) return date;
+  d.setUTCDate(d.getUTCDate() - ((d.getUTCDay()+6)%7));
+  return d.toISOString().slice(0,10);
+}
+function habitStats(){
+  var list = visibleTrades().filter(function(t){ return !calc(t).open; });
+  var wins = list.filter(function(t){ return calc(t).pl > 0; });
+  var winsTP = wins.filter(function(t){ return tpFrac(t) !== null; });
+  var early = list.filter(isEarly), earlyWins = early.filter(function(t){ return calc(t).pl > 0; });
+  var held = wins.filter(function(t){ var fr = tpFrac(t); return fr !== null && fr >= 0.95; });
+  var fr = earlyWins.map(tpFrac).filter(function(x){ return x !== null; }).sort(function(a,b){ return a-b; });
+  var dates = {}; list.forEach(function(t){ (dates[t.date] = dates[t.date] || []).push(t); });
+  var dlist = Object.keys(dates).sort().reverse(), streak = 0;
+  for(var i=0;i<dlist.length;i++){
+    if(dates[dlist[i]].some(function(t){ return isEarly(t) || isCopied(t); })) break;
+    streak++;
+  }
+  var best = held.slice().sort(function(a,b){ return calc(b).pl - calc(a).pl; })[0] || null;
+  return {
+    list:list, wins:wins, winsTP:winsTP, early:early, earlyWins:earlyWins, held:held,
+    left: earlyWins.reduce(function(a,t){ return a + leftOnTable(t); }, 0),
+    medFrac: fr.length ? fr[Math.floor(fr.length/2)] : null,
+    copied: list.filter(isCopied), own: list.filter(function(t){ return t.ideaSrc === "own"; }),
+    untagged: list.filter(function(t){ return !t.ideaSrc; }).length,
+    streak: streak, days: dlist.length, best: best
+  };
+}
+function viewHabits(){
+  var H = habitStats();
+  if(!H.list.length) return '<div class="panel"><div class="empty">Хаагдсан арилжаа алга. Арилжаа нэмэх эсвэл MT5-аас импортлоход энд таны давтагддаг алдаа харагдана.</div></div>';
+  var avg = function(a){ return a.length ? a.reduce(function(s,t){ return s + calc(t).pl; },0)/a.length : 0; };
+  var sEW = stats(H.earlyWins), sHeld = stats(H.held), sCop = stats(H.copied), sOwn = stats(H.own);
+
+  /* долоо хоног бүрийн хандлага */
+  var weeks = {};
+  H.list.forEach(function(t){ var k = mondayOf(t.date); (weeks[k] = weeks[k] || []).push(t); });
+  var wk = Object.keys(weeks).sort().reverse().slice(0,8).map(function(k){
+    var arr = sorted(weeks[k]), e = arr.filter(isEarly).length, o = arr.filter(isCopied).length;
+    var bars = arr.map(function(t){ return '<span class="'+(isCopied(t)?"o":isEarly(t)?"e":"ok")+'" title="'+esc(t.date+" "+(t.time||"")+" · "+signed(calc(t).pl))+'"></span>'; }).join("");
+    var lost = arr.filter(function(t){ return isEarly(t) && calc(t).pl > 0; }).reduce(function(a,t){ return a + leftOnTable(t); },0);
+    return '<div class="wk-row"><span class="dim">'+esc(k.slice(5).replace("-","/"))+' · 7 хоног</span><div class="wk-bars">'+bars+'</div>'
+      + '<span style="text-align:right">'+(e||o ? '<b class="neg">'+e+'</b> эрт'+(o?' · <b class="neg">'+o+'</b> хуулбар':'')+(lost>0.005?'<br><span class="dim">'+money(lost)+' боломж</span>':'') : '<b class="pos">Цэвэр</b>')+'</span></div>';
+  }).join("");
+
+  var rows = sorted(H.early).reverse().slice(0,20).map(function(t){
+    var c = calc(t), fr = tpFrac(t), x = exitInfo(t);
+    return '<tr class="row" data-id="'+esc(t.id)+'">'
+      + '<td style="white-space:nowrap">'+esc(t.date)+' <span class="dim">'+esc(t.time||"")+'</span></td>'
+      + '<td><span class="pill '+(t.dir==="buy"?"buy":"sell")+'">'+(t.dir==="buy"?"Buy":"Sell")+'</span></td>'
+      + '<td class="num">'+(fr===null?"—":Math.round(fr*100)+"%")+'</td>'
+      + '<td class="num '+cls(c.pl)+'" style="font-weight:700">'+signed(c.pl)+'</td>'
+      + '<td class="num neg">'+(c.pl>0 && leftOnTable(t)>0.005 ? money(leftOnTable(t)) : "—")+'</td>'
+      + '<td>'+esc(exitLabel(t))+(x.auto?' <span class="dim">· автомат</span>':'')+(isCopied(t)?' <span class="pill warn">хуулбар</span>':'')+'</td></tr>';
+  }).join("");
+
+  var bestTxt = H.best ? 'TP хүртэл барьсан хамгийн сайн арилжаа тань <b class="pos">'+signed(calc(H.best).pl)+'</b> ('+esc(H.best.date)+').' : '';
+
+  return '<div class="sect-head" style="margin-top:0"><span class="eyebrow">Давтагддаг 2 алдаа</span><span class="rule"></span>'
+    + '<span class="dim">'+H.list.length+' хаагдсан арилжаа</span></div>'
+    + kpiRow([
+        {k:"Ашгаа эрт таслсан", v:H.earlyWins.length+" / "+H.winsTP.length, c:H.earlyWins.length?"neg":"pos", n:"TP-тэй ашигтай арилжаанаас"},
+        {k:"TP хүртэлх алдсан боломж", v:money(H.left), c:H.left>0?"neg":"", n:"үнэ TP-д хүрсэн бол"},
+        {k:"Бусдыг дагасан", v:String(H.copied.length), c:H.copied.length?"neg":"", n:H.copied.length ? signed(sCop.pl)+" үр дүн" : (H.untagged ? H.untagged+" арилжаанд эх сурвалж тэмдэглээгүй" : "Нэг ч удаа дагаагүй")},
+        {k:"Алдаагүй өдөр дараалан", v:String(H.streak), c:H.streak>=3?"pos":"", n:"сүүлийн "+H.days+" арилжааны өдрөөс"}
+      ])
+
+    + '<div class="grid cols-2" style="margin-top:16px">'
+      + '<div class="panel habit-card"><header><h3>1. Ашгаа эрт таслах</h3><span class="pill warn">'+H.earlyWins.length+' удаа</span></header>'
+        + '<p class="lead">Ашигтай арилжаагаа TP-ийн дунджаар <b>'+(H.medFrac===null?"—":Math.round(H.medFrac*100)+"%")+'</b>-д хааж байна. Харин алдагдлаа ихэвчлэн SL хүртэл бүтэн авдаг — энэ хоёрын зөрүү данс тань өсөхгүй байгаа гол шалтгаан. '+bestTxt+'</p>'
+        + '<div class="vs">'
+          + '<div><em>Эрт хаасан ('+sEW.n+')</em><b class="'+cls(avg(H.earlyWins))+'">'+signed(avg(H.earlyWins))+'</b><small>нэг арилжаанд дунджаар</small></div>'
+          + '<div><em>TP хүртэл барьсан ('+sHeld.n+')</em><b class="'+cls(avg(H.held))+'">'+signed(avg(H.held))+'</b><small>нэг арилжаанд дунджаар</small></div>'
+        + '</div>'
+        + '<ul class="fix-list">'
+          + '<li><i>1</i><span>Орсны дараа SL, TP-гээ тавиад <b>графикаа багасга</b>. Гараар хаахыг зөвхөн бүтэц эсрэг эвдэрсэн эсвэл том мэдээ ойртсон үед зөвшөөр.</span></li>'
+          + '<li><i>2</i><span>Хаах гэж байвал <b>60 секунд хүлээ</b>, шалтгаанаа тэмдэглэлд бич. Бичиж чадахгүй бол хаахгүй.</span></li>'
+          + '<li><i>3</i><span>Тэвчих хэцүү бол <b>1R дээр хагасыг хаагаад SL-ээ оролт руу зөө</b> — үлдсэнийг TP хүртэл орхи.</span></li>'
+        + '</ul></div>'
+      + '<div class="panel habit-card"><header><h3>2. Бусдын оролтыг хуулах</h3><span class="pill warn">'+H.copied.length+' удаа</span></header>'
+        + '<p class="lead">Бусдын санааг харж ороод, эсрэг харсан хүнийг хараад гарах нь таны өөрийн төлөвлөгөөг хоёр талаас нь эвддэг. Арилжаа бүрт «Санааны эх сурвалж»-ийг тэмдэглэвэл энд өөрийн ба бусдын санааны үр дүнг харьцуулна.</p>'
+        + '<div class="vs">'
+          + '<div><em>Өөрийн шинжилгээ ('+sOwn.n+')</em><b class="'+cls(sOwn.pl)+'">'+(sOwn.n?signed(sOwn.pl):"—")+'</b><small>'+(sOwn.n?pct(sOwn.winRate)+" ялалт":"тэмдэглэгдээгүй")+'</small></div>'
+          + '<div><em>Бусдын санаа ('+sCop.n+')</em><b class="'+cls(sCop.pl)+'">'+(sCop.n?signed(sCop.pl):"—")+'</b><small>'+(sCop.n?pct(sCop.winRate)+" ялалт":"тэмдэглэгдээгүй")+'</small></div>'
+        + '</div>'
+        + '<ul class="fix-list">'
+          + '<li><i>1</i><span>Бусдын санаа зөвхөн <b>сэдэл</b>. Өөрийн checklist-ээс <b>4+</b> биелээгүй бол орохгүй — «Шинэ бичлэг» дээр автоматаар сануулна.</span></li>'
+          + '<li><i>2</i><span>Орохоосоо өмнө «яагаад орж байна, хаана буруу болох вэ» гэдгийг <b>нэг өгүүлбэрээр</b> бич.</span></li>'
+          + '<li><i>3</i><span>Арилжаа нээлттэй үед <b>signal групп, бусдын графикийг хаа</b> — мэдэгдлийг нь чимээгүй болго.</span></li>'
+        + '</ul></div>'
+    + '</div>'
+
+    + '<div class="sect-head"><span class="eyebrow">Долоо хоног бүрээр</span><span class="rule"></span>'
+      + '<span class="legend"><span><i style="background:var(--warn)"></i>эрт хаасан</span><span><i style="background:var(--loss)"></i>хуулбар</span><span><i style="background:var(--win-soft);border:1px solid var(--win)"></i>цэвэр</span></span></div>'
+    + '<div class="panel" style="padding-top:6px;padding-bottom:6px">'+wk+'</div>'
+
+    + '<div class="sect-head"><span class="eyebrow">Эрт хаасан арилжаанууд</span><span class="rule"></span>'
+    + '<span class="dim">Гараар тэмдэглээгүй бол «TP-ийн хагаст хүрээгүй ашигтай» арилжааг автоматаар тооцно</span></div>'
+    + (rows ? '<div class="table-scroll"><table style="min-width:640px"><thead><tr><th>Огноо</th><th>Чиглэл</th><th style="text-align:right">TP-ийн</th><th style="text-align:right">Үр дүн</th><th style="text-align:right" title="Хаасан цэгээс TP хүртэлх зай — үнэ TP-д хүрсэн бол">TP хүртэл</th><th>Шалтгаан</th></tr></thead><tbody>'+rows+'</tbody></table></div>'
+            : '<div class="panel"><div class="empty">Эрт хаасан арилжаа алга — сайн байна!</div></div>');
+}
+
 /* ================= эдийн засгийн мэдээ ================= */
 var TAGC = {XAU:"#C9962B", XAG:"#9AA3AF", DXY:"#4B7BE5", OIL:"#8A6A4F", GBPJPY:"#D2476E"};
 var WD_SHORT = ["Ня","Да","Мя","Лх","Пү","Ба","Бя"];
@@ -1328,6 +1565,8 @@ function filtered(){
     if(f.result && c.outcome !== f.result) return false;
     if(f.rule === "ok" && !followed(t)) return false;
     if(f.rule === "bad" && followed(t)) return false;
+    if(f.rule === "early" && !isEarly(t)) return false;
+    if(f.rule === "copied" && !isCopied(t)) return false;
     if(f.q){
       var hay = [t.symbol,t.notes,t.setup,t.session,(t.mistakes||[]).join(" "),t.emoBefore,t.emoAfter,t.date].join(" ").toLowerCase();
       if(hay.indexOf(f.q.toLowerCase()) < 0) return false;
@@ -1344,7 +1583,7 @@ function viewTrades(){
     + '<select data-f="setup">'+opt(SETUPS,state.filters.setup)+'</select>'
     + '<select data-f="dir"><option value="">Бүх чиглэл</option><option value="buy"'+(state.filters.dir==="buy"?" selected":"")+'>Buy</option><option value="sell"'+(state.filters.dir==="sell"?" selected":"")+'>Sell</option></select>'
     + '<select data-f="result"><option value="">Бүх үр дүн</option><option value="win"'+(state.filters.result==="win"?" selected":"")+'>Ялсан</option><option value="loss"'+(state.filters.result==="loss"?" selected":"")+'>Алдсан</option><option value="be"'+(state.filters.result==="be"?" selected":"")+'>Тэнцсэн</option><option value="open"'+(state.filters.result==="open"?" selected":"")+'>Нээлттэй</option></select>'
-    + '<select data-f="rule"><option value="">Бүх дүрэм</option><option value="ok"'+(state.filters.rule==="ok"?" selected":"")+'>Дүрэм баримталсан</option><option value="bad"'+(state.filters.rule==="bad"?" selected":"")+'>Дүрэм зөрчсөн</option></select>'
+    + '<select data-f="rule"><option value="">Бүх дүрэм</option><option value="ok"'+(state.filters.rule==="ok"?" selected":"")+'>Дүрэм баримталсан</option><option value="bad"'+(state.filters.rule==="bad"?" selected":"")+'>Дүрэм зөрчсөн</option><option value="early"'+(state.filters.rule==="early"?" selected":"")+'>Эрт хаасан</option><option value="copied"'+(state.filters.rule==="copied"?" selected":"")+'>Бусдыг дагасан</option></select>'
     + '<input type="search" data-f="q" placeholder="Тэмдэглэлээс хайх…" value="'+esc(state.filters.q)+'">'
     + '<button class="btn sm ghost" id="clearF">Цэвэрлэх</button>'
     + '<span class="dim mono" style="margin-left:auto;font-size:13px">'+rows.length+' мөр · '+signed(s.pl)+' · '+pct(s.winRate)+'</span>'
@@ -1370,7 +1609,10 @@ function viewTrades(){
             ? compOf(t).v.map(function(v){ return '<span class="pill loss" title="'+esc(v.text)+'">'+esc(v.short)+'</span>'; }).join("")
             : compOf(t).riskPct === null
               ? '<span class="pill be" title="Анхны SL тодорхойгүй — эрсдэлийг шалгах боломжгүй">эрсдэл ?</span>'
-              : '<span class="pill win" title="Хатуу дүрэм бүгд биелсэн">✓</span>')+'</div></td>'
+              : '<span class="pill win" title="Хатуу дүрэм бүгд биелсэн">✓</span>')
+            + (isEarly(t) ? '<span class="pill warn" title="'+esc(exitLabel(t)+(tpFrac(t)!==null?" — TP-ийн "+Math.round(tpFrac(t)*100)+"%-д хаасан":""))+'">эрт хаасан</span>' : '')
+            + (isCopied(t) ? '<span class="pill warn" title="Бусдын санаа / signal дагасан">хуулбар</span>' : '')
+            +'</div></td>'
       + '<td>'+(g ? '<span class="grade '+g+'" title="Checklist '+c.passed+'/'+RULES.length+'">'+g+'</span>'
                   : '<span class="pill tag" title="MT5-аас импортлосон — тэмдэглэл бөглөөгүй">бөглөх</span>')+'</td>'
       + '</tr>';
@@ -1399,6 +1641,12 @@ function viewTrades(){
           var mins = Math.round((tradeUtcMs(t) - e.t_ms)/60000);
           return '<div class="auto-rule"><span class="neg">!</span><span>'+esc(e.title)+' — '+(mins===0?"яг гарах үед":mins<0?(-mins)+" мин өмнө":mins+" мин дараа")+' орсон</span></div>';
         }).join("")) : "")
+      + dl("Санаа ба гаралт", (function(){
+          var x = exitInfo(t), fr = tpFrac(t), lo = leftOnTable(t);
+          return '<div class="auto-rule"><span class="'+(isCopied(t)?"neg":"dim")+'">'+(isCopied(t)?"!":"•")+'</span><span>'+esc(labelOf(IDEA_SRC, t.ideaSrc) || "Эх сурвалж тэмдэглээгүй")+'</span></div>'
+            + '<div class="auto-rule"><span class="'+(isEarly(t)?"neg":"dim")+'">'+(isEarly(t)?"!":"•")+'</span><span>'+esc(exitLabel(t) || "Гарсан шалтгаан тэмдэглээгүй")+(x.auto?' <span class="dim">(автомат)</span>':'')+'</span></div>'
+            + (fr !== null ? '<div class="auto-rule"><span class="dim">•</span><span>TP-ийн '+Math.round(fr*100)+'%-ийг авсан'+(lo>0.005 && calc(t).pl>0 ? ' · <span class="neg">TP хүртэл '+money(lo)+' боломж байсан</span>' : '')+'</span></div>' : '');
+        })())
       + dl("Checklist ("+c.passed+"/"+RULES.length+")", chk)
       + dl("Алдаа", mis)
       + '<div class="dl" style="grid-column:1/-1"><span class="k">Тэмдэглэл ба сургамж</span>'
@@ -1437,6 +1685,7 @@ function viewForm(){
       + f("tf","Хугацааны фрейм",'<select name="tf">'+sel(TFS,t.tf||"M15")+'</select>')
       + f("setup","Стратеги / setup",'<select name="setup">'+sel(SETUPS,t.setup)+'</select>')
       + f("bias","Дээд фреймийн чиглэл",'<select name="bias">'+sel(BIAS,t.bias)+'</select>')
+      + f("ideaSrc","Санааны эх сурвалж",'<select name="ideaSrc">'+pairSel(IDEA_SRC, t.ideaSrc || (state.editing ? "" : "own"))+'</select>')
     + '</div></div>'
 
   + '<div class="panel"><header><h3>Гүйцэтгэл</h3><span class="eyebrow">2 / 4</span></header>'
@@ -1448,6 +1697,7 @@ function viewForm(){
       + f("tp","Take profit",'<input type="number" step="0.01" name="tp" value="'+esc(t.tp||"")+'">')
       + f("exit","Гарсан үнэ",'<input type="number" step="0.01" name="exit" value="'+esc(t.exit||"")+'"><span class="hint">Хоосон бол нээлттэй арилжаа</span>')
       + f("fees","Комисс / своп ($)",'<input type="number" step="0.01" name="fees" value="'+esc(t.fees||"0")+'">')
+      + f("exitReason","Яагаад хаасан бэ?",'<select name="exitReason">'+pairSel(EXIT_REASONS, t.exitReason)+'</select><span class="hint">Гараар хаасан бол үнэнээр нь сонго</span>')
       + f("plOverride","Бодит P/L ($)",'<input type="number" step="0.01" name="plOverride" value="'+esc(hasPl(t)?t.plOverride:"")+'"><span class="hint">Хоосон бол үнээр бодно</span>')
       + f("chart","Графикийн холбоос",'<input type="url" name="chart" placeholder="https://tradingview.com/x/…" value="'+esc(t.chart||"")+'">')
     + '</div>'
@@ -1458,6 +1708,7 @@ function viewForm(){
         return '<label class="check"><input type="checkbox" name="rule_'+r.k+'"'+(checks[r.k]?" checked":"")+'><span>'+esc(r.t)+'</span></label>';
       }).join("")+'</div>'
     + '<div class="hint" style="margin-top:10px;color:var(--ink-3);font-size:12.5px">Биелүүлсэн дүрмийн тоогоор гүйцэтгэлийн үнэлгээ (A–D) автоматаар тодорхойлогдоно.</div>'
+    + '<div class="src-warn" id="srcWarn"></div>'
   + '</div>'
 
   + '<div class="panel"><header><h3>Сэтгэл зүй ба сургамж</h3><span class="eyebrow">4 / 4</span></header>'
@@ -1478,6 +1729,9 @@ function viewForm(){
     + (state.editing?'<button type="button" class="btn ghost" id="cancelEdit">Болих</button>':'')
     + '<span class="dim" style="font-size:12.5px">1 лот = '+CONTRACT+' унц — ашиг/алдагдал автоматаар бодогдоно.</span>'
   + '</div></form>';
+}
+function pairSel(pairs, cur){
+  return '<option value="">—</option>' + pairs.map(function(p){ return '<option value="'+p[0]+'"'+(cur===p[0]?' selected':'')+'>'+esc(p[1])+'</option>'; }).join("");
 }
 function f(id,label,input){ return '<label class="field"><span class="lab" title="'+esc(label)+'">'+esc(label)+'</span>'+input+'</label>'; }
 
@@ -1504,6 +1758,20 @@ function viewSettings(){
         }).join("")+'</div>'
       : '<div class="empty" style="padding:20px">MT5 тайлан импортлоход орлогын гүйлгээ энд харагдана. Эрсдэлийн хувийг арилжаа бүрийн үеийн балансаас бодно.</div>')
   + '</div>'
+  + (function(){
+      var B = botCfg();
+      return '<div class="panel"><header><h3>Ноти туслах</h3><span class="dim">дэлгэц дээрх сануулагч</span></header>'
+        + '<div class="checks">'
+          + '<label class="check"><input type="checkbox" id="botOn"'+(B.on?" checked":"")+'><span>Нотиг харуулах — өдрийн арилжааны тоо, сессийн цаг, ойртож буй мэдээ, алдааны сануулга</span></label>'
+          + '<label class="check"><input type="checkbox" id="botNotify"'+(B.notify?" checked":"")+'><span>Өөр таб дээр байхад хөтчийн мэдэгдэл илгээх</span></label>'
+        + '</div>'
+        + '<div class="form-grid" style="margin-top:14px">'
+          + f("botEvery","Хэр давтамжтай сануулах",'<select id="botEvery">'+[[15,"15 минут тутам"],[30,"30 минут тутам"],[60,"Цаг тутам"],[120,"2 цаг тутам"]].map(function(o){ return '<option value="'+o[0]+'"'+(B.every===o[0]?" selected":"")+'>'+o[1]+'</option>'; }).join("")+'</select>')
+        + '</div>'
+        + '<div class="form-actions" style="margin-top:14px"><button class="btn primary" id="saveBot">Хадгалах</button><button class="btn ghost" id="botTest">Одоо сануулах</button></div>'
+        + '<div class="dim" style="font-size:12.5px;margin-top:10px;line-height:1.5">Том мэдээ 15 минутын дотор гарах гэж байвал давтамжаас үл хамааран шууд сануулна. Хуудас нээлттэй үед л ажиллана.</div>'
+      + '</div>';
+    })()
   + '<div class="panel"><header><h3>Өгөгдөл</h3></header>'
     + '<div style="font-size:13.5px;display:flex;flex-direction:column;gap:10px">'
       + '<div>Бүртгэсэн арилжаа: <b class="mono">'+real+'</b></div>'
@@ -1718,10 +1986,11 @@ function runImport(){
   state.tab = "cal"; state.calMonth = defaultMonth(state.trades); state.calDay = null;
   render();
   toast(fresh.length+" арилжаа импортлолоо");
+  setTimeout(function(){ botSay(true); }, 900);
 }
 
 /* ================= render ================= */
-var TITLES = {dash:"Самбар", cal:"P&L хуанли", analytics:"Шинжилгээ", playbook:"Стратегийн ном", rules:"Миний дүрэм",
+var TITLES = {dash:"Самбар", cal:"P&L хуанли", analytics:"Шинжилгээ", playbook:"Стратегийн ном", rules:"Миний дүрэм", habits:"Миний алдаа",
               trades:"Арилжаанууд", form:"Шинэ бичлэг", import:"MT5 импорт", settings:"Тохиргоо"};
 function render(){
   invalidateComp(); _ev.valid = false;
@@ -1742,6 +2011,7 @@ function render(){
     : state.tab==="cal" ? viewCalendar()
     : state.tab==="playbook" ? viewPlaybook()
     : state.tab==="rules" ? viewRules()
+    : state.tab==="habits" ? viewHabits()
     : state.tab==="trades" ? viewTrades()
     : state.tab==="form" ? viewForm()
     : state.tab==="import" ? viewImport()
@@ -1752,6 +2022,8 @@ function render(){
     else b.removeAttribute("aria-current");
   });
   if(state.tab==="form") updateCalcbar();
+  var bx = document.getElementById("bot");
+  if(bx && !botCfg().on){ bx.hidden = true; bx.classList.remove("talk"); }
 }
 
 /* ================= үйлдлүүд ================= */
@@ -1787,7 +2059,7 @@ document.getElementById("view").addEventListener("click", function(e){
   }
   var row = e.target.closest("tr.row, .recent-row");
   if(row && !e.target.closest("button")){
-    if(state.tab === "cal" || state.tab === "dash"){ state.tab = "trades"; state.openRow = row.dataset.id; render(); return; }
+    if(state.tab === "cal" || state.tab === "dash" || state.tab === "habits"){ state.tab = "trades"; state.openRow = row.dataset.id; render(); return; }
     state.openRow = state.openRow === row.dataset.id ? null : row.dataset.id;
     render(); return;
   }
@@ -1918,7 +2190,8 @@ function formTrade(form){
     tp: g("tp")===""?0:num(g("tp")), exit: g("exit")==="" ? "" : num(g("exit")),
     fees:num(g("fees")), chart:g("chart"), checks:checks,
     emoBefore:g("emoBefore"), emoAfter:g("emoAfter"), confidence:num(g("confidence")),
-    mistakes:mistakes, notes:g("notes")
+    mistakes:mistakes, notes:g("notes"),
+    ideaSrc:g("ideaSrc"), exitReason:g("exitReason")
   };
 }
 function updateCalcbar(){
@@ -1938,6 +2211,20 @@ function updateCalcbar(){
     ["Үр дүн", c.open ? "Нээлттэй" : signed(c.pl), cls(c.pl)],
     ["Бодит R", c.open ? "—" : (c.r>=0?"+":"−")+Math.abs(c.r).toFixed(2)+"R", cls(c.r)]
   ].map(function(x){ return '<div><b class="'+x[2]+'">'+x[1]+'</b><em>'+x[0]+'</em></div>'; }).join("");
+  /* хуулбар оролт ба эрт хаалтын сэрэмжлүүлэг */
+  var w = document.getElementById("srcWarn");
+  if(w){
+    var need = Math.min(4, RULES.length), msg = "", soft = false;
+    if(t.ideaSrc === "others" && c.passed < need)
+      msg = "Бусдын санаа + таны checklist "+c.passed+"/"+RULES.length+". Энэ бол таны давтагддаг «хуулбар оролт». Өөрөө дор хаяж "+need+" дүрмийг баталгаажуулаагүй бол бүү ор.";
+    else if(t.ideaSrc === "others"){
+      msg = "Бусдын санаа боловч өөрөө "+c.passed+"/"+RULES.length+" шалгасан байна. «Яагаад орж байна, хаана буруу болох вэ» гэдгээ тэмдэглэлд нэг өгүүлбэрээр бичээрэй."; soft = true;
+    }
+    else if(t.exitReason === "early_others" || t.exitReason === "early_fear")
+      msg = "Эрт хаасан гэж тэмдэглэлээ. Дараагийн удаа: арилжаа нээлттэй үед signal групп рүү орохгүй, хаахын өмнө 60 секунд хүлээж шалтгаанаа бич. Тэвчих хэцүү бол 1R дээр хагасыг хаагаад SL-ээ оролт руу зөө.";
+    w.innerHTML = msg ? '<span>!</span><span>'+esc(msg)+'</span>' : "";
+    w.className = "src-warn" + (msg ? " on" : "") + (soft ? " soft" : "");
+  }
 }
 document.getElementById("view").addEventListener("submit", function(e){
   if(e.target.id !== "tradeForm") return;
@@ -1950,15 +2237,16 @@ document.getElementById("view").addEventListener("submit", function(e){
   state.tab = "trades"; state.openRow = t.id; state.calMonth = null; state.calDay = null;
   render();
   toast(wasEdit ? "Арилжаа шинэчлэгдлээ" : "Тэмдэглэлд нэмэгдлээ");
+  setTimeout(function(){ botSay(!wasEdit); }, 700);
 });
 
 function exportCsv(){
-  var cols = ["Огноо","Цаг","Сесс","Стратеги","Фрейм","HTF","Чиглэл","Лот","Оролт","SL","TP","Гарсан","Комисс","Эрсдэл$","R:R","P/L$","R","Үнэлгээ","Checklist","Дүрмийн зөрчил","Өмнөх","Дараах","Итгэл","Алдаа","Тэмдэглэл"];
+  var cols = ["Огноо","Цаг","Сесс","Стратеги","Фрейм","HTF","Чиглэл","Лот","Оролт","SL","TP","Гарсан","Комисс","Эрсдэл$","R:R","P/L$","R","Үнэлгээ","Checklist","Дүрмийн зөрчил","Өмнөх","Дараах","Итгэл","Алдаа","Санааны эх сурвалж","Гарсан шалтгаан","Тэмдэглэл"];
   var rows = sorted(visibleTrades()).map(function(t){
     var c = calc(t);
     return [t.date,t.time,t.session,t.setup,t.tf,t.bias,t.dir,t.lot,t.entry,t.sl,t.tp,t.exit,t.fees,
       c.risk.toFixed(2), c.rrPlanned.toFixed(2), c.pl.toFixed(2), c.r.toFixed(2), gradeOf(t)||"", c.passed+"/"+RULES.length, compOf(t).v.map(function(v){return v.text}).join(" | "),
-      t.emoBefore,t.emoAfter,t.confidence,(t.mistakes||[]).join(" | "),(t.notes||"").replace(/\n/g," ")];
+      t.emoBefore,t.emoAfter,t.confidence,(t.mistakes||[]).join(" | "),labelOf(IDEA_SRC,t.ideaSrc),exitLabel(t),(t.notes||"").replace(/\n/g," ")];
   });
   var csv = "﻿" + [cols].concat(rows).map(function(r){
     return r.map(function(v){ return '"'+String(v==null?"":v).replace(/"/g,'""')+'"'; }).join(",");
@@ -1972,6 +2260,102 @@ function copyCsv(csv){
   }catch(e){ toast("CSV гаргаж чадсангүй"); }
 }
 
+/* ================= Ноти туслах ================= */
+var bot = {last:0, tip:0, spoken:{}, hideT:null};
+try{ bot.last = num(localStorage.getItem("xau_bot_last")); bot.tip = num(localStorage.getItem("xau_bot_tip")); }catch(e){}
+function botCfg(){
+  var b = state.settings.bot || {};
+  return {on: b.on !== false, every: num(b.every) || 60, notify: !!b.notify};
+}
+function botTips(){
+  var H = habitStats(), tips = [
+    "Бусдын оролтыг хуулахгүй! Өөрийн checklist-ээс <b>4+</b> биелээгүй бол орохгүй.",
+    "Арилжаа нээлттэй үед signal групп рүү бүү ор — бусдын санаа таны төлөвлөгөө биш.",
+    "Хаах гэж байна уу? <b>60 секунд</b> хүлээгээд шалтгаанаа бич. Бичиж чадахгүй бол хаахгүй.",
+    "Тэвчих хэцүү бол 1R дээр хагасыг хаагаад SL-ээ оролт руу зөө ♡",
+    "Эсрэг харсан хүн үргэлж байна. Таны SL, TP л шийднэ."
+  ];
+  if(H.left > 0.5) tips.push("Эрт хаасан арилжаанууд TP хүртэл явсан бол <b>"+money(H.left)+"</b> илүү олох байсан.");
+  if(H.best) tips.push("TP хүртэл барьсан арилжаа чинь <b>"+signed(calc(H.best).pl)+"</b> өгсөн шүү. Тэвчээр = ашиг.");
+  if(H.streak >= 2) tips.push("Алдаагүй <b>"+H.streak+"</b> өдөр дараалан! Энэ цувралаа үргэлжлүүлье ♡");
+  return tips;
+}
+function botSoonEvent(mins){
+  var now = Date.now();
+  return allEvents().filter(function(e){
+    var d = e.t_ms - now;
+    return !e.allDay && d > 0 && d <= mins*60000 && (e.imp >= 3 || d <= 20*60000);
+  })[0] || null;
+}
+function botLines(){
+  var S = state.settings, max = num(S.maxTrades) || 3, now = Date.now();
+  var srvNow = srvOf(now), today = srvNow.date;
+  var todayT = sorted(visibleTrades().filter(function(t){ return t.date === today; })), n = todayT.length;
+  var head = [];
+  var soon = botSoonEvent(60);
+  if(soon) head.push('<p class="hi"><b>'+esc(soon.title)+'</b> '+Math.max(1, Math.round((soon.t_ms-now)/60000))+' минутын дараа гарна! Одоо шинэ арилжаа бүү нээ.</p>');
+  if(n === 0) head.push('<p>Өнөөдөр арилжаа нээгээгүй байна. Сайн setup-аа тайван хүлээе ♡</p>');
+  else if(n < max) head.push('<p>Өнөөдөр <b>'+n+'/'+max+'</b> арилжаа нээлээ. Дахиад '+(max-n)+' л боломж үлдлээ — зөвхөн A+ setup!</p>');
+  else if(n === max) head.push('<p>Өнөөдрийн <b>'+max+'/'+max+'</b> арилжаа дууслаа! Графикаа хаагаад амрах цаг ♡</p>');
+  else head.push('<p class="hi">Өнөөдөр <b>'+n+'</b> арилжаа нээчихлээ (хязгаар '+max+'). Одоо зогсоё — маргааш шинэ өдөр.</p>');
+  var last = todayT[todayT.length-1];
+  if(last && isEarly(last) && tpFrac(last) !== null)
+    head.push('<p>Сүүлийн арилжаагаа TP-ийн <b>'+Math.round(tpFrac(last)*100)+'%</b>-д хаасан байна. Дараагийнхыг TP хүртэл тэвчье!</p>');
+  else if(last && isCopied(last))
+    head.push('<p>Сүүлийн арилжаа бусдын санаагаар орсон байна. Дараагийнх нь <b>өөрийн</b> шинжилгээ байг.</p>');
+  var sess = autoSession(srvNow.time, S.serverUtcOffset), lim = num(S.sessionHours)*60;
+  var inSess = todayT.filter(function(t){ return (t.session || autoSession(t.time, S.serverUtcOffset)) === sess; });
+  if(sess && lim && inSess.length){
+    var el = minsOf(srvNow.date, srvNow.time) - Math.min.apply(null, inSess.map(function(t){ return minsOf(t.date, t.time); }));
+    if(el > lim) head.splice(soon ? 2 : 1, 0, '<p class="hi">'+esc(sess)+' сесс дээр '+fmtDur(el)+' болж, '+num(S.sessionHours)+' цагийн хязгаар хэтэрлээ. Зогсох цаг!</p>');
+    else head.push('<p>'+esc(sess)+' сесс дээр '+fmtDur(el)+' ажиллалаа · '+fmtDur(Math.max(0, lim-el))+' үлдлээ.</p>');
+  }
+  var tips = botTips();
+  return head.slice(0, 2).concat(['<p>'+tips[bot.tip % tips.length]+'</p>']);
+}
+function botSay(run){
+  var B = botCfg(), box = document.getElementById("bot");
+  if(!box || !B.on) return;
+  var lines = botLines();
+  document.getElementById("botMsg").innerHTML = lines.join("");
+  document.getElementById("botTime").textContent = ubOf(Date.now()).time + " УБ";
+  box.hidden = false;
+  if(run){ box.classList.remove("run"); void box.offsetWidth; box.classList.add("run"); setTimeout(function(){ box.classList.remove("run"); }, 2600); }
+  box.classList.add("talk");
+  clearTimeout(bot.hideT);
+  bot.hideT = setTimeout(function(){ box.classList.remove("talk"); }, 25000);
+  bot.last = Date.now(); bot.tip++;
+  try{ localStorage.setItem("xau_bot_last", String(bot.last)); localStorage.setItem("xau_bot_tip", String(bot.tip)); }catch(e){}
+  if(B.notify && document.hidden && typeof Notification !== "undefined" && Notification.permission === "granted"){
+    try{ new Notification("Ноти · Trade notes", {body: document.getElementById("botMsg").textContent.slice(0, 220)}); }catch(e){}
+  }
+}
+function botTick(){
+  var B = botCfg(), box = document.getElementById("bot");
+  if(!B.on){ if(box) box.hidden = true; return; }
+  var soon = botSoonEvent(15);
+  if(soon && !bot.spoken[soon.code+soon.t_ms]){ bot.spoken[soon.code+soon.t_ms] = 1; botSay(true); return; }
+  if(Date.now() - bot.last >= B.every*60000) botSay(true);
+}
+document.getElementById("botBtn").addEventListener("click", function(){ botSay(false); });
+document.getElementById("botOk").addEventListener("click", function(){ document.getElementById("bot").classList.remove("talk"); });
+document.getElementById("botMore").addEventListener("click", function(){ botSay(false); });
+document.getElementById("view").addEventListener("click", function(e){
+  if(e.target.id === "saveBot"){
+    var notify = document.getElementById("botNotify").checked;
+    state.settings.bot = {on: document.getElementById("botOn").checked, every: num(document.getElementById("botEvery").value) || 60, notify: notify};
+    if(notify && typeof Notification !== "undefined" && Notification.permission === "default"){
+      try{ Notification.requestPermission(); }catch(err){}
+    }
+    putSettings();
+    var box = document.getElementById("bot");
+    if(!state.settings.bot.on){ box.hidden = true; box.classList.remove("talk"); toast("Ноти амарч байна"); }
+    else { toast("Нотигийн тохиргоо хадгалагдлаа"); botSay(true); }
+    return;
+  }
+  if(e.target.id === "botTest"){ botSay(true); }
+});
+
 /* ================= эхлүүлэх ================= */
 setInterval(function(){
   if(state.tab !== "cal") return;
@@ -1983,6 +2367,8 @@ try{ if(localStorage.getItem("xau_hide_demo")) state.usingDemo = false; }catch(e
 loadLocal();
 render();
 initStore();
+setTimeout(function(){ botSay(true); }, 3200);
+setInterval(botTick, 30000);
 </script>
 </body>
 </html>
