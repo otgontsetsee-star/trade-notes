@@ -503,6 +503,13 @@ body.drag-img::after{content:"Зургаа энд тавь — Juni уншаад
 }
 
 .empty{padding:36px 20px;text-align:center;color:var(--ink-3);font-size:13.5px}
+.vault{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(20,16,48,.55);backdrop-filter:blur(3px)}
+.vault-card{width:100%;max-width:360px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:22px;box-shadow:0 18px 50px rgba(0,0,0,.3)}
+.vault-card h3{margin:0 0 6px;font-size:18px}
+.vault-card p{margin:0 0 14px;color:var(--ink-2);font-size:13px;line-height:1.5}
+.vault-card input{width:100%;box-sizing:border-box;font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface-2);color:var(--ink)}
+.vault-err{min-height:18px;margin:6px 0 4px;color:var(--loss);font-size:13px}
+.vault-row{display:flex;gap:8px;justify-content:flex-end}
 .toast{
   position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
   background:var(--ink);color:var(--bg);padding:9px 18px;border-radius:999px;font-size:13px;font-weight:600;
@@ -955,7 +962,70 @@ async function initStore(){
     loadLocal();
     render();
     loadEventsFile();
+    loadVault();
   }
+}
+/* ---- GitHub дээрх нууц үгтэй өгөгдөл (data.enc.json, AES-GCM + PBKDF2) ---- */
+var vault = {file:null};
+function b64u8(x){ var b = atob(x), u = new Uint8Array(b.length); for(var i=0;i<b.length;i++) u[i] = b.charCodeAt(i); return u; }
+function u8b64(u){ var x = ""; for(var i=0;i<u.length;i++) x += String.fromCharCode(u[i]); return btoa(x); }
+function loadVault(){
+  if(!window.fetch || !window.crypto || !crypto.subtle || location.protocol === "file:") return;
+  fetch("data.enc.json", {cache:"no-cache"}).then(function(r){ return r.ok ? r.json() : null; }).then(function(o){
+    if(!o || !o.ct) return;
+    vault.file = o;
+    var seen = "", k = null;
+    try{ seen = localStorage.getItem("xau_vault_seen") || ""; k = localStorage.getItem("xau_vault_key"); }catch(e){}
+    if(seen && seen === o.exportedAt && k) return;
+    if(k) vaultOpen(null, k).catch(function(){ vaultAsk(); }); else vaultAsk();
+  }).catch(function(){});
+}
+async function vaultOpen(pass, rawB64){
+  var o = vault.file, raw;
+  if(rawB64) raw = b64u8(rawB64);
+  else {
+    var base = await crypto.subtle.importKey("raw", new TextEncoder().encode(pass), "PBKDF2", false, ["deriveBits"]);
+    raw = new Uint8Array(await crypto.subtle.deriveBits({name:"PBKDF2", hash:"SHA-256", salt:b64u8(o.salt), iterations:o.iter}, base, 256));
+  }
+  var key = await crypto.subtle.importKey("raw", raw, "AES-GCM", false, ["decrypt"]);
+  var pt = await crypto.subtle.decrypt({name:"AES-GCM", iv:b64u8(o.iv)}, key, b64u8(o.ct));
+  var data = JSON.parse(new TextDecoder().decode(pt));
+  try{ localStorage.setItem("xau_vault_key", u8b64(raw)); }catch(e){}
+  vaultApply(data, o.exportedAt);
+}
+function vaultApply(o, ver){
+  if(!o || !Array.isArray(o.trades)) return;
+  var map = {}; state.trades.forEach(function(t){ map[t.id] = t; });
+  o.trades.forEach(function(t){ if(t && t.id) map[t.id] = t; });
+  state.trades = Object.keys(map).map(function(k){ return map[k]; });
+  if(o.settings) state.settings = Object.assign(state.settings, o.settings);
+  state.usingDemo = false; state.calMonth = null;
+  try{ localStorage.setItem("xau_hide_demo","1"); localStorage.setItem("xau_vault_seen", ver || ""); }catch(e){}
+  saveLocal(); applyRules(); vaultClose(); render();
+  toast("Таны өгөгдөл ачааллаа · "+o.trades.length+" арилжаа");
+}
+function vaultClose(){ var v = document.getElementById("vault"); if(v) v.remove(); }
+function vaultAsk(){
+  if(document.getElementById("vault")) return;
+  var d = document.createElement("div");
+  d.className = "vault"; d.id = "vault";
+  d.innerHTML = '<form class="vault-card" id="vaultForm" autocomplete="off">'
+    + '<h3>Таны арилжааны өгөгдөл</h3>'
+    + '<p>Нууц үгээ оруулаад «Нээх» дарна уу. Энэ хөтөч санах тул дараа дахин асуухгүй.</p>'
+    + '<input type="password" id="vaultPass" placeholder="Нууц үг" autocomplete="current-password">'
+    + '<div class="vault-err" id="vaultErr"></div>'
+    + '<div class="vault-row"><button type="button" class="btn sm" id="vaultSkip">Дараа</button><button type="submit" class="btn sm primary" id="vaultGo">Нээх</button></div>'
+    + '</form>';
+  document.body.appendChild(d);
+  setTimeout(function(){ var i = document.getElementById("vaultPass"); if(i) i.focus(); }, 50);
+  document.getElementById("vaultSkip").onclick = vaultClose;
+  document.getElementById("vaultForm").onsubmit = function(ev){
+    ev.preventDefault();
+    var pass = document.getElementById("vaultPass").value.trim(), err = document.getElementById("vaultErr"), go = document.getElementById("vaultGo");
+    if(!pass){ err.textContent = "Нууц үгээ бичнэ үү"; return; }
+    err.textContent = ""; go.disabled = true; go.textContent = "Нээж байна…";
+    vaultOpen(pass).catch(function(){ err.textContent = "Нууц үг буруу байна"; go.disabled = false; go.textContent = "Нээх"; });
+  };
 }
 /* Claude-аас гадуур (жишээ нь GitHub Pages): мэдээний хуваарийг events.json-оос уншина */
 function loadEventsFile(){
