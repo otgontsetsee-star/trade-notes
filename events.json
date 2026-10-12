@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-08",
+ "updated": "2026-10-12",
  "items": [
   {
    "id": "202609011400-JOLTS",
@@ -307,6 +307,21 @@
    "approx": false
   },
   {
+   "id": "ff-202610140530-BOEGovBaileySpeaks",
+   "t": "2026-10-14T05:30Z",
+   "code": "Speech",
+   "title": "Их Британи · BOE Gov Bailey Speaks",
+   "imp": 2,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
    "id": "202610141230-CPI",
    "t": "2026-10-14T12:30Z",
    "code": "CPI",
@@ -321,6 +336,36 @@
    "cur": "USD",
    "note": "9-р сар",
    "src": "BLS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202610150600-GDPmm",
+   "t": "2026-10-15T06:00Z",
+   "code": "UK GDP",
+   "title": "Их Британи · GDP m/m",
+   "imp": 3,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "Таамаг -0.1% · Өмнөх 0.4%",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202610150730-BOEGovBaileySpeaks",
+   "t": "2026-10-15T07:30Z",
+   "code": "Speech",
+   "title": "Их Британи · BOE Gov Bailey Speaks",
+   "imp": 2,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "",
+   "src": "ForexFactory",
    "allDay": false,
    "approx": false
   },
@@ -355,6 +400,71 @@
    "cur": "USD",
    "note": "9-р сар",
    "src": "Census",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202610151230-PhillyFedManufacturingIn",
+   "t": "2026-10-15T12:30Z",
+   "code": "Philly",
+   "title": "АНУ · Philly Fed Manufacturing Index",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "Таамаг 26.5 · Өмнөх 37.8",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202610160200-BOEGovBaileySpeaks",
+   "t": "2026-10-16T02:00Z",
+   "code": "Speech",
+   "title": "Их Британи · BOE Gov Bailey Speaks",
+   "imp": 3,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202610160330-FedChairmanWarshSpeaks",
+   "t": "2026-10-16T03:30Z",
+   "code": "Speech",
+   "title": "АНУ · Fed Chairman Warsh Speaks",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202610170645-BOEGovBaileySpeaks",
+   "t": "2026-10-17T06:45Z",
+   "code": "Speech",
+   "title": "Их Британи · BOE Gov Bailey Speaks",
+   "imp": 2,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "",
+   "src": "ForexFactory",
    "allDay": false,
    "approx": false
   },
