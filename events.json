@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-12",
+ "updated": "2026-10-13",
  "items": [
   {
    "id": "202609011400-JOLTS",
@@ -415,7 +415,7 @@
     "DXY"
    ],
    "cur": "USD",
-   "note": "Таамаг 26.5 · Өмнөх 37.8",
+   "note": "Таамаг 28.2 · Өмнөх 37.8",
    "src": "ForexFactory",
    "allDay": false,
    "approx": false
