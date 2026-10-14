@@ -234,7 +234,7 @@ tr.detail td{background:var(--bg);padding:0}
 /* ---------- хуанли ---------- */
 .cal-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 .cal-month{font-size:14.5px;font-weight:700;min-width:150px;text-align:center}
-.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr)) minmax(96px,.85fr);gap:6px;min-width:780px}
+.cal-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) minmax(96px,.85fr);gap:6px;min-width:600px}
 .cal-dow{font-size:12px;font-weight:500;color:var(--ink-3);text-align:center;padding:2px 0 4px}
 .cal-cell{
   min-height:78px;border:1px solid transparent;border-radius:8px;padding:7px 9px;
@@ -328,7 +328,7 @@ body.drag-img::after{content:"Зургаа энд тавь — Juni уншаад
 .cal-main{min-width:0}
 .cal-main .kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
 @media (max-width:640px){.cal-main .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.cal-layout .cal-grid{min-width:640px}
+.cal-layout .cal-grid{min-width:560px}
 .news{position:sticky;top:72px;max-height:calc(100vh - 92px);overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-bottom:4px}
 .next-ev{
   color:#fff;border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;flex:none;
@@ -516,6 +516,119 @@ body.drag-img::after{content:"Зургаа энд тавь — Juni уншаад
 .vault-card input{width:100%;box-sizing:border-box;font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface-2);color:var(--ink)}
 .vault-err{min-height:18px;margin:6px 0 4px;color:var(--loss);font-size:13px}
 .vault-row{display:flex;gap:8px;justify-content:flex-end}
+
+/* ---------- утасны апп хэлбэр ---------- */
+.tabbar,.sheet,.sheet-bg{display:none}
+.cal-cell .cn{display:none}
+@media (max-width:760px){
+  body{font-size:13.5px}
+  .side{display:none}
+  .app{display:block}
+  .topbar{position:sticky;top:env(safe-area-inset-top);z-index:20;padding:10px 14px;gap:8px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px)}
+  .topbar h1{font-size:19px;font-weight:800;letter-spacing:-.02em;flex:1;min-width:0}
+  .topbar .tools,.topbar .acct:not(#balChip){display:none}
+  .topbar #balChip{font-size:12.5px;padding:3px 10px}
+  .wrap{padding:10px 12px calc(96px + env(safe-area-inset-bottom))}
+  .panel{padding:13px 13px;border-radius:14px}
+  .panel h3{font-size:13.5px}
+  .grid{gap:10px}
+  .sect-head{margin:16px 0 8px}
+  .kpis{border-radius:14px}
+  .kpi{padding:10px 12px;min-height:0;gap:2px}
+  .kpi .v{font-size:18px}
+  .kpi .k,.kpi .n{font-size:11.5px}
+  .btn{min-height:36px}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:45;justify-content:space-around;align-items:flex-end;
+    padding:6px 6px calc(6px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--surface) 92%,transparent);
+    backdrop-filter:saturate(1.4) blur(16px);-webkit-backdrop-filter:saturate(1.4) blur(16px);border-top:1px solid var(--line)}
+  .tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;color:var(--ink-3);font-size:10.5px;font-weight:600;padding:4px 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .tabbar button svg{width:24px;height:24px}
+  .tabbar button[aria-current="true"]{color:var(--accent)}
+  .tabbar .tb-add{flex:none;width:52px;height:52px;border-radius:18px;background:var(--grad);color:#fff;justify-content:center;margin:-18px 6px 2px;box-shadow:0 8px 20px rgba(91,79,230,.35)}
+  .tabbar .tb-add svg{width:26px;height:26px}
+  .sheet-bg{display:block;position:fixed;inset:0;z-index:70;background:rgba(15,12,35,.42)}
+  .sheet-bg[hidden],.sheet[hidden]{display:none}
+  .sheet{display:block;position:fixed;left:0;right:0;bottom:0;z-index:71;background:var(--surface);border-radius:20px 20px 0 0;padding:8px 14px calc(16px + env(safe-area-inset-bottom));box-shadow:0 -10px 40px rgba(0,0,0,.25);max-height:80vh;overflow-y:auto}
+  .sheet .grab{width:38px;height:5px;border-radius:3px;background:var(--line-strong);margin:2px auto 10px}
+  .sheet h4{margin:4px 4px 8px;font-size:13px;color:var(--ink-3);font-weight:600}
+  .sheet button.it{display:flex;align-items:center;gap:12px;width:100%;background:none;border:0;border-radius:12px;padding:12px 10px;font-size:15px;font-weight:600;color:var(--ink);text-align:left;cursor:pointer}
+  .sheet button.it:active{background:var(--surface-2)}
+  .sheet .it i{width:34px;height:34px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:16px;flex:none}
+  .sheet .it small{display:block;font-size:12px;font-weight:500;color:var(--ink-3)}
+  /* хуанли — нэг дэлгэцэнд */
+  .cal-layout .cal-grid,.cal-grid{grid-template-columns:repeat(5,minmax(0,1fr));min-width:0;gap:4px}
+  .cal-week,.cal-dow.wk{display:none}
+  .cal-cell{min-height:54px;padding:5px 5px;border-radius:9px;gap:1px}
+  .cal-cell .d{font-size:11px}
+  .cal-cell .p{font-size:11.5px;letter-spacing:-.02em}
+  .cal-cell .c{display:none}
+  .cal-cell .cn{display:block;font-size:10px;color:var(--ink-3)}
+  .cal-news-wrap .cal-news:nth-child(n+2){display:none}
+  .cal-news{font-size:8px;padding:0 3px;line-height:13px}
+  .cal-hint{display:none}
+  .cal-main{display:flex;flex-direction:column;gap:10px}
+  .cal-main > .sect-head{display:none}
+  .cal-panel{order:-1;margin-top:0!important;padding:10px 8px!important}
+  .cal-main > .panel{margin-top:0!important}
+  .cal-main .kpis{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .cal-main .kpi{padding:8px 10px}
+  .cal-main .kpi .v{font-size:15px}
+  .cal-main .kpi .n{display:none}
+  .cal-cell{min-height:48px}
+  .cal-bar .btn{padding-left:10px;padding-right:10px}
+  .cal-bar{gap:6px;margin-bottom:8px}
+  .cal-month{min-width:0;flex:1}
+  .chart-wrap{overflow:visible}
+  .bot{display:none!important}
+}
+
+/* ---------- Juni ярилцлага ---------- */
+.juni{display:flex;flex-direction:column;gap:10px;max-width:720px;margin:0 auto}
+.juni-head{display:flex;gap:12px;align-items:center}
+.juni-av{width:52px;height:56px;flex:none}
+.juni-av svg{width:100%;height:100%}
+.juni-head b{font-size:16px;display:block}
+.juni-head span{font-size:12.5px;color:var(--ink-3)}
+.moods{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.moods::-webkit-scrollbar{display:none}
+.mood{flex:none;border:1px solid var(--line-strong);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer;display:flex;gap:6px;align-items:center}
+.mood i{width:9px;height:9px;border-radius:50%;display:block}
+.mood[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.chat{display:flex;flex-direction:column;gap:8px;min-height:240px}
+.msg{max-width:86%;padding:10px 13px;border-radius:16px;font-size:14px;line-height:1.55;white-space:pre-wrap;word-wrap:break-word}
+.msg.j{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:5px}
+.msg.u{align-self:flex-end;background:var(--accent);color:var(--on-accent);border-bottom-right-radius:5px}
+.msg .when{display:block;font-size:10.5px;opacity:.6;margin-top:3px}
+.msg.typing{color:var(--ink-3)}
+.chat-day{align-self:center;font-size:11px;color:var(--ink-3);padding:4px 0}
+.juni-in{position:sticky;bottom:0;display:flex;gap:8px;align-items:flex-end;background:var(--bg);padding:8px 0 4px}
+.juni-in textarea{flex:1;resize:none;min-height:44px;max-height:140px;border:1px solid var(--line-strong);border-radius:22px;padding:11px 15px;background:var(--surface);font-size:15px;line-height:1.4}
+.juni-in textarea:focus{outline:none;border-color:var(--accent)}
+.juni-in .send{width:44px;height:44px;border-radius:50%;border:0;background:var(--grad);color:#fff;flex:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.juni-in .send:disabled{opacity:.5}
+.juni-tools{display:flex;gap:6px;flex-wrap:wrap}
+.juni-note{font-size:11.5px;color:var(--ink-3);line-height:1.5}
+@media (max-width:760px){ .juni-in{bottom:calc(64px + env(safe-area-inset-bottom))} }
+@media (max-width:760px){ .toast{bottom:calc(84px + env(safe-area-inset-bottom)) !important} }
+.breath{position:fixed;inset:0;z-index:310;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:24px}
+.breath .ring{width:200px;height:200px;border-radius:50%;background:var(--grad);opacity:.9;transform:scale(.55);transition:transform 4s ease-in-out;box-shadow:0 0 60px rgba(138,108,243,.45)}
+.breath .lbl{font-size:22px;font-weight:800}
+.breath .sub{font-size:13px;color:var(--ink-3);text-align:center;max-width:300px;line-height:1.5}
+
+/* ---------- апп түгжээ ---------- */
+.lock{position:fixed;inset:0;z-index:400;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;padding-top:calc(24px + env(safe-area-inset-top))}
+.lock img{width:64px;height:64px;border-radius:16px}
+.lock h2{font-size:18px;font-weight:800}
+.lock .dots{display:flex;gap:14px;height:16px}
+.lock .dots i{width:14px;height:14px;border-radius:50%;border:2px solid var(--accent);display:block}
+.lock .dots i.on{background:var(--accent)}
+.lock .dots.err{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.lock .pad{display:grid;grid-template-columns:repeat(3,72px);gap:14px}
+.lock .pad button{width:72px;height:72px;border-radius:50%;border:0;background:var(--surface-2);color:var(--ink);font-size:26px;font-weight:600;cursor:pointer}
+.lock .pad button:active{background:var(--surface-3)}
+.lock .pad button.ghost{background:none;font-size:14px}
+.lock .fid{border:0;background:none;color:var(--accent);font-weight:700;font-size:14px;display:flex;gap:6px;align-items:center;cursor:pointer}
 /* iPhone (нүүр дэлгэцийн апп): статус мөр, доод зураасны зай */
 body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
 .app{padding-top:env(safe-area-inset-top)}
@@ -570,6 +683,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
       <button data-tab="analytics">Шинжилгээ</button>
       <button data-tab="rules">Миний дүрэм</button>
       <button data-tab="habits">Миний алдаа</button>
+      <button data-tab="juni">Juni · ярилцах</button>
       <div class="sep">Бүртгэл</div>
       <button data-tab="trades">Арилжаанууд</button>
       <button data-tab="form">Шинэ бичлэг</button>
@@ -602,6 +716,9 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
   </div>
 </div>
 
+
+<nav class="tabbar" id="tabbar" aria-label="Үндсэн цэс"><button data-tab="dash"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4zM14 20h6v-9h-6zM4 20h6v-4H4zM14 4v4h6V4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>Самбар</span></button><button data-tab="cal"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Хуанли</span></button><button class="tb-add" id="tbAdd" aria-label="Арилжаа нэмэх"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button><button data-tab="juni"><svg viewBox="0 0 24 24"><path d="M12 3.5 20 18.5H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8.6 14.5h6.8v4H8.6z" fill="currentColor"/><circle cx="10.4" cy="11.6" r="1" fill="currentColor"/><circle cx="13.6" cy="11.6" r="1" fill="currentColor"/></svg><span>Juni</span></button><button id="tbMore" data-more="1"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Цэс</span></button></nav>
+<div class="sheet-bg" id="sheetBg" hidden></div><div class="sheet" id="sheet" hidden></div>
 <div class="bot" id="bot" hidden>
   <div class="bot-bubble" role="status" aria-live="polite">
     <div class="bot-name">Juni <span id="botTime"></span></div>
@@ -984,6 +1101,325 @@ async function initStore(){
     loadVault();
   }
 }
+
+/* ================= Juni — сэтгэл зүйн ярилцагч ================= */
+var juni = {msgs:null, moods:{}, busy:false, sample:null, sampleTried:false, ctl:null, saveT:null};
+var MOODS = [
+  {k:"calm", t:"Тайван", c:"#16896A"},
+  {k:"good", t:"Сайн", c:"#5B4FE6"},
+  {k:"ok", t:"Энгийн", c:"#8E89B2"},
+  {k:"anx", t:"Түгшүүртэй", c:"#A8701A"},
+  {k:"angry", t:"Бухимдсан", c:"#D2476E"},
+  {k:"tired", t:"Ядарсан", c:"#6B7280"},
+  {k:"sad", t:"Гунигтай", c:"#4B6FB5"}
+];
+function juniToday(){ try{ return srvOf(Date.now()).date; }catch(e){ return ymd(new Date()); } }
+function juniLoad(){
+  if(juni.msgs) return Promise.resolve();
+  var done = function(o){
+    o = o || {};
+    juni.msgs = Array.isArray(o.msgs) ? o.msgs : [];
+    juni.moods = o.moods && typeof o.moods === "object" ? o.moods : {};
+  };
+  if(db){
+    return db.doc("juni/chat").get().then(function(sn){ done(sn.exists ? sn.data() : null); }).catch(function(){ done(null); });
+  }
+  try{ done(JSON.parse(localStorage.getItem("xau_juni") || "null")); }catch(e){ done(null); }
+  return Promise.resolve();
+}
+function juniSave(){
+  clearTimeout(juni.saveT);
+  juni.saveT = setTimeout(function(){
+    var data = {msgs: juni.msgs.slice(-300), moods: juni.moods};
+    if(db) db.doc("juni/chat").set(data).catch(function(){});
+    else { try{ localStorage.setItem("xau_juni", JSON.stringify(data)); }catch(e){} }
+  }, 400);
+}
+function juniAvatar(){
+  var sv = document.querySelector("#botBtn svg");
+  return sv ? sv.outerHTML : "";
+}
+function juniCtx(){
+  var tdy = juniToday(), all = state.trades;
+  var td = all.filter(function(t){ return t.date === tdy; });
+  var st = stats(td);
+  var wk = all.filter(function(t){ return t.date && t.date >= ymd(new Date(Date.now()-6*864e5)); });
+  var sw = stats(wk);
+  var broke = td.filter(function(t){ return !followed(t); }).length;
+  var early = wk.filter(isEarly).length, copied = wk.filter(isCopied).length;
+  return {date:tdy, n:td.length, pl:st.pl, max:num(state.settings.maxTrades)||3, broke:broke,
+          wn:wk.length, wpl:sw.pl, early:early, copied:copied, mood:juni.moods[tdy]||""};
+}
+function juniCtxText(c){
+  var m = MOODS.filter(function(x){ return x.k===c.mood; })[0];
+  return "Өнөөдөр ("+c.date+"): "+c.n+" арилжаа (хязгаар "+c.max+"), P/L "+signed(c.pl)+", дүрэм зөрчсөн "+c.broke+"."
+    + " Сүүлийн 7 хоног: "+c.wn+" арилжаа, P/L "+signed(c.wpl)+", эрт хаасан "+c.early+", бусдыг дагасан "+c.copied+"."
+    + (m ? " Өнөөдрийн сэтгэл санаа: "+m.t+"." : "");
+}
+var JUNI_SYS = "Чи бол Juni — Hanako-гийн арилжааны журнал апп доторх халуун дотно, тайван, ухаалаг сэтгэл зүйн ярилцагч (онигири дүртэй). "
+ + "Hanako алт (GOLD) болон GBPJPY арилжаалдаг. Түүний дүрэм: өдөрт ихдээ 3 арилжаа, нэг арилжаанд 2% эрсдэл, нэг сесс дээр 2 цаг. "
+ + "Түүний давтагддаг 2 алдаа: бусдын оролтыг хуулах, айдас/бусдаас болж ашгаа эрт хаах. "
+ + "Зорилго: түүнийг сонсож, сэтгэл санааг нь тайвшруулж, трейдерийн сэтгэл зүй (сахилга бат, FOMO, revenge trade, эрт хаах, алдагдлыг хүлээн зөвшөөрөх, нойр, амралт, амьсгал, хувийн эрүүл мэнд) талаар ойлгомжтой, бодитой ярилцах. "
+ + "Дүрэм: Монгол хэлээр (кирилл), энгийн найрсаг өнгөөр, ихэвчлэн 2–5 өгүүлбэр. Эхлээд мэдрэмжийг нь хүлээн зөвшөөр (гэхдээ сөрөг мэдрэмжийг нь давтаж томруулахгүй), дараа нь нэг бодит ажиглалт эсвэл жижиг дадал санал болго, төгсгөлд ганцхан асуулт асуу. "
+ + "Арилжааны дохио, авах/зарах зөвлөгөө, үнийн таамаг хэзээ ч өгөхгүй. Шүүмжлэхгүй, ичээхгүй. Хэт урт лекц уншихгүй. "
+ + "Хэрэв тэр өөрийгөө гэмтээх, амиа хорлох тухай бичвэл: халамжтайгаар санаа зовж буйгаа хэлж, одоо ойр дотны итгэлтэй хүндээ хандахыг, яаралтай бол 103 руу залгахыг зөөлөн уриал.";
+function juniAI(){
+  if(juni.sampleTried) return Promise.resolve(juni.sample);
+  juni.sampleTried = true;
+  if(!(window.claude && window.claude.use)) return Promise.resolve(null);
+  return window.claude.use("sample").then(function(sm){ juni.sample = sm; return sm; }).catch(function(){ return null; });
+}
+
+/* ---- офлайн Juni (AI-гүй үед) ---- */
+var JUNI_K = [
+  {t:"crisis", r:/амиа|үхмээр|амьдрах хүсэлгүй|өөрийгөө гэмтээ|амь насаа|алга болмоор/i},
+  {t:"revenge", r:/өшөө|буцааж ав|нөхөх|нөхөж|сэргээх гэ|эргүүлж ав/i},
+  {t:"fomo", r:/fomo|хоцор|алдчих вий|хөөцөлд|хөөгөөд|хөөсөн|орж амжаагүй/i},
+  {t:"others", r:/бусд|групп|сигнал|signal|хүмүүс|хүний|найз.*хэлс|хуулс|дагасан|дагаад/i},
+  {t:"early", r:/эрт хаа|эрт гар|tp.*хүр|бага ашиг|айгаад хаа/i},
+  {t:"overtrade", r:/олон арилжаа|дахиад ор|дахин ор|зогсож чадаагүй|хэтэрс|хэт их/i},
+  {t:"fear", r:/айс|айж|ай[хв]|түгш|сандар|стресс|stress|санаа зов|догдл/i},
+  {t:"anger", r:/уур|бухимд|уцаар|залх|үзэн яд|бачим/i},
+  {t:"tired", r:/ядар|нойр|унтаагүй|унтаж чадаагүй|сульд|толгой өв/i},
+  {t:"sad", r:/гуни|уйд|ганцаар|гутар|сэтгэл тавгүй|урам хугар/i},
+  {t:"loss", r:/алд|алдагдал|\bsl\b|стоп|хасаг|минус|хожигдо|шатс/i},
+  {t:"win", r:/ашиг|\btp\b|олсон|олло|плюс|ялс|ногоон/i},
+  {t:"good", r:/баяр|сайхан|тайван|баярла|амжилт|дуртай/i}
+];
+var JUNI_R = {
+  crisis:["Чи үүнийг надад хэлсэнд баярлалаа. Чамайг одоо маш хүнд байгааг ойлгож байна, би чиний төлөө үнэхээр санаа зовж байна. Одоо ганцаараа байлгүй, итгэдэг ойр дотны хүндээ залгаж ярина уу. Яаралтай аюултай санагдвал 103 руу шууд залгаарай. Арилжаа, мөнгө дараа — чи өөрөө хамгийн чухал."],
+  revenge:["Алдагдлаа буцааж авах гэсэн хүсэл маш ойлгомжтой — тархи «шударга бус» зүйлийг шууд засах гэдэг. Гэхдээ revenge trade бараг үргэлж дүрэмгүй, том лоттой орж алдагдлыг хоёр дахин томруулдаг.|Өнөөдрийн зах зээл маргааш ч байна. Дэлгэцээ хааж 15 минут алхаад, дараагийн арилжааг зөвхөн checklist бүрэн хангавал хийе гэж өөртөө амла.|Яг одоо биед чинь юу мэдрэгдэж байна — зүрх хурдан цохилж байна уу, эсвэл гар чичирч байна уу?"],
+  fomo:["Хөдөлгөөнийг хоцорч харах үнэхээр бухимдалтай. FOMO бол «боломж дахиж ирэхгүй» гэсэн хуурмаг мэдрэмж.|Алт өдөр бүр олон setup өгдөг. Хоцорсон хөдөлгөөнийг хөөх нь ихэвчлэн муу үнээр, SL-гүйгээр орохтой адил. Чиний давуу тал бол төлөвлөгөө — хөдөлгөөн биш.|Дараагийн удаа FOMO мэдрэгдэхэд өөрөөсөө «Энэ миний setup мөн үү?» гэж асууж болох уу?"],
+  others:["Бусдын санааг сонсох нь буруу биш, гэхдээ тэдний оролт чиний дүрэм, чиний эрсдэлд тохирохгүй байж болно. Тэгээд үр дүн муу гарахад хоёр дахин гомдмоор санагддаг.|Чиний өгөгдлөөс харахад өөрийн шинжилгээгээр орсон арилжаанууд илүү сахилгатай байдаг. Бусдынхыг зөвхөн «баталгаа» болгож, шийдвэрийг өөрөө гаргаж сурах нь том ахиц.|Өнөөдөр хэний санаа чамайг хамгийн их татсан бэ, тэр үед өөрийн chart юу хэлж байсан бэ?"],
+  early:["Ашгаа эрт хаасныхаа дараа үнэ TP хүрэхийг харах их харамсалтай. Энэ бол айдас — олсноо алдчих вий гэсэн байгалийн хамгаалалт.|Арга: оролтын дараа SL-ээ breakeven руу зөөж, дараа нь дэлгэцээ хэсэг хаах. Харахгүй байх тусам гар хүрэхгүй.|Чамайг эрт хаахад хүргэсэн тэр мөчид юу бодогдож байсан бэ?"],
+  overtrade:["Зогсож чадахгүй хэд хэдэн арилжаа хийх нь ихэвчлэн ядаргаа эсвэл сэтгэл хөдлөлөөс ирдэг. Чи үүнийг анзаарсан нь өөрөө сайн алхам.|Өдрийн хязгаар (3 арилжаа) бол чамайг хязгаарлах гэсэн биш, хамгаалах зорилготой. Хязгаарт хүрмэгц апп-аа хааж, өөр зүйл хий.|Өнөөдөр аль арилжаанаас эхлээд төлөвлөгөөнөөс гарсан гэж санагдаж байна?"],
+  fear:["Түгшүүр мэдрэгдэх нь хэвийн — энэ нь чи эрсдэлээ анхаарч байгаагийн шинж. Гол нь түүнд шийдвэр гаргуулахгүй байх.|Эрсдэлээ жижигрүүлбэл айдас ч жижгэрдэг: дараагийн арилжааг 1% эсвэл хамгийн бага лоттой хий. Доорх «Амьсгалын дасгал»-ыг 1 минут хийгээд үз.|Яг юунаас хамгийн их айж байна — алдагдлаас уу, эсвэл буруу шийдвэр гаргахаас уу?"],
+  anger:["Бухимдсан байгаа нь илт — тэгэх ч эрхтэй. Уурлах нь буруу биш, харин уурласан үедээ арилжаа хийх нь эрсдэлтэй.|Одоохондоо нэг ч арилжаа хийхгүй гэж шийдье. Ус уугаад, 4-4-4-4 амьсгал хий, эсвэл гадаа гараад ир.|Чамайг хамгийн их бухимдуулсан зүйл зах зээл үү, эсвэл өөрийн хийсэн нэг алхам уу?"],
+  tired:["Ядарсан үед тархи эрсдэлийг буруу үнэлж, импульсийн шийдвэр гаргадаг. Энэ бол сул тал биш, биеийн хууль.|Сайн трейдерүүд нойр, хоолоо дүрмийнхээ нэг хэсэг гэж үздэг. Өнөөдөр арилжаагүй амрах нь бас нэг ялалт.|Сүүлийн хэд хоногт хэдэн цаг унтаж байна вэ?"],
+  sad:["Сэтгэл тавгүй байгааг хуваалцсанд баярлалаа. Алдагдал, урам хугарал чиний үнэ цэнийг тодорхойлдоггүй — чи суралцаж буй хүн.|Өнөөдөр өөртөө зөөлөн хандъя: нэг сайн хийсэн зүйлээ (жишээ нь SL тавьсан, журнал бичсэн) санаарай.|Одоо чамд юу хамгийн их тус болох вэ — ярилцах уу, эсвэл жаахан амрах уу?"],
+  loss:["Алдагдал хүлээх үргэлж өвдөлттэй. Гэхдээ SL-ээр хаагдсан алдагдал бол төлөвлөсөн зардал — бизнесийн нэг хэсэг.|Чухал нь алдагдал биш, түүний дараах алхам: дараагийн арилжааг яаралгүй, checklist-ээр хийх.|Энэ арилжаа чиний төлөвлөгөөний дагуу байсан уу, эсвэл сэтгэл хөдлөлөөр орсон уу?"],
+  win:["Сайн байна! Ашиг олсондоо баярлах эрхтэй.|Энэ арилжаанд юу зөв ажилласныг тэмдэглэж аваарай — давтах боломжтой үйл явц бол азаас илүү үнэтэй. Мөн ашгийн дараах хэт итгэлээс болгоомжил.|Энэ удаад өмнөхөөсөө юуг өөрөөр хийсэн бэ?"],
+  good:["Тайван, сайхан байгаа чинь мэдрэгдэж байна. Ийм төлөв бол арилжааны хамгийн сайн суурь.|Энэ мэдрэмжийг юу бий болгосныг (нойр, хөдөлгөөн, төлөвлөгөө) тэмдэглэвэл дараа нь давтахад амар.|Өнөөдрийг юугаар илүү сайхан болгох вэ?"],
+  none:["Сонсож байна. Энэ талаар бичсэнд баярлалаа.|Сэтгэл санааг үгээр илэрхийлэх нь өөрөө стрессийг багасгадаг — журнал бичих нь трейдерүүдийн хамгийн хүчтэй хэрэгсэл.|Өнөөдрийн арилжааны үеэр чамд хамгийн их нөлөөлсөн мэдрэмж юу байсан бэ?"]
+};
+var MOOD_R = {
+  calm:"Тайван байгаа нь гоё. Ийм үед дүрмээ баримтлах хамгийн амар байдаг. Өнөөдөр ямар төлөвлөгөөтэй байна?",
+  good:"Сайхан байна! Сайн сэтгэл санааг хадгалъя — хэт итгэлд автахгүйгээр. Өнөөдөр юу чамайг баярлуулав?",
+  ok:"Энгийн өдөр бас сайн өдөр. Өнөөдөр зах зээлд орохоосоо өмнө checklist-ээ нэг харъя. Юу бодож байна?",
+  anx:"Түгшүүртэй байгааг хэлсэнд баярлалаа. Арилжаанаас өмнө 1 минут амьсгалын дасгал хийгээд, эрсдэлээ жижиг байлгая. Юу санаа зовоож байна?",
+  angry:"Бухимдсан үед арилжаа хийхгүй байх нь хамгийн ухаалаг шийдвэр. Эхлээд жаахан амарч, амьсгалаа тайвшруулъя. Юу болсон бэ?",
+  tired:"Ядарсан үед шийдвэр муудах нь хэвийн. Өнөөдөр хязгаараа 1–2 арилжаа болгох эсвэл амрах нь зөв байж магадгүй. Сайн унтсан уу?",
+  sad:"Гунигтай байгаа чинь ойлгогдож байна. Өнөөдөр өөртөө зөөлөн хандъя — мөнгө, арилжаа хүлээж чадна. Ярилцмаар байна уу?"
+};
+function juniOffline(text, c){
+  var hit = null;
+  for(var i=0;i<JUNI_K.length;i++){ if(JUNI_K[i].r.test(text)){ hit = JUNI_K[i].t; break; } }
+  var arr = JUNI_R[hit||"none"], pick = arr[Math.floor(Math.random()*arr.length)].split("|");
+  if(hit === "crisis") return pick[0];
+  var data = "";
+  if(c.n > c.max) data = "Өнөөдөр "+c.n+" арилжаа хийсэн байна — хязгаар "+c.max+". Үлдсэн өдрийг арилжаагүй өнгөрөөвөл ямар вэ?";
+  else if(c.broke > 0) data = "Өнөөдөр "+c.broke+" арилжаа дүрмээс гарсан байна — буруутгах гэсэнгүй, зүгээр анзаарахад тус болно.";
+  else if(c.n > 0 && c.pl < 0 && hit !== "loss") data = "Өнөөдрийн дүн "+signed(c.pl)+" байна. Энэ нь чиний үнэ цэнийг биш, ганц өдрийг л харуулна.";
+  return [pick[0], pick[1], data, pick[2]].filter(Boolean).join("\n\n");
+}
+
+function viewJuni(){
+  if(!juni.msgs){ juniLoad().then(function(){ if(state.tab==="juni") render(); }); return '<div class="juni"><div class="dim">Ачаалж байна…</div></div>'; }
+  var tdy = juniToday();
+  if(!juni.msgs.length){
+    juni.msgs.push({r:"j", t:"Сайн уу, Hanako. Би Juni байна\n\nЭнд өнөөдрийн сэтгэл санаа, хийсэн арилжаа, алдсан ч, олсон ч — юу ч бичиж болно. Би шүүмжлэхгүй, сонсоод хамт бодно.\n\nӨнөөдөр ямархуу байна?", at:Date.now()});
+  }
+  var lastDay = "", chat = juni.msgs.slice(-80).map(function(m){
+    var d = new Date(m.at), day = ymd(d), hd = "";
+    if(day !== lastDay){ hd = '<div class="chat-day">'+(day===ymd(new Date())?"Өнөөдөр":day)+'</div>'; lastDay = day; }
+    return hd + '<div class="msg '+(m.r==="u"?"u":"j")+'">'+esc(m.t)+'<span class="when">'+pad2(d.getHours())+':'+pad2(d.getMinutes())+'</span></div>';
+  }).join("");
+  if(juni.busy) chat += '<div class="msg j typing" id="juniTyping">Juni бодож байна…</div>';
+  var cur = juni.moods[tdy] || "";
+  return '<div class="juni">'
+    + '<div class="juni-head"><div class="juni-av">'+juniAvatar()+'</div><div><b>Juni</b><span>Сэтгэл санаагаа хуваалц · трейдерийн сэтгэл зүй</span></div></div>'
+    + '<div><div class="juni-note" style="margin-bottom:6px">Өнөөдөр ямар байна?</div><div class="moods">'
+      + MOODS.map(function(m){ return '<button class="mood" data-mood="'+m.k+'" aria-pressed="'+(cur===m.k)+'"><i style="background:'+m.c+'"></i>'+m.t+'</button>'; }).join("")
+    + '</div></div>'
+    + '<div class="juni-tools"><button class="btn sm" id="breathBtn">Амьсгалын дасгал · 1 мин</button>'
+      + '<button class="btn sm ghost" data-jq="Өнөөдрийн арилжаагаа дүгнэж өгөөч">Өдрөө дүгнэх</button>'
+      + '<button class="btn sm ghost" data-jq="Арилжааны өмнө сэтгэлээ яаж бэлдэх вэ?">Арилжааны өмнө</button></div>'
+    + '<div class="chat" id="chat">'+chat+'</div>'
+    + '<div class="juni-in"><textarea id="juniText" rows="1" placeholder="Юу ч бичиж болно…"></textarea>'
+      + '<button class="send" id="juniSend" aria-label="Илгээх"'+(juni.busy?" disabled":"")+'><svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 12l16-8-6 16-2.5-6.5z" fill="currentColor"/></svg></button></div>'
+    + '<div class="juni-note">'+(window.claude ? 'Juni Claude-ийн тусламжтайгаар хариулна.' : 'Энэ төхөөрөмж дээр Juni офлайн горимоор хариулна. Claude дээрх хувилбарт илүү гүнзгий ярилцана.')
+      + ' Juni бол эмч биш — хүнд үед ойр дотны хүн эсвэл мэргэжлийн хүнд хандаарай.</div>'
+    + '</div>';
+}
+function juniScroll(){
+  var c = document.getElementById("chat"); if(!c) return;
+  var last = c.lastElementChild; if(last) last.scrollIntoView({block:"end"});
+}
+function juniSend(text){
+  text = (text||"").trim(); if(!text || juni.busy) return;
+  juni.msgs.push({r:"u", t:text, at:Date.now()});
+  juni.busy = true; juniSave(); render(); juniScroll();
+  var c = juniCtx();
+  juniAI().then(function(sm){
+    if(!sm){
+      setTimeout(function(){ juniReply(juniOffline(text, c)); }, 700 + Math.random()*600);
+      return;
+    }
+    var hist = juni.msgs.slice(-16, -1).map(function(m){ return (m.r==="u"?"Hanako: ":"Juni: ")+m.t; }).join("\n");
+    var input = JUNI_SYS + "\n\nӨгөгдөл: " + juniCtxText(c)
+      + (hist ? "\n\nӨмнөх яриа:\n"+hist : "")
+      + "\n\nHanako-гийн шинэ мессеж: " + text
+      + "\n\nJuni-гийн хариуг л бич (угтвар нэргүйгээр).";
+    sm(input, {cache:false, modelTier:"default", onText:function(u){ var el = document.getElementById("juniTyping"); if(el){ el.classList.remove("typing"); el.textContent = u.text; juniScroll(); } } })
+      .then(function(res){ juniReply((res && res.text || "").trim() || juniOffline(text, c)); })
+      .catch(function(e){ juniReply(juniOffline(text, c)); });
+  });
+}
+function juniReply(t){
+  juni.busy = false;
+  juni.msgs.push({r:"j", t:t, at:Date.now()});
+  juniSave();
+  if(state.tab === "juni"){ render(); juniScroll(); }
+}
+function juniMood(k){
+  var tdy = juniToday();
+  juni.moods[tdy] = k;
+  var m = MOODS.filter(function(x){ return x.k===k; })[0];
+  juni.msgs.push({r:"u", t:"Өнөөдөр би "+m.t.toLowerCase()+" байна.", at:Date.now()});
+  juniSave();
+  juni.busy = true; render(); juniScroll();
+  setTimeout(function(){ juniReply(MOOD_R[k]); }, 600);
+}
+function breathe(){
+  var d = document.createElement("div"); d.className = "breath"; d.id = "breath";
+  d.innerHTML = '<div class="lbl" id="brLbl">Бэлдэцгээе</div><div class="ring" id="brRing"></div>'
+    + '<div class="sub">4 сек амьсгал ав · 4 сек барь · 4 сек гарга · 4 сек барь. Мөрөө сулла, эрүүгээ тавь.</div>'
+    + '<button class="btn" id="brClose">Дуусгах</button>';
+  document.body.appendChild(d);
+  var steps = [["Амьсгал ав",1],["Барь",1],["Гарга",.55],["Барь",.55]], i = 0, rounds = 0;
+  function tick(){
+    var ring = document.getElementById("brRing"), lbl = document.getElementById("brLbl");
+    if(!ring) return;
+    if(rounds >= 4){ lbl.textContent = "Сайн байна. Одоо ямар байна?"; return; }
+    var st = steps[i]; lbl.textContent = st[0]; ring.style.transform = "scale("+st[1]+")";
+    i = (i+1) % 4; if(i === 0) rounds++;
+    d._t = setTimeout(tick, 4000);
+  }
+  d._t = setTimeout(tick, 600);
+  document.getElementById("brClose").onclick = function(){ clearTimeout(d._t); d.remove(); };
+}
+
+/* ================= утасны цэс (sheet) ================= */
+function sheetOpen(html){
+  var sh = document.getElementById("sheet"), bg = document.getElementById("sheetBg");
+  sh.innerHTML = '<div class="grab"></div>' + html; sh.hidden = false; bg.hidden = false;
+}
+function sheetClose(){ document.getElementById("sheet").hidden = true; document.getElementById("sheetBg").hidden = true; }
+function sheetItem(act, ic, t, sub){ return '<button class="it" data-act="'+act+'"><i>'+ic+'</i><span>'+t+(sub?'<small>'+sub+'</small>':'')+'</span></button>'; }
+function addSheet(){
+  sheetOpen('<h4>Арилжаа нэмэх</h4>'
+    + sheetItem("shot","◉","Зургаар нэмэх","MT5-ын дэлгэцийн зургаа сонго")
+    + sheetItem("tab:form","✎","Гараар бичих","Шинэ бичлэгийн маягт")
+    + sheetItem("tab:import","⇩","MT5 тайлан импортлох","History .html файл"));
+}
+function moreSheet(){
+  sheetOpen('<h4>Цэс</h4>'
+    + sheetItem("tab:trades","≡","Арилжаанууд")
+    + sheetItem("tab:analytics","◔","Шинжилгээ")
+    + sheetItem("tab:rules","✓","Миний дүрэм")
+    + sheetItem("tab:habits","!","Миний алдаа")
+    + sheetItem("tab:import","⇩","MT5 импорт")
+    + sheetItem("tab:settings","⚙","Тохиргоо","Түгжээ, нөөц, апп суулгах")
+    + sheetItem("theme","◐","Гэрэл / харанхуй"));
+}
+document.getElementById("tabbar").addEventListener("click", function(e){
+  var b = e.target.closest("button"); if(!b) return;
+  if(b.id === "tbAdd"){ addSheet(); return; }
+  if(b.id === "tbMore"){ moreSheet(); return; }
+  if(b.dataset.tab){ state.tab = b.dataset.tab; state.openRow = null; render(); window.scrollTo(0,0); }
+});
+document.getElementById("sheetBg").addEventListener("click", sheetClose);
+document.getElementById("sheet").addEventListener("click", function(e){
+  var b = e.target.closest("[data-act]"); if(!b) return;
+  var a = b.dataset.act; sheetClose();
+  if(a === "shot"){ var f = document.getElementById("shotTopFile"); if(f) f.click(); return; }
+  if(a === "theme"){ document.getElementById("themeBtn").click(); return; }
+  if(a.indexOf("tab:") === 0){ if(a === "tab:form") state.editing = null; state.tab = a.slice(4); state.openRow = null; render(); window.scrollTo(0,0); }
+});
+
+/* ================= апп түгжээ (PIN / Face ID) ================= */
+var lockSt = {pin:""};
+function lockCfg(){ try{ return JSON.parse(localStorage.getItem("xau_lock") || "null") || {on:false}; }catch(e){ return {on:false}; } }
+function lockSet(c){ try{ localStorage.setItem("xau_lock", JSON.stringify(c)); }catch(e){} }
+function sha(s){ return crypto.subtle.digest("SHA-256", new TextEncoder().encode("tn:"+s)).then(function(b){ return u8b64(new Uint8Array(b)); }); }
+function lockShow(){
+  var c = lockCfg(); if(!c.on || document.getElementById("lock")) return;
+  var d = document.createElement("div"); d.className = "lock"; d.id = "lock";
+  d.innerHTML = '<img src="apple-touch-icon.png" alt="" onerror="this.style.display=\'none\'"><h2>Trade notes</h2>'
+    + '<div class="dots" id="lockDots"><i></i><i></i><i></i><i></i></div>'
+    + '<div class="pad">' + [1,2,3,4,5,6,7,8,9].map(function(n){ return '<button data-k="'+n+'">'+n+'</button>'; }).join("")
+    + (c.cred ? '<button class="ghost" data-k="fid">Face ID</button>' : '<span></span>')
+    + '<button data-k="0">0</button><button class="ghost" data-k="del">Устгах</button></div>';
+  document.body.appendChild(d);
+  lockSt.pin = "";
+  d.addEventListener("click", function(e){
+    var b = e.target.closest("[data-k]"); if(!b) return;
+    var k = b.dataset.k;
+    if(k === "fid") return lockFace();
+    if(k === "del") lockSt.pin = lockSt.pin.slice(0,-1);
+    else if(lockSt.pin.length < 4) lockSt.pin += k;
+    lockDots();
+    if(lockSt.pin.length === 4){
+      var tryPin = lockSt.pin;
+      sha(tryPin).then(function(h){
+        if(h === lockCfg().pin){ lockOpen(); }
+        else { var dd = document.getElementById("lockDots"); dd.classList.remove("err"); void dd.offsetWidth; dd.classList.add("err"); lockSt.pin = ""; setTimeout(lockDots, 350); }
+      });
+    }
+  });
+  if(c.cred) setTimeout(lockFace, 400);
+}
+function lockDots(){ var d = document.getElementById("lockDots"); if(!d) return; Array.prototype.forEach.call(d.children, function(x,i){ x.classList.toggle("on", i < lockSt.pin.length); }); }
+function lockOpen(){ var d = document.getElementById("lock"); if(d) d.remove(); try{ sessionStorage.setItem("xau_unlocked", String(Date.now())); }catch(e){} }
+function lockFace(){
+  var c = lockCfg(); if(!c.cred || !window.PublicKeyCredential) return;
+  navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)), timeout:60000, userVerification:"required",
+    allowCredentials:[{type:"public-key", id:b64u8(c.cred)}]}}).then(function(r){ if(r) lockOpen(); }).catch(function(){});
+}
+function faceSetup(){
+  if(!window.PublicKeyCredential){ toast("Энэ төхөөрөмж Face ID-г дэмжихгүй байна"); return; }
+  navigator.credentials.create({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)), rp:{name:"Trade notes"},
+    user:{id:crypto.getRandomValues(new Uint8Array(16)), name:"trade-notes", displayName:"Trade notes"},
+    pubKeyCredParams:[{type:"public-key", alg:-7},{type:"public-key", alg:-257}],
+    authenticatorSelection:{authenticatorAttachment:"platform", userVerification:"required", residentKey:"preferred"}, timeout:60000}})
+  .then(function(cr){
+    var c = lockCfg(); c.cred = u8b64(new Uint8Array(cr.rawId)); c.on = true;
+    if(!c.pin) return sha("0000").then(function(h){ c.pin = h; lockSet(c); toast("Face ID идэвхжлээ"); render(); });
+    lockSet(c); toast("Face ID идэвхжлээ"); render();
+  }).catch(function(){ toast("Face ID тохируулж чадсангүй"); });
+}
+function lockInit(){
+  if(window.claude) return;
+  var c = lockCfg(); if(!c.on) return;
+  var u = 0; try{ u = num(sessionStorage.getItem("xau_unlocked")); }catch(e){}
+  if(!u) lockShow();
+  var hidAt = 0;
+  document.addEventListener("visibilitychange", function(){
+    if(document.hidden){ hidAt = Date.now(); }
+    else if(hidAt && Date.now() - hidAt > 5*60*1000){ try{ sessionStorage.removeItem("xau_unlocked"); }catch(e){} lockShow(); }
+  });
+}
+function lockPanel(){
+  if(window.claude) return "";
+  var c = lockCfg();
+  return '<div class="panel"><header><h3>Апп түгжээ</h3></header>'
+    + '<div style="font-size:13.5px;display:flex;flex-direction:column;gap:10px;line-height:1.5">'
+      + '<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="lockOn"'+(c.on?" checked":"")+'> Апп нээхэд PIN / Face ID асуух</label>'
+      + '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><input id="lockPin" inputmode="numeric" maxlength="4" placeholder="Шинэ PIN (4 орон)" style="width:150px"><button class="btn sm" id="lockPinSave">PIN солих</button></div>'
+      + '<div><button class="btn sm primary" id="faceBtn">'+(c.cred?"Face ID дахин тохируулах":"Face ID идэвхжүүлэх")+'</button></div>'
+      + '<div class="dim" style="font-size:12.5px">Анхны PIN: 0000. Апп-аас 5 минутаас удаан гарвал дахин асууна.</div>'
+    + '</div></div>';
+}
 /* ---- утасны апп (PWA): service worker, суулгах заавар ---- */
 var pwa = {prompt:null};
 var SHARE_SVG = '<svg class="share-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Share"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/></svg>';
@@ -1045,6 +1481,7 @@ function vaultApply(o, ver){
   state.usingDemo = false; state.calMonth = null;
   try{ localStorage.setItem("xau_hide_demo","1"); localStorage.setItem("xau_vault_seen", ver || ""); }catch(e){}
   saveLocal(); applyRules(); vaultClose(); render();
+  if(!localStorage.getItem("xau_lock")) sha("0000").then(function(h){ lockSet({on:true, pin:h}); try{ sessionStorage.setItem("xau_unlocked", String(Date.now())); }catch(e){} });
   toast("Таны өгөгдөл ачааллаа · "+o.trades.length+" арилжаа");
 }
 function vaultClose(){ var v = document.getElementById("vault"); if(v) v.remove(); }
@@ -1727,7 +2164,7 @@ function viewCalendar(){
   var first = new Date(y, m, 1);
   var offset = (first.getDay() + 6) % 7;
   var start = new Date(y, m, 1 - offset);
-  var cells = DOW.map(function(d){ return '<div class="cal-dow">'+d+'</div>'; }).join("") + '<div class="cal-dow">Долоо хоног</div>';
+  var cells = DOW.slice(0,5).map(function(d){ return '<div class="cal-dow">'+d+'</div>'; }).join("") + '<div class="cal-dow wk">Долоо хоног</div>';
   var cur = new Date(start), weeks = [];
   var newsByDay = {};
   allEvents().forEach(function(e){ if(e.imp >= 3){ var d = srvOf(e.t_ms).date; (newsByDay[d] = newsByDay[d] || []).push(e); } });
@@ -1741,6 +2178,7 @@ function viewCalendar(){
       var ds = stats(dayList);
       var isOut = cur.getMonth() !== m;
       if(!isOut){ weekPl += ds.pl; weekN += dayList.length; }
+      if(i >= 5){ cur.setDate(cur.getDate()+1); continue; }
       var tone = dayList.length && !isOut ? (ds.pl>0.0001?"win":ds.pl<-0.0001?"loss":"") : "";
       var big = Math.abs(ds.pl) > peak*0.6 ? " big" : "";
       rendered += '<button type="button" class="cal-cell'+(isOut?" out":"")+(dayList.length&&!isOut?" has":"")+(tone?" "+tone:"")+big+'"'
@@ -1749,7 +2187,7 @@ function viewCalendar(){
           + ((newsByDay[key]||[]).length && !isOut ? '<span class="cal-news-wrap">'+newsByDay[key].slice(0,2).map(function(e){ return '<span class="cal-news" title="'+esc(e.title)+'">'+esc(e.code)+'</span>'; }).join("")+'</span>' : '')
         + '</span>'
         + (dayList.length&&!isOut
-            ? '<span class="p '+cls(ds.pl)+'">'+signed(ds.pl)+'</span><span class="c">'+dayList.length+' арилжаа</span>'
+            ? '<span class="p '+cls(ds.pl)+'">'+signed(ds.pl)+'</span><span class="c">'+dayList.length+' арилжаа</span><span class="cn">'+dayList.length+'×</span>'
             : '')
         + '</button>';
       cur.setDate(cur.getDate()+1);
@@ -1787,13 +2225,13 @@ function viewCalendar(){
   return '<div class="cal-layout"><div class="cal-main">'
     + '<div class="sect-head" style="margin-top:0"><span class="eyebrow">Өдрийн P/L</span><span class="rule"></span></div>'
     + kpiHtml
-    + '<div class="panel" style="margin-top:14px">'
+    + '<div class="panel cal-panel" style="margin-top:14px">'
       + '<div class="cal-bar">'
         + '<button class="btn sm ghost" data-mon="-1">‹</button>'
         + '<span class="cal-month">'+monthLabel(ym)+'</span>'
         + '<button class="btn sm ghost" data-mon="1">›</button>'
-        + '<button class="btn sm ghost" data-mon="0">Одоогийн сар</button>'
-        + '<span class="dim" style="margin-left:auto;font-size:12.5px">Өдөр дээр дарж тухайн өдрийн арилжааг нээнэ</span>'
+        + '<button class="btn sm ghost" data-mon="0">Энэ сар</button>'
+        + '<span class="dim cal-hint" style="margin-left:auto;font-size:12.5px">Өдөр дээр дарж тухайн өдрийн арилжааг нээнэ</span>'
       + '</div>'
       + '<div class="chart-wrap"><div class="cal-grid">'+cells+'</div></div>'
     + '</div>'
@@ -2039,6 +2477,7 @@ function viewSettings(){
       + (vault.file ? '<div><button class="btn sm" id="vaultOpenBtn">Нууц үгтэй өгөгдөл нээх</button> <span class="dim" style="font-size:12.5px">— сайтад хадгалсан өөрийн арилжааг энэ төхөөрөмж рүү ачаална</span></div>' : '')
     + '</div>'
   + '</div>'
+  + lockPanel()
   + (window.claude ? '' : '<div class="panel"><header><h3>Утсанд апп болгох</h3></header>'
     + '<div style="font-size:13.5px;line-height:1.6;display:flex;flex-direction:column;gap:8px">'
       + (isStandalone() ? '<div><b style="color:var(--win)">✓ Апп хэлбэрээр нээгдсэн байна.</b></div>' : '')
@@ -2684,6 +3123,12 @@ function shotRead(files){
 document.getElementById("view").addEventListener("change", function(e){
   if(e.target.id === "shotFile" && e.target.files && e.target.files.length) shotRead(e.target.files);
 });
+document.getElementById("view").addEventListener("keydown", function(e){
+  if(e.target.id === "juniText" && e.key === "Enter" && !e.shiftKey && !e.isComposing){ e.preventDefault(); var v = e.target.value; e.target.value = ""; juniSend(v); }
+});
+document.getElementById("view").addEventListener("input", function(e){
+  if(e.target.id === "juniText"){ e.target.style.height = "auto"; e.target.style.height = Math.min(140, e.target.scrollHeight)+"px"; }
+});
 document.getElementById("view").addEventListener("click", function(e){
   var b = e.target.closest("button"); if(!b) return;
   if(b.id === "shotStop"){ if(shot.ctl) shot.ctl.abort(); return; }
@@ -2786,7 +3231,7 @@ document.getElementById("view").addEventListener("input", function(e){
 });
 
 /* ================= render ================= */
-var TITLES = {dash:"Самбар", cal:"P&L хуанли", analytics:"Шинжилгээ", playbook:"Стратегийн ном", rules:"Миний дүрэм", habits:"Миний алдаа",
+var TITLES = {juni:"Juni", dash:"Самбар", cal:"P&L хуанли", analytics:"Шинжилгээ", playbook:"Стратегийн ном", rules:"Миний дүрэм", habits:"Миний алдаа",
               trades:"Арилжаанууд", form:"Шинэ бичлэг", import:"MT5 импорт", settings:"Тохиргоо"};
 function render(){
   invalidateComp(); _ev.valid = false;
@@ -2811,9 +3256,10 @@ function render(){
     : state.tab==="trades" ? viewTrades()
     : state.tab==="form" ? viewForm()
     : state.tab==="import" ? viewImport()
+    : state.tab==="juni" ? viewJuni()
     : viewSettings();
 
-  Array.prototype.forEach.call(document.querySelectorAll('#nav button'), function(b){
+  Array.prototype.forEach.call(document.querySelectorAll('#nav button, #tabbar button[data-tab]'), function(b){
     if(b.dataset.tab===state.tab) b.setAttribute("aria-current","true");
     else b.removeAttribute("aria-current");
   });
@@ -2901,6 +3347,13 @@ document.getElementById("view").addEventListener("click", function(e){
   if(e.target.id === "exportCsv"){ exportCsv(); return; }
   if(e.target.id === "exportBackup"){ exportBackup(); return; }
   if(e.target.id === "vaultOpenBtn"){ vaultAsk(); return; }
+  var md = e.target.closest("[data-mood]"); if(md){ juniMood(md.dataset.mood); return; }
+  var jq = e.target.closest("[data-jq]"); if(jq){ juniSend(jq.dataset.jq); return; }
+  if(e.target.closest("#juniSend")){ var ta = document.getElementById("juniText"); if(ta){ var v = ta.value; ta.value = ""; juniSend(v); } return; }
+  if(e.target.id === "breathBtn"){ breathe(); return; }
+  if(e.target.id === "faceBtn"){ faceSetup(); return; }
+  if(e.target.id === "lockPinSave"){ var pv = (document.getElementById("lockPin").value||"").trim(); if(!/^\d{4}$/.test(pv)){ toast("4 оронтой тоо оруулна уу"); return; } sha(pv).then(function(h){ var c = lockCfg(); c.pin = h; c.on = true; lockSet(c); toast("PIN солигдлоо"); render(); }); return; }
+  if(e.target.id === "lockOn"){ var c0 = lockCfg(); c0.on = e.target.checked; var fin = function(){ lockSet(c0); toast(c0.on?"Түгжээ асаалаа":"Түгжээ унтраалаа"); }; if(c0.on && !c0.pin) sha("0000").then(function(h){ c0.pin = h; fin(); }); else fin(); return; }
   if(e.target.id === "pwaInstall" && pwa.prompt){ pwa.prompt.prompt(); pwa.prompt = null; return; }
   if(e.target.id === "mt5Parse"){
     var txt = (document.getElementById("mt5Paste")||{}).value || "";
@@ -3269,6 +3722,7 @@ loadLocal();
 render();
 initStore();
 pwaInit();
+lockInit();
 setTimeout(function(){ botSay(true); }, 3200);
 setInterval(botTick, 30000);
 setInterval(botRoam, 12000);
