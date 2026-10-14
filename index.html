@@ -1193,6 +1193,7 @@ function gemCall(model, key, body){
       }
       var m = (j.error && j.error.message) || ("HTTP "+r.status);
       if(r.status === 404) throw gemErr("model", m);
+      if(r.status >= 500 || /high demand|overloaded|unavailable/i.test(m)) throw gemErr("busy", m);
       if(r.status === 429) throw gemErr("quota", m);
       if(r.status === 400 && /api key/i.test(m)) throw gemErr("key", m);
       if(r.status === 401 || r.status === 403) throw gemErr("key", m);
@@ -1214,10 +1215,15 @@ function gemAsk(sys, msgs, key){
   var body = {system_instruction:{parts:[{text:sys}]}, contents:contents, generationConfig:{temperature:0.8, maxOutputTokens:900}};
   var saved = ""; try{ saved = localStorage.getItem("xau_gem_model") || ""; }catch(e){}
   var list = saved ? [saved].concat(GEM_MODELS.filter(function(x){ return x!==saved; })) : GEM_MODELS.slice();
+  var busyErr = null;
   function next(i){
-    if(i >= list.length) return Promise.reject(gemErr("model","Тохирох загвар олдсонгүй"));
+    if(i >= list.length) return Promise.reject(busyErr || gemErr("model","Тохирох загвар олдсонгүй"));
     return gemCall(list[i], key, body).then(function(t){ try{ localStorage.setItem("xau_gem_model", list[i]); }catch(e){} return t; })
-      .catch(function(e){ if(e.code === "model") return next(i+1); throw e; });
+      .catch(function(e){
+        if(e.code === "model") return next(i+1);
+        if(e.code === "busy" || e.code === "quota" || e.code === "empty"){ busyErr = busyErr || e; return next(i+1); }
+        throw e;
+      });
   }
   return next(0);
 }
@@ -1344,7 +1350,7 @@ function juniSend(text){
       gemAsk(JUNI_SYS + "\n\nӨнөөдрийн өгөгдөл: " + juniCtxText(c), hist)
         .then(function(t){ juniReply(t); })
         .catch(function(e){
-          var why = e.code==="quota" ? "Өнөөдрийн үнэгүй AI хязгаар дууссан тул" : e.code==="key" ? "AI түлхүүр буруу байна (Тохиргоо → Juni AI) тул" : "AI-тай холбогдож чадсангүй тул";
+          var why = e.code==="busy" ? "Google-ийн AI серверт түр ачаалал их байгаа тул" : e.code==="quota" ? "Өнөөдрийн үнэгүй AI хязгаар дууссан тул" : e.code==="key" ? "AI түлхүүр буруу байна (Тохиргоо → Juni AI) тул" : "AI-тай холбогдож чадсангүй тул";
           juniReply(juniOffline(text, c) + "\n\n(" + why + " офлайн горимоор хариуллаа.)");
         });
       return;
@@ -3454,7 +3460,7 @@ document.getElementById("view").addEventListener("click", function(e){
     gemAsk("Зөвхөн «OK» гэж хариул.", [{r:"u", t:"Тест"}], kv)
       .then(function(){ gemSetKey(kv); toast("AI холбогдлоо — Juni одоо ухаалаг ярилцана"); render(); })
       .catch(function(er){
-        if(er.code === "quota"){ gemSetKey(kv); toast("Түлхүүр хадгалагдлаа (одоохондоо хязгаарт хүрсэн)"); render(); return; }
+        if(er.code === "quota" || er.code === "busy"){ gemSetKey(kv); toast("Түлхүүр хадгалагдлаа ✓ (Google одоохондоо завгүй — Juni дараа нь хариулна)"); render(); return; }
         e.target.disabled = false; e.target.textContent = "Хадгалах";
         toast(er.code==="key" ? "Түлхүүр буруу байна" : "Холбогдсонгүй: "+(er.message||"").slice(0,80));
       });
