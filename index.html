@@ -1164,29 +1164,103 @@ var JUNI_SYS = "Чи бол Juni — Hanako-гийн арилжааны журн
  + "Арилжааны дохио, авах/зарах зөвлөгөө, үнийн таамаг хэзээ ч өгөхгүй. Шүүмжлэхгүй, ичээхгүй. Хэт урт лекц уншихгүй. "
  + "Хэрэв тэр өөрийгөө гэмтээх, амиа хорлох тухай бичвэл: халамжтайгаар санаа зовж буйгаа хэлж, одоо ойр дотны итгэлтэй хүндээ хандахыг, яаралтай бол 103 руу залгахыг зөөлөн уриал.";
 function juniAI(){
-  if(juni.sampleTried) return Promise.resolve(juni.sample);
-  juni.sampleTried = true;
+  if(juni.sample) return Promise.resolve(juni.sample);
   if(!(window.claude && window.claude.use)) return Promise.resolve(null);
-  return window.claude.use("sample").then(function(sm){ juni.sample = sm; return sm; }).catch(function(){ return null; });
+  return window.claude.use("sample").then(function(sm){ juni.sample = sm || null; if(!sm) juni.why = "nosample"; return sm || null; })
+    .catch(function(e){ juni.why = (e && e.code) || "use_failed"; return null; });
+}
+function juniWhy(code){
+  if(code === "not_granted") return "Claude-д хандах зөвшөөрөл олгогдоогүй байна — хуудсаа дахин ачаалаад гарч ирэх асуултад «Allow / Зөвшөөрөх» дарна уу";
+  if(code === "rate_limited") return "Claude түр завгүй байна, хэдэн минутын дараа дахин бичээрэй";
+  if(code === "nosample") return "энэ харагдацад Claude AI нээгдсэнгүй — claude.ai-г хөтөч дээр нээгээд дахин оролдоорой";
+  return "Claude AI хариулсангүй" + (code ? " ("+code+")" : "");
+}
+/* ---- Google Gemini (үнэгүй түлхүүр, зөвхөн энэ төхөөрөмж дээр) ---- */
+var GEM_MODELS = ["gemini-flash-latest","gemini-3.8-flash","gemini-3.6-flash","gemini-3.5-flash-lite","gemini-flash-lite-latest","gemini-3.1-flash-lite"];
+function gemKey(){ try{ return localStorage.getItem("xau_gem_key") || ""; }catch(e){ return ""; } }
+function gemSetKey(k){ try{ if(k) localStorage.setItem("xau_gem_key", k); else { localStorage.removeItem("xau_gem_key"); localStorage.removeItem("xau_gem_model"); } }catch(e){} }
+function gemErr(code, msg){ var e = new Error(msg||code); e.code = code; return e; }
+function gemCall(model, key, body){
+  return fetch("https://generativelanguage.googleapis.com/v1beta/models/"+model+":generateContent", {
+    method:"POST", headers:{"Content-Type":"application/json","x-goog-api-key":key}, body:JSON.stringify(body)
+  }).then(function(r){
+    return r.json().catch(function(){ return {}; }).then(function(j){
+      if(r.ok){
+        var parts = (((j.candidates||[])[0]||{}).content||{}).parts || [];
+        var t = parts.filter(function(x){ return x.text && !x.thought; }).map(function(x){ return x.text; }).join("").trim();
+        if(!t) throw gemErr("empty");
+        return t;
+      }
+      var m = (j.error && j.error.message) || ("HTTP "+r.status);
+      if(r.status === 404) throw gemErr("model", m);
+      if(r.status === 429) throw gemErr("quota", m);
+      if(r.status === 400 && /api key/i.test(m)) throw gemErr("key", m);
+      if(r.status === 401 || r.status === 403) throw gemErr("key", m);
+      throw gemErr("other", m);
+    });
+  });
+}
+/* sys: системийн заавар; msgs: [{r:"u"|"j", t}] — сүүлийнх нь хэрэглэгчийнх */
+function gemAsk(sys, msgs, key){
+  key = key || gemKey(); if(!key) return Promise.reject(gemErr("nokey"));
+  var contents = [];
+  msgs.forEach(function(m){
+    var role = m.r === "u" ? "user" : "model";
+    if(!contents.length && role !== "user") return;
+    var last = contents[contents.length-1];
+    if(last && last.role === role) last.parts[0].text += "\n\n" + m.t;
+    else contents.push({role:role, parts:[{text:m.t}]});
+  });
+  var body = {system_instruction:{parts:[{text:sys}]}, contents:contents, generationConfig:{temperature:0.8, maxOutputTokens:900}};
+  var saved = ""; try{ saved = localStorage.getItem("xau_gem_model") || ""; }catch(e){}
+  var list = saved ? [saved].concat(GEM_MODELS.filter(function(x){ return x!==saved; })) : GEM_MODELS.slice();
+  function next(i){
+    if(i >= list.length) return Promise.reject(gemErr("model","Тохирох загвар олдсонгүй"));
+    return gemCall(list[i], key, body).then(function(t){ try{ localStorage.setItem("xau_gem_model", list[i]); }catch(e){} return t; })
+      .catch(function(e){ if(e.code === "model") return next(i+1); throw e; });
+  }
+  return next(0);
+}
+function gemPanel(){
+  if(window.claude) return "";
+  var k = gemKey(), md = ""; try{ md = localStorage.getItem("xau_gem_model") || ""; }catch(e){}
+  return '<div class="panel"><header><h3>Juni AI · үнэгүй (Google Gemini)</h3></header>'
+    + '<div style="font-size:13.5px;display:flex;flex-direction:column;gap:10px;line-height:1.55">'
+      + (k ? '<div><b style="color:var(--win)">✓ AI холбогдсон</b>'+(md?' <span class="dim">· '+esc(md)+'</span>':'')+'</div>'
+           : '<ol class="steps"><li><span><a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> нээж Google аккаунтаараа нэвтэрнэ</span></li><li><span><b>Create API key</b> дарж түлхүүрээ хуулна (картын мэдээлэл хэрэггүй)</span></li><li><span>Доор буулгаад «Хадгалах» дарна</span></li></ol>')
+      + '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><input id="gemKey" type="password" autocomplete="off" placeholder="'+(k?"Шинэ түлхүүр (солих бол)":"AIza… түлхүүрээ буулгана")+'" style="flex:1;min-width:200px;height:36px;border:1px solid var(--line-strong);border-radius:7px;background:var(--bg);padding:0 10px">'
+        + '<button class="btn sm primary" id="gemSave">Хадгалах</button>'+(k?'<button class="btn sm danger" id="gemDel">Устгах</button>':'')+'</div>'
+      + '<div class="dim" style="font-size:12.5px">Түлхүүр зөвхөн энэ утсан дээр хадгалагдана (GitHub руу явахгүй). Үнэгүй хувилбарт Google өдөр/минут тутмын хязгаартай; хязгаар хэтэрвэл Juni түр офлайн горимоор хариулна. Анхаар: үнэгүй хувилбарт Google яриаг өөрийн бүтээгдэхүүнээ сайжруулахад ашиглаж, хүн уншиж магадгүй — нэр, дансны дугаар зэрэг хувийн мэдээллээ бүү бич.</div>'
+    + '</div></div>';
 }
 
 /* ---- офлайн Juni (AI-гүй үед) ---- */
+/* кирилл, латин үсгээр бичсэнийг хоёуланг нь ойлгох "араг" хэлбэр */
+var JUNI_TR = {"а":"a","б":"b","в":"v","г":"g","д":"d","е":"e","ё":"yo","ж":"j","з":"z","и":"i","й":"i","к":"k","л":"l","м":"m","н":"n","о":"o","ө":"o","п":"p","р":"r","с":"s","т":"t","у":"u","ү":"u","ф":"f","х":"h","ц":"ts","ч":"ch","ш":"sh","щ":"sh","ъ":"","ы":"ii","ь":"i","э":"e","ю":"yu","я":"ya"};
+function juniSkel(t){
+  t = (t||"").toLowerCase().replace(/[а-яёөү]/g, function(ch){ return JUNI_TR[ch] != null ? JUNI_TR[ch] : ch; });
+  return " " + t.replace(/kh/g,"h").replace(/w/g,"v").replace(/x/g,"h").replace(/ö/g,"o").replace(/ü/g,"u").replace(/[^a-z0-9%$ ]+/g," ").replace(/\s+/g," ") + " ";
+}
 var JUNI_K = [
-  {t:"crisis", r:/амиа|үхмээр|амьдрах хүсэлгүй|өөрийгөө гэмтээ|амь насаа|алга болмоор/i},
-  {t:"revenge", r:/өшөө|буцааж ав|нөхөх|нөхөж|сэргээх гэ|эргүүлж ав/i},
-  {t:"fomo", r:/fomo|хоцор|алдчих вий|хөөцөлд|хөөгөөд|хөөсөн|орж амжаагүй/i},
-  {t:"others", r:/бусд|групп|сигнал|signal|хүмүүс|хүний|найз.*хэлс|хуулс|дагасан|дагаад/i},
-  {t:"early", r:/эрт хаа|эрт гар|tp.*хүр|бага ашиг|айгаад хаа/i},
-  {t:"overtrade", r:/олон арилжаа|дахиад ор|дахин ор|зогсож чадаагүй|хэтэрс|хэт их/i},
-  {t:"fear", r:/айс|айж|ай[хв]|түгш|сандар|стресс|stress|санаа зов|догдл/i},
-  {t:"anger", r:/уур|бухимд|уцаар|залх|үзэн яд|бачим/i},
-  {t:"tired", r:/ядар|нойр|унтаагүй|унтаж чадаагүй|сульд|толгой өв/i},
-  {t:"sad", r:/гуни|уйд|ганцаар|гутар|сэтгэл тавгүй|урам хугар/i},
-  {t:"loss", r:/алд|алдагдал|\bsl\b|стоп|хасаг|минус|хожигдо|шатс/i},
-  {t:"win", r:/ашиг|\btp\b|олсон|олло|плюс|ялс|ногоон/i},
-  {t:"good", r:/баяр|сайхан|тайван|баярла|амжилт|дуртай/i}
+  {t:"crisis", r:/amia+ horl| amia+ | uhme+r|amidra+h husel|o+ri+go+ gemte|o+rio+ gemte|alga+ bolmo+r/},
+  {t:"blown", r:/shata+s|shata+j|shata+chi|margin|stop ?out|dans\w* (te+g|hoo?s|0 )|bu+h mo+ngo|bu+gdi+g ald|bu+gdiig ald|teglechi/},
+  {t:"revenge", r:/o+sho+|butsa+(j|h) av|nohoh|nohoj|nohon|ergu+lj av|serge+h ge/},
+  {t:"fomo", r:/fomo|hotsor|aldchih vi+|ho+tsold|ho+go+d|ho+son|orj amja+gu+i/},
+  {t:"others", r:/busd|grupp?|signal|hu+mu+s|dagasan|daga+d|hu+lsan|hu+la+d/},
+  {t:"early", r:/ ert (ha|gar)|aiga+d ha|tp\w* hu+re+gu+i/},
+  {t:"overtrade", r:/olon arilj|dahia+d or|dahin or|zogsoj chada+gu+i|hetrs|het ih/},
+  {t:"fear", r:/ ai(s|j|h|v|ga)|tu+gsh|sandar|stres|sana+ zov|dogdl/},
+  {t:"anger", r:/ u+rla|u+rta+i|u+r hu|buhimd|utsar|zalh|bachim/},
+  {t:"tired", r:/yadar|no+i?r|unta+gu+i|untaj chada+gu+i|suld|tolgoi o+v/},
+  {t:"sad", r:/guni|uidaj|uidsh|gantsa+r|gutar|tavgu+i|uram hugar|uilmaar|uilma+r/},
+  {t:"loss", r:/ ald|aldagdal| sl |stop|hasag|minus|hojigdo/},
+  {t:"win", r:/ashig| tp |olso|ollo|plus|yalsa|nogo+n/},
+  {t:"good", r:/bayar|sa+ihan|taivan|amjilt|durta/},
+  {t:"greet", r:/^ (sa+in ?(uu|u|bn|bai|bna|bainuu)?|sn uu|snu|sainuu|hi|hello|hey|юу байна) ?$/}
 ];
 var JUNI_R = {
+  greet:["Сайн уу, Hanako! Чамайг харсандаа баяртай байна.||Өнөөдөр ямар өдөр байв — арилжаа хийсэн үү, эсвэл зүгээр ярилцмаар байна уу?","Сайн байна уу! Би энд байна, яарах хэрэггүй.||Өнөөдөр сэтгэл санаа чинь 1-ээс 10-ын хооронд хэд вэ?"],
+  blown:["Дансаа шатаасан нь үнэхээр хүнд, цочролтой мэдрэмж. Одоо чамд бухимдал, ичгүүр, айдас бүгд холилдож байж магадгүй — энэ бүгд хэвийн хариу үйлдэл. Энэ бол чиний үнэ цэнэ биш, нэг үйл явдал.|Одоо хамгийн чухал нь: «буцааж авах» гэж шинэ мөнгө хийхгүй, хэдэн өдөр арилжааг бүрэн зогсоох. Сэтгэл тайвширсны дараа юу болсныг (лот, SL, ямар мэдрэмжээр орсон) журналдаа хамт задалъя.|Яг одоо биеэр чинь юу мэдрэгдэж байна — ядарсан уу, уурласан уу, эсвэл хоосон юм шиг санагдаж байна уу?","Ийм зүйл болсныг хуваалцсанд баярлалаа — ганцаараа даахгүй байх нь зөв. Олон амжилттай трейдер ч эхэндээ данс шатааж байсан; ялгаа нь дараа нь яаж суралцсанд байдаг.|Өнөөдөр шийдвэр гаргахгүй, зөвхөн амар. Ус уу, гадаа жаахан алх, ойр дотны хүнтэйгээ ярь. Дараа нь бид эрсдэлийн дүрмийг (1–2%) хамт дахин харъя.|Энэ арилжааг хийх үед юу бодогдож байсан бэ — төлөвлөгөө байсан уу, эсвэл сэтгэл хөдлөл байсан уу?"],
   crisis:["Чи үүнийг надад хэлсэнд баярлалаа. Чамайг одоо маш хүнд байгааг ойлгож байна, би чиний төлөө үнэхээр санаа зовж байна. Одоо ганцаараа байлгүй, итгэдэг ойр дотны хүндээ залгаж ярина уу. Яаралтай аюултай санагдвал 103 руу шууд залгаарай. Арилжаа, мөнгө дараа — чи өөрөө хамгийн чухал."],
   revenge:["Алдагдлаа буцааж авах гэсэн хүсэл маш ойлгомжтой — тархи «шударга бус» зүйлийг шууд засах гэдэг. Гэхдээ revenge trade бараг үргэлж дүрэмгүй, том лоттой орж алдагдлыг хоёр дахин томруулдаг.|Өнөөдрийн зах зээл маргааш ч байна. Дэлгэцээ хааж 15 минут алхаад, дараагийн арилжааг зөвхөн checklist бүрэн хангавал хийе гэж өөртөө амла.|Яг одоо биед чинь юу мэдрэгдэж байна — зүрх хурдан цохилж байна уу, эсвэл гар чичирч байна уу?"],
   fomo:["Хөдөлгөөнийг хоцорч харах үнэхээр бухимдалтай. FOMO бол «боломж дахиж ирэхгүй» гэсэн хуурмаг мэдрэмж.|Алт өдөр бүр олон setup өгдөг. Хоцорсон хөдөлгөөнийг хөөх нь ихэвчлэн муу үнээр, SL-гүйгээр орохтой адил. Чиний давуу тал бол төлөвлөгөө — хөдөлгөөн биш.|Дараагийн удаа FOMO мэдрэгдэхэд өөрөөсөө «Энэ миний setup мөн үү?» гэж асууж болох уу?"],
@@ -1200,7 +1274,7 @@ var JUNI_R = {
   loss:["Алдагдал хүлээх үргэлж өвдөлттэй. Гэхдээ SL-ээр хаагдсан алдагдал бол төлөвлөсөн зардал — бизнесийн нэг хэсэг.|Чухал нь алдагдал биш, түүний дараах алхам: дараагийн арилжааг яаралгүй, checklist-ээр хийх.|Энэ арилжаа чиний төлөвлөгөөний дагуу байсан уу, эсвэл сэтгэл хөдлөлөөр орсон уу?"],
   win:["Сайн байна! Ашиг олсондоо баярлах эрхтэй.|Энэ арилжаанд юу зөв ажилласныг тэмдэглэж аваарай — давтах боломжтой үйл явц бол азаас илүү үнэтэй. Мөн ашгийн дараах хэт итгэлээс болгоомжил.|Энэ удаад өмнөхөөсөө юуг өөрөөр хийсэн бэ?"],
   good:["Тайван, сайхан байгаа чинь мэдрэгдэж байна. Ийм төлөв бол арилжааны хамгийн сайн суурь.|Энэ мэдрэмжийг юу бий болгосныг (нойр, хөдөлгөөн, төлөвлөгөө) тэмдэглэвэл дараа нь давтахад амар.|Өнөөдрийг юугаар илүү сайхан болгох вэ?"],
-  none:["Сонсож байна. Энэ талаар бичсэнд баярлалаа.|Сэтгэл санааг үгээр илэрхийлэх нь өөрөө стрессийг багасгадаг — журнал бичих нь трейдерүүдийн хамгийн хүчтэй хэрэгсэл.|Өнөөдрийн арилжааны үеэр чамд хамгийн их нөлөөлсөн мэдрэмж юу байсан бэ?"]
+  none:["Сонсож байна. Энэ талаар бичсэнд баярлалаа.|Сэтгэл санааг үгээр илэрхийлэх нь өөрөө стрессийг багасгадаг — журнал бичих нь трейдерүүдийн хамгийн хүчтэй хэрэгсэл.|Өнөөдрийн арилжааны үеэр чамд хамгийн их нөлөөлсөн мэдрэмж юу байсан бэ?","Ойлголоо. Үүнийг арай дэлгэрүүлж бичиж болох уу?|Юу болсон, тэр үед юу мэдэрсэн, одоо ямар байгаагаа гурван өгүүлбэрээр бичихэд л хангалттай.|Хамгийн түрүүнд юуны тухай ярьмаар байна?","Би энд байна, сонсож байна.|Заримдаа юу мэдэрч байгаагаа нэрлэх (бухимдал, айдас, ядаргаа) л сэтгэлийг хөнгөлдөг.|Одоо чамд хамгийн ойр мэдрэмж аль нь вэ?"]
 };
 var MOOD_R = {
   calm:"Тайван байгаа нь гоё. Ийм үед дүрмээ баримтлах хамгийн амар байдаг. Өнөөдөр ямар төлөвлөгөөтэй байна?",
@@ -1212,10 +1286,14 @@ var MOOD_R = {
   sad:"Гунигтай байгаа чинь ойлгогдож байна. Өнөөдөр өөртөө зөөлөн хандъя — мөнгө, арилжаа хүлээж чадна. Ярилцмаар байна уу?"
 };
 function juniOffline(text, c){
-  var hit = null;
-  for(var i=0;i<JUNI_K.length;i++){ if(JUNI_K[i].r.test(text)){ hit = JUNI_K[i].t; break; } }
-  var arr = JUNI_R[hit||"none"], pick = arr[Math.floor(Math.random()*arr.length)].split("|");
+  var hit = null, sk = juniSkel(text);
+  for(var i=0;i<JUNI_K.length;i++){ if(JUNI_K[i].r.test(sk) || JUNI_K[i].r.test(" "+(text||"").toLowerCase()+" ")){ hit = JUNI_K[i].t; break; } }
+  var arr = JUNI_R[hit||"none"], lastJ = "";
+  for(var k=(juni.msgs||[]).length-1;k>=0;k--){ if(juni.msgs[k].r==="j"){ lastJ = juni.msgs[k].t; break; } }
+  var opts = arr.filter(function(a){ return lastJ.indexOf(a.split("|")[0]) !== 0; }); if(!opts.length) opts = arr;
+  var pick = opts[Math.floor(Math.random()*opts.length)].split("|");
   if(hit === "crisis") return pick[0];
+  if(hit === "greet") return [pick[0], pick[2]].filter(Boolean).join("\n\n");
   var data = "";
   if(c.n > c.max) data = "Өнөөдөр "+c.n+" арилжаа хийсэн байна — хязгаар "+c.max+". Үлдсэн өдрийг арилжаагүй өнгөрөөвөл ямар вэ?";
   else if(c.broke > 0) data = "Өнөөдөр "+c.broke+" арилжаа дүрмээс гарсан байна — буруутгах гэсэнгүй, зүгээр анзаарахад тус болно.";
@@ -1247,7 +1325,7 @@ function viewJuni(){
     + '<div class="chat" id="chat">'+chat+'</div>'
     + '<div class="juni-in"><textarea id="juniText" rows="1" placeholder="Юу ч бичиж болно…"></textarea>'
       + '<button class="send" id="juniSend" aria-label="Илгээх"'+(juni.busy?" disabled":"")+'><svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 12l16-8-6 16-2.5-6.5z" fill="currentColor"/></svg></button></div>'
-    + '<div class="juni-note">'+(window.claude ? 'Juni Claude-ийн тусламжтайгаар хариулна.' : 'Энэ төхөөрөмж дээр Juni офлайн горимоор хариулна. Claude дээрх хувилбарт илүү гүнзгий ярилцана.')
+    + '<div class="juni-note">'+(window.claude ? 'Juni Claude-ийн тусламжтайгаар хариулна.' : gemKey() ? 'Juni AI (Google Gemini)-аар хариулна.' : 'Juni одоо офлайн горимоор хариулж байна. <a href="#" id="gemGo">Үнэгүй AI холбох</a> бол илүү гүнзгий ярилцана.')
       + ' Juni бол эмч биш — хүнд үед ойр дотны хүн эсвэл мэргэжлийн хүнд хандаарай.</div>'
     + '</div>';
 }
@@ -1261,8 +1339,19 @@ function juniSend(text){
   juni.busy = true; juniSave(); render(); juniScroll();
   var c = juniCtx();
   juniAI().then(function(sm){
+    if(!sm && gemKey()){
+      var hist = juni.msgs.slice(-20).filter(function(m){ return !m.sys; });
+      gemAsk(JUNI_SYS + "\n\nӨнөөдрийн өгөгдөл: " + juniCtxText(c), hist)
+        .then(function(t){ juniReply(t); })
+        .catch(function(e){
+          var why = e.code==="quota" ? "Өнөөдрийн үнэгүй AI хязгаар дууссан тул" : e.code==="key" ? "AI түлхүүр буруу байна (Тохиргоо → Juni AI) тул" : "AI-тай холбогдож чадсангүй тул";
+          juniReply(juniOffline(text, c) + "\n\n(" + why + " офлайн горимоор хариуллаа.)");
+        });
+      return;
+    }
     if(!sm){
-      setTimeout(function(){ juniReply(juniOffline(text, c)); }, 700 + Math.random()*600);
+      var note = window.claude ? "\n\n(" + juniWhy(juni.why) + " — офлайн хариу.)" : "";
+      setTimeout(function(){ juniReply(juniOffline(text, c) + note); }, 700 + Math.random()*600);
       return;
     }
     var hist = juni.msgs.slice(-16, -1).map(function(m){ return (m.r==="u"?"Hanako: ":"Juni: ")+m.t; }).join("\n");
@@ -1270,9 +1359,12 @@ function juniSend(text){
       + (hist ? "\n\nӨмнөх яриа:\n"+hist : "")
       + "\n\nHanako-гийн шинэ мессеж: " + text
       + "\n\nJuni-гийн хариуг л бич (угтвар нэргүйгээр).";
-    sm(input, {cache:false, modelTier:"default", onText:function(u){ var el = document.getElementById("juniTyping"); if(el){ el.classList.remove("typing"); el.textContent = u.text; juniScroll(); } } })
-      .then(function(res){ juniReply((res && res.text || "").trim() || juniOffline(text, c)); })
-      .catch(function(e){ juniReply(juniOffline(text, c)); });
+    var go = function(n){
+      return sm(input, {cache:false, modelTier:"default", onText:function(u){ var el = document.getElementById("juniTyping"); if(el && u && u.text){ el.classList.remove("typing"); el.textContent = u.text; juniScroll(); } } })
+        .catch(function(e){ var code = e && e.code; if(n < 1 && code !== "not_granted") return new Promise(function(r){ setTimeout(r, 1500); }).then(function(){ return go(n+1); }); throw e; });
+    };
+    go(0).then(function(res){ var t = (res && res.text || "").trim(); juniReply(t || (juniOffline(text, c) + "\n\n(" + juniWhy("empty") + " — офлайн хариу.)")); })
+      .catch(function(e){ var code = (e && e.code) || ""; if(code === "not_granted") juni.sample = null; juniReply(juniOffline(text, c) + "\n\n(" + juniWhy(code) + " — офлайн хариу.)"); });
   });
 }
 function juniReply(t){
@@ -2477,6 +2569,7 @@ function viewSettings(){
       + (vault.file ? '<div><button class="btn sm" id="vaultOpenBtn">Нууц үгтэй өгөгдөл нээх</button> <span class="dim" style="font-size:12.5px">— сайтад хадгалсан өөрийн арилжааг энэ төхөөрөмж рүү ачаална</span></div>' : '')
     + '</div>'
   + '</div>'
+  + gemPanel()
   + lockPanel()
   + (window.claude ? '' : '<div class="panel"><header><h3>Утсанд апп болгох</h3></header>'
     + '<div style="font-size:13.5px;line-height:1.6;display:flex;flex-direction:column;gap:8px">'
@@ -3352,6 +3445,21 @@ document.getElementById("view").addEventListener("click", function(e){
   if(e.target.closest("#juniSend")){ var ta = document.getElementById("juniText"); if(ta){ var v = ta.value; ta.value = ""; juniSend(v); } return; }
   if(e.target.id === "breathBtn"){ breathe(); return; }
   if(e.target.id === "faceBtn"){ faceSetup(); return; }
+  if(e.target.id === "gemGo"){ e.preventDefault(); state.tab = "settings"; render(); setTimeout(function(){ var el = document.getElementById("gemKey"); if(el){ el.scrollIntoView({block:"center"}); el.focus(); } }, 60); return; }
+  if(e.target.id === "gemDel"){ gemSetKey(""); toast("AI түлхүүр устлаа"); render(); return; }
+  if(e.target.id === "gemSave"){
+    var kv = (document.getElementById("gemKey").value||"").trim().replace(/\s+/g,"");
+    if(kv.length < 20){ toast("Түлхүүрээ бүтэн буулгана уу"); return; }
+    e.target.disabled = true; e.target.textContent = "Шалгаж байна…";
+    gemAsk("Зөвхөн «OK» гэж хариул.", [{r:"u", t:"Тест"}], kv)
+      .then(function(){ gemSetKey(kv); toast("AI холбогдлоо — Juni одоо ухаалаг ярилцана"); render(); })
+      .catch(function(er){
+        if(er.code === "quota"){ gemSetKey(kv); toast("Түлхүүр хадгалагдлаа (одоохондоо хязгаарт хүрсэн)"); render(); return; }
+        e.target.disabled = false; e.target.textContent = "Хадгалах";
+        toast(er.code==="key" ? "Түлхүүр буруу байна" : "Холбогдсонгүй: "+(er.message||"").slice(0,80));
+      });
+    return;
+  }
   if(e.target.id === "lockPinSave"){ var pv = (document.getElementById("lockPin").value||"").trim(); if(!/^\d{4}$/.test(pv)){ toast("4 оронтой тоо оруулна уу"); return; } sha(pv).then(function(h){ var c = lockCfg(); c.pin = h; c.on = true; lockSet(c); toast("PIN солигдлоо"); render(); }); return; }
   if(e.target.id === "lockOn"){ var c0 = lockCfg(); c0.on = e.target.checked; var fin = function(){ lockSet(c0); toast(c0.on?"Түгжээ асаалаа":"Түгжээ унтраалаа"); }; if(c0.on && !c0.pin) sha("0000").then(function(h){ c0.pin = h; fin(); }); else fin(); return; }
   if(e.target.id === "pwaInstall" && pwa.prompt){ pwa.prompt.prompt(); pwa.prompt = null; return; }
