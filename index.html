@@ -1279,6 +1279,8 @@ function juniSkel(t){
   return " " + t.replace(/kh/g,"h").replace(/w/g,"v").replace(/x/g,"h").replace(/ö/g,"o").replace(/ü/g,"u").replace(/[^a-z0-9%$ ]+/g," ").replace(/\s+/g," ") + " ";
 }
 var JUNI_K = [
+  {t:"sumtoday", r:/(onoodr|unuudur|today)\w*.*(dugn|dugne|shinjil|ur dun|yaj ba|yaj bai)/},
+  {t:"summary", r:/dugn|shinjil|statist|summary| niit | ur dun|ariljaag\w* (harah|haruul)|win ?rate|yalalt/},
   {t:"crisis", r:/amia+ horl| amia+ | uhme+r|amidra+h husel|o+ri+go+ gemte|o+rio+ gemte|alga+ bolmo+r/},
   {t:"blown", r:/shata+s|shata+j|shata+chi|margin|stop ?out|dans\w* (te+g|hoo?s|0 )|bu+h mo+ngo|bu+gdi+g ald|bu+gdiig ald|teglechi/},
   {t:"revenge", r:/o+sho+|butsa+(j|h) av|nohoh|nohoj|nohon|ergu+lj av|serge+h ge/},
@@ -1322,14 +1324,43 @@ var MOOD_R = {
   tired:"Ядарсан үед шийдвэр муудах нь хэвийн. Өнөөдөр хязгаараа 1–2 арилжаа болгох эсвэл амрах нь зөв байж магадгүй. Сайн унтсан уу?",
   sad:"Гунигтай байгаа чинь ойлгогдож байна. Өнөөдөр өөртөө зөөлөн хандъя — мөнгө, арилжаа хүлээж чадна. Ярилцмаар байна уу?"
 };
+function juniSummary(todayOnly){
+  var all = state.trades.filter(function(t){ return !calc(t).open; });
+  var tdy = juniToday(), list = todayOnly ? all.filter(function(t){ return t.date === tdy; }) : all;
+  if(!list.length) return todayOnly ? "Өнөөдөр хаагдсан арилжаа алга байна." : "Бүртгэлтэй арилжаа алга байна. Тохиргоо → «Нууц үгтэй өгөгдөл нээх» эсвэл MT5 импортоор оруулаарай.";
+  var st = stats(list), wr = st.n ? Math.round(st.wins/st.n*100) : 0;
+  var pf = st.gl ? (st.gp/Math.abs(st.gl)) : 0;
+  var by = {}; list.forEach(function(t){ var k = (t.symbol||"?")+" "+(t.dir==="buy"?"buy":"sell"); by[k] = by[k] || []; by[k].push(t); });
+  var grp = Object.keys(by).map(function(k){ var s2 = stats(by[k]); return {k:k, n:s2.n, pl:s2.pl}; }).sort(function(a,b){ return b.n-a.n; }).slice(0,4);
+  var days = {}; list.forEach(function(t){ days[t.date] = (days[t.date]||0) + calc(t).pl; });
+  var dk = Object.keys(days).sort(function(a,b){ return days[b]-days[a]; });
+  var early = list.filter(isEarly).length, copied = list.filter(isCopied).length, checked = list.filter(function(t){ return t.checks && Object.keys(t.checks).length; }), broke = checked.filter(function(t){ return !followed(t); }).length;
+  var dates = list.map(function(t){ return t.date; }).sort();
+  var out = [];
+  out.push("**"+(todayOnly ? "Өнөөдрийн дүгнэлт" : "Нийт дүгнэлт ("+dates[0]+" – "+dates[dates.length-1]+")")+"**");
+  out.push("- Арилжаа: "+st.n+" (ашигтай "+st.wins+", алдагдалтай "+st.losses+") · ялалт "+wr+"%");
+  out.push("- Нийт P/L: "+signed(st.pl)+(todayOnly ? "" : " · данс одоо "+money(startBalance()+stats(state.trades).pl)));
+  out.push("- Дундаж ашиг "+signed(st.avgWin)+" · дундаж алдагдал "+signed(-Math.abs(st.avgLoss))+(pf ? " · ашиг/алдагдлын харьцаа "+pf.toFixed(2)+"×" : ""));
+  if(!todayOnly && dk.length > 1) out.push("- Хамгийн сайн өдөр "+dk[0]+" ("+signed(days[dk[0]])+") · хамгийн муу "+dk[dk.length-1]+" ("+signed(days[dk[dk.length-1]])+")");
+  if(grp.length) out.push("- Төрлөөр: "+grp.map(function(g){ return g.k+" "+g.n+"× "+signed(g.pl); }).join(", "));
+  out.push("- "+(checked.length ? "Checklist-ээс гадуур "+broke+"/"+checked.length+" · " : "")+"эрт хаасан "+early+" · бусдыг дагасан "+copied);
+  var tip = [];
+  if(st.avgLoss && Math.abs(st.avgLoss) > st.avgWin) tip.push("дундаж алдагдал дундаж ашгаас том байна — SL-ээ мөрдөж, TP-ээ эрт хаахгүй байх нь хамгийн том ахиц болно");
+  if(early > list.length*0.2) tip.push("ашгаа эрт хаах нь давтагдаж байна");
+  if(copied) tip.push("бусдын оролтыг дагасан арилжаануудын үр дүнг өөрийнхтэй харьцуул");
+  if(tip.length) out.push("\n**Анхаарах:** "+tip.join("; ")+".");
+  return out.join("\n");
+}
 function juniOffline(text, c){
   var hit = null, sk = juniSkel(text);
   for(var i=0;i<JUNI_K.length;i++){ if(JUNI_K[i].r.test(sk) || JUNI_K[i].r.test(" "+(text||"").toLowerCase()+" ")){ hit = JUNI_K[i].t; break; } }
-  var arr = JUNI_R[hit||"none"], lastJ = "";
+  var arr = JUNI_R[hit] || JUNI_R.none, lastJ = "";
   for(var k=(juni.msgs||[]).length-1;k>=0;k--){ if(juni.msgs[k].r==="j"){ lastJ = juni.msgs[k].t; break; } }
   var opts = arr.filter(function(a){ return lastJ.indexOf(a.split("|")[0]) !== 0; }); if(!opts.length) opts = arr;
   var pick = opts[Math.floor(Math.random()*opts.length)].split("|");
+  if(hit === "summary" || hit === "sumtoday") return juniSummary(hit === "sumtoday");
   if(hit === "crisis") return pick[0];
+  if(!hit) return "Энэ асуултад жинхэнэ AI хэрэгтэй, гэтэл энэ төхөөрөмж дээр AI холбогдоогүй байна.\n\nЦэс → Тохиргоо → «Juni AI · үнэгүй» хэсэгт Google Gemini түлхүүрээ оруулбал ямар ч асуултад хариулна.\n\nAI-гүйгээр ч гэсэн «арилжаагаа дүгнэ», «өнөөдрийг дүгнэ» гэж бичвэл таны өгөгдлөөс тооцоолж өгнө.";
   if(hit === "greet") return [pick[0], pick[2]].filter(Boolean).join("\n\n");
   var data = "";
   if(c.n > c.max) data = "Өнөөдөр "+c.n+" арилжаа хийсэн байна — хязгаар "+c.max+". Үлдсэн өдрийг арилжаагүй өнгөрөөвөл ямар вэ?";
