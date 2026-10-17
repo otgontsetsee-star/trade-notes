@@ -618,7 +618,11 @@ html,body{overflow-x:hidden;max-width:100%;touch-action:manipulation;-webkit-tex
   .msg{overflow-wrap:anywhere}
   .juni-tools{flex-wrap:wrap}
   body.kb .tabbar{display:none !important}
-  body.kb .juni-in{bottom:0 !important;padding-bottom:6px}
+  .juni-in{position:fixed !important;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom)) !important;z-index:44;padding:8px 16px 8px !important;background:var(--bg);border-top:1px solid var(--line)}
+  body.kb .juni-in{bottom:var(--kb,0px) !important}
+  .juni .chat{padding-bottom:84px}
+  body.kb .juni .chat{padding-bottom:70px}
+
   body.kb .wrap{padding-bottom:12px !important}
   body::before{content:"";position:fixed;left:0;right:0;top:0;height:env(safe-area-inset-top);background:var(--bg);z-index:60;pointer-events:none}
 }
@@ -1370,7 +1374,7 @@ function juniOffline(text, c){
 }
 
 function viewJuni(){
-  if(!juni.msgs){ juniLoad().then(function(){ if(state.tab==="juni") render(); }); return '<div class="juni"><div class="dim">Ачаалж байна…</div></div>'; }
+  if(!juni.msgs){ juniLoad().then(function(){ if(state.tab==="juni"){ render(); setTimeout(juniScroll, 60); setTimeout(juniScroll, 350); } }); return '<div class="juni"><div class="dim">Ачаалж байна…</div></div>'; }
   var tdy = juniToday();
   if(!juni.msgs.length){
     juni.msgs.push({r:"j", t:"Сайн уу, Hanako! Би Juni — чиний AI туслах.\n\nАлт, GBPJPY, мэдээ, техник анализ, лот ба эрсдэлийн тооцоо — юу ч асуу. Арилжаанаас өөр зүйл асуусан ч болно.", at:Date.now()});
@@ -1387,7 +1391,7 @@ function viewJuni(){
     + '<div><div class="juni-note" style="margin-bottom:6px">Өнөөдөр ямар байна?</div><div class="moods">'
       + MOODS.map(function(m){ return '<button class="mood" data-mood="'+m.k+'" aria-pressed="'+(cur===m.k)+'"><i style="background:'+m.c+'"></i>'+m.t+'</button>'; }).join("")
     + '</div></div>'
-    + '<div class="juni-tools"><button class="btn sm" id="breathBtn">Амьсгалын дасгал · 1 мин</button>'
+    + '<div class="juni-tools"><button class="btn sm" id="juniClear">Шинэ яриа</button><button class="btn sm" id="breathBtn">Амьсгалын дасгал · 1 мин</button>'
       + '<button class="btn sm ghost" data-jq="Өнөөдрийн арилжаагаа дүгнэж өгөөч">Өдрөө дүгнэх</button>'
       + '<button class="btn sm ghost" data-jq="Энэ долоо хоногт алт болон фунт/иенд нөлөөлөх гол мэдээнүүд юу байна, тус бүр юу гэсэн үг вэ?">Энэ 7 хоногийн мэдээ</button>'
       + '<button class="btn sm ghost" data-jq="Миний сүүлийн арилжаануудыг дүгнээд, юуг сайжруулах вэ?">Арилжаагаа шинжлэх</button></div>'
@@ -1415,8 +1419,25 @@ function juniMd(t){
 }
 function juniScroll(){
   var c = document.getElementById("chat"); if(!c) return;
-  var last = c.lastElementChild; if(last) last.scrollIntoView({block:"end"});
+  var last = c.lastElementChild; if(!last) return;
+  if(window.innerWidth <= 760){
+    var inp = document.querySelector(".juni-in"), ih = inp ? inp.getBoundingClientRect().top : window.innerHeight;
+    var vv = window.visualViewport, bottomEdge = vv ? Math.min(ih, vv.offsetTop + vv.height) : ih;
+    var r = last.getBoundingClientRect();
+    window.scrollBy(0, r.bottom - bottomEdge + 12);
+  } else last.scrollIntoView({block:"end"});
 }
+/* iPhone гарын үсгийн самбар: бичих талбарыг яг дээр нь байрлуулах */
+(function(){
+  var vv = window.visualViewport; if(!vv) return;
+  function upd(){
+    var kb = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+    document.documentElement.style.setProperty("--kb", kb + "px");
+  }
+  vv.addEventListener("resize", function(){ upd(); if(state.tab === "juni" && document.activeElement && document.activeElement.id === "juniText") setTimeout(juniScroll, 60); });
+  vv.addEventListener("scroll", upd);
+  upd();
+})();
 function juniSend(text){
   text = (text||"").trim(); if(!text || juni.busy) return;
   juni.msgs.push({r:"u", t:text, at:Date.now()});
@@ -1428,7 +1449,7 @@ function juniSend(text){
       gemAsk(JUNI_SYS + "\n\nӨнөөдрийн өгөгдөл: " + juniCtxText(c), hist)
         .then(function(t){ juniReply(t); })
         .catch(function(e){
-          var why = e.code==="busy" ? "Google-ийн AI серверт түр ачаалал их байгаа тул" : e.code==="quota" ? "Өнөөдрийн үнэгүй AI хязгаар дууссан тул" : e.code==="key" ? "AI түлхүүр буруу байна (Тохиргоо → Juni AI) тул" : "AI-тай холбогдож чадсангүй тул";
+          var why = e.code==="busy" ? "Google-ийн AI серверт түр ачаалал их байгаа тул" : e.code==="quota" ? "Өнөөдрийн үнэгүй AI хязгаар дууссан тул" : e.code==="key" ? "AI түлхүүр буруу байна (Тохиргоо → Juni AI) тул" : "AI-тай холбогдож чадсангүй ("+String(e.message||"").slice(0,90)+") тул";
           juniReply(juniOffline(text, c) + "\n\n(" + why + " офлайн горимоор хариуллаа.)");
         });
       return;
@@ -3433,6 +3454,8 @@ function render(){
     : "";
 
   var v = document.getElementById("view");
+  if(state.tab === "juni" && state._lastTab !== "juni"){ setTimeout(juniScroll, 60); setTimeout(juniScroll, 350); }
+  state._lastTab = state.tab;
   v.innerHTML = (state.tab==="dash" || state.tab==="analytics") ? viewDash()
     : state.tab==="cal" ? viewCalendar()
     : state.tab==="playbook" ? viewPlaybook()
@@ -3536,6 +3559,10 @@ document.getElementById("view").addEventListener("click", function(e){
   var jq = e.target.closest("[data-jq]"); if(jq){ juniSend(jq.dataset.jq); return; }
   if(e.target.closest("#juniSend")){ var ta = document.getElementById("juniText"); if(ta){ var v = ta.value; ta.value = ""; juniSend(v); } return; }
   if(e.target.id === "breathBtn"){ breathe(); return; }
+  if(e.target.id === "juniClear"){
+    if(!juni.clearArm){ juni.clearArm = true; e.target.textContent = "Дахин дар — цэвэрлэх"; setTimeout(function(){ juni.clearArm = false; var b = document.getElementById("juniClear"); if(b) b.textContent = "Шинэ яриа"; }, 3000); return; }
+    juni.clearArm = false; juni.msgs = []; juniSave(); render(); toast("Шинэ яриа эхэллээ"); return;
+  }
   if(e.target.id === "faceBtn"){ faceSetup(); return; }
   if(e.target.id === "gemGo"){ e.preventDefault(); state.tab = "settings"; render(); setTimeout(function(){ var el = document.getElementById("gemKey"); if(el){ el.scrollIntoView({block:"center"}); el.focus(); } }, 60); return; }
   if(e.target.id === "gemDel"){ gemSetKey(""); toast("AI түлхүүр устлаа"); render(); return; }
