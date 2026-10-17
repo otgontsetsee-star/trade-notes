@@ -617,7 +617,14 @@ html,body{overflow-x:hidden;max-width:100%;touch-action:manipulation;-webkit-tex
   .moods{flex-wrap:wrap}
   .msg{overflow-wrap:anywhere}
   .juni-tools{flex-wrap:wrap}
+  body.kb .tabbar{display:none !important}
+  body.kb .juni-in{bottom:0 !important;padding-bottom:6px}
+  body.kb .wrap{padding-bottom:12px !important}
+  body::before{content:"";position:fixed;left:0;right:0;top:0;height:env(safe-area-inset-top);background:var(--bg);z-index:60;pointer-events:none}
 }
+.msg ul{margin:4px 0;padding-left:18px;white-space:normal}
+.msg li{margin:2px 0}
+.msg b{font-weight:800}
 .breath{position:fixed;inset:0;z-index:310;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:24px}
 .breath .ring{width:200px;height:200px;border-radius:50%;background:var(--grad);opacity:.9;transform:scale(.55);transition:transform 4s ease-in-out;box-shadow:0 0 60px rgba(138,108,243,.45)}
 .breath .lbl{font-size:22px;font-weight:800}
@@ -1340,7 +1347,7 @@ function viewJuni(){
   var lastDay = "", chat = juni.msgs.slice(-80).map(function(m){
     var d = new Date(m.at), day = ymd(d), hd = "";
     if(day !== lastDay){ hd = '<div class="chat-day">'+(day===ymd(new Date())?"Өнөөдөр":day)+'</div>'; lastDay = day; }
-    return hd + '<div class="msg '+(m.r==="u"?"u":"j")+'">'+esc(m.t)+'<span class="when">'+pad2(d.getHours())+':'+pad2(d.getMinutes())+'</span></div>';
+    return hd + '<div class="msg '+(m.r==="u"?"u":"j")+'">'+(m.r==="u" ? esc(m.t) : juniMd(m.t))+'<span class="when">'+pad2(d.getHours())+':'+pad2(d.getMinutes())+'</span></div>';
   }).join("");
   if(juni.busy) chat += '<div class="msg j typing" id="juniTyping">Juni бодож байна…</div>';
   var cur = juni.moods[tdy] || "";
@@ -1359,6 +1366,21 @@ function viewJuni(){
     + '<div class="juni-note">'+(window.claude ? 'Juni Claude-ийн тусламжтайгаар хариулна.' : gemKey() ? 'Juni AI (Google Gemini)-аар хариулна.' : 'Juni одоо офлайн горимоор хариулж байна. <a href="#" id="gemGo">Үнэгүй AI холбох</a> бол илүү гүнзгий ярилцана.')
       + ' Juni бол эмч биш — хүнд үед ойр дотны хүн эсвэл мэргэжлийн хүнд хандаарай.</div>'
     + '</div>';
+}
+/* AI хариултын энгийн markdown: **тод**, *налуу*, жагсаалт, гарчиг */
+function juniMd(t){
+  var lines = esc(t||"").split("\n"), out = [], inList = false;
+  lines.forEach(function(l){
+    var li = /^\s*(?:[-*•]|\d+[.)])\s+(.*)$/.exec(l);
+    if(li){ if(!inList){ out.push("<ul>"); inList = true; } out.push("<li>"+li[1]+"</li>"); return; }
+    if(inList){ out.push("</ul>"); inList = false; }
+    var h = /^\s*#{1,4}\s+(.*)$/.exec(l);
+    out.push(h ? "<b>"+h[1]+"</b>" : l);
+    out.push("\n");
+  });
+  if(inList) out.push("</ul>");
+  return out.join("").replace(/\n(<ul>)/g,"$1").replace(/(<\/ul>)\n/g,"$1").replace(/\n+$/,"")
+    .replace(/\*\*([^*\n]+)\*\*/g,"<b>$1</b>").replace(/(^|[\s(>])\*([^*\n]+)\*(?=[\s.,!?)<]|$)/g,"$1<i>$2</i>");
 }
 function juniScroll(){
   var c = document.getElementById("chat"); if(!c) return;
@@ -1521,6 +1543,11 @@ function faceSetup(){
     lockSet(c); toast("Face ID идэвхжлээ"); render();
   }).catch(function(){ toast("Face ID тохируулж чадсангүй"); });
 }
+(function(){
+  function isField(el){ return el && (el.tagName === "TEXTAREA" || (el.tagName === "INPUT" && !/^(checkbox|radio|button|submit|file|range)$/i.test(el.type)) || el.tagName === "SELECT"); }
+  document.addEventListener("focusin", function(e){ if(isField(e.target) && window.innerWidth <= 760) document.body.classList.add("kb"); });
+  document.addEventListener("focusout", function(){ setTimeout(function(){ if(!isField(document.activeElement)) document.body.classList.remove("kb"); }, 60); });
+})();
 function lockInit(){
   if(window.claude) return;
   var c = lockCfg(); if(!c.on) return;
