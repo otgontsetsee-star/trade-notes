@@ -1162,15 +1162,31 @@ function juniCtxText(c){
   var m = MOODS.filter(function(x){ return x.k===c.mood; })[0];
   return "Өнөөдөр ("+c.date+"): "+c.n+" арилжаа (хязгаар "+c.max+"), P/L "+signed(c.pl)+", дүрэм зөрчсөн "+c.broke+"."
     + " Сүүлийн 7 хоног: "+c.wn+" арилжаа, P/L "+signed(c.wpl)+", эрт хаасан "+c.early+", бусдыг дагасан "+c.copied+"."
-    + (m ? " Өнөөдрийн сэтгэл санаа: "+m.t+"." : "");
+    + (m ? " Өнөөдрийн сэтгэл санаа: "+m.t+"." : "")
+    + juniNewsText() + juniRecentText();
 }
-var JUNI_SYS = "Чи бол Juni — Hanako-гийн арилжааны журнал апп доторх халуун дотно, тайван, ухаалаг сэтгэл зүйн ярилцагч (онигири дүртэй). "
- + "Hanako алт (GOLD) болон GBPJPY арилжаалдаг. Түүний дүрэм: өдөрт ихдээ 3 арилжаа, нэг арилжаанд 2% эрсдэл, нэг сесс дээр 2 цаг. "
- + "Түүний давтагддаг 2 алдаа: бусдын оролтыг хуулах, айдас/бусдаас болж ашгаа эрт хаах. "
- + "Зорилго: түүнийг сонсож, сэтгэл санааг нь тайвшруулж, трейдерийн сэтгэл зүй (сахилга бат, FOMO, revenge trade, эрт хаах, алдагдлыг хүлээн зөвшөөрөх, нойр, амралт, амьсгал, хувийн эрүүл мэнд) талаар ойлгомжтой, бодитой ярилцах. "
- + "Дүрэм: Монгол хэлээр (кирилл), энгийн найрсаг өнгөөр, ихэвчлэн 2–5 өгүүлбэр. Эхлээд мэдрэмжийг нь хүлээн зөвшөөр (гэхдээ сөрөг мэдрэмжийг нь давтаж томруулахгүй), дараа нь нэг бодит ажиглалт эсвэл жижиг дадал санал болго, төгсгөлд ганцхан асуулт асуу. "
- + "Арилжааны дохио, авах/зарах зөвлөгөө, үнийн таамаг хэзээ ч өгөхгүй. Шүүмжлэхгүй, ичээхгүй. Хэт урт лекц уншихгүй. "
- + "Хэрэв тэр өөрийгөө гэмтээх, амиа хорлох тухай бичвэл: халамжтайгаар санаа зовж буйгаа хэлж, одоо ойр дотны итгэлтэй хүндээ хандахыг, яаралтай бол 103 руу залгахыг зөөлөн уриал.";
+function juniNewsText(){
+  try{
+    var now = Date.now(), until = now + 7*864e5;
+    var ev = allEvents().filter(function(e){ return e.t_ms > now - 3*3600e3 && e.t_ms < until && (e.imp||0) >= 2; }).slice(0, 12);
+    if(!ev.length) return "";
+    return "\nОйрын 7 хоногийн мэдээ (Улаанбаатарын цагаар): " + ev.map(function(e){ var u = ubOf(e.t_ms); return u.date+" "+u.time+" "+(e.cur||"")+" "+(e.title||e.code||"")+(e.imp>=3?" [өндөр]":""); }).join("; ") + ".";
+  }catch(err){ return ""; }
+}
+function juniRecentText(){
+  try{
+    var t = state.trades.slice().sort(function(a,b){ return (b.date+(b.time||"")).localeCompare(a.date+(a.time||"")); }).slice(0, 8);
+    if(!t.length) return "";
+    return "\nСүүлийн арилжаанууд: " + t.map(function(x){ return x.date+" "+(x.symbol||"")+" "+(x.dir||"")+" "+(x.lot||"")+"лот "+(calc(x).open ? "нээлттэй" : signed(calc(x).pl)); }).join("; ") + ". Нийт данс: " + money(startBalance() + stats(state.trades).pl) + ".";
+  }catch(err){ return ""; }
+}
+var JUNI_SYS = "Чи бол Juni — Hanako-гийн арилжааны журнал апп доторх ухаалаг AI туслах (онигири дүртэй). Чи ChatGPT, Claude шиг жинхэнэ AI туслах: асуусан бүх зүйлд нь шууд, мэдлэгтэй, тодорхой хариулна. "
+ + "Гол чиглэл бол арилжаа: алт (XAUUSD, XM дээр GOLD), GBPJPY, USOIL, DXY, мөнгө; техник анализ (market structure, liquidity, order block, FVG, volume profile, price action, HTF/LTF, сессүүд), фундаментал ба эдийн засгийн мэдээ (NFP, CPI, FOMC, хүү, GDP гэх мэт нь юу гэсэн үг, алт/фунт/иенд яаж нөлөөлдөг), эрсдэлийн менежмент (лот, SL/TP, R:R, % эрсдэлийн тооцоо), брокер, MT5, трейдерийн сэтгэл зүй. Гэхдээ арилжаанаас өөр сэдвээр (ерөнхий мэдлэг, хэл, технологи, эрүүл мэнд, амьдрал) асуусан ч жирийн AI шиг сайн хариулна. "
+ + "Hanako-гийн дүрэм: өдөрт ихдээ 3 арилжаа, нэг арилжаанд 2% эрсдэл, нэг сесс дээр 2 цаг. Түүний давтагддаг 2 алдаа: бусдын оролтыг хуулах, ашгаа эрт хаах. Эдгээрийг зөвхөн сэдэвт хамаатай үед л дурд. "
+ + "Хэв маяг: Монгол хэлээр (кирилл), найз шиг энгийн, шууд. Асуултад эхний өгүүлбэрээрээ хариул, дараа нь хэрэгтэй бол тайлбар, жишээ, тооцоо. Энгийн асуултад богино (2–4 өгүүлбэр), тайлбар хүссэн бол дэлгэрэнгүй, жагсаалт ашиглаж болно. Хэрэгцээгүй үед сэтгэл санааны тухай ярихгүй, «мэдрэмжээ хүлээн зөвшөөр» маягийн үг давтахгүй, асуулт болгоны төгсгөлд заавал асуулт асуухгүй. Харин тэр өөрөө стресс, алдагдал, бухимдлаа хуваалцвал товч дэмжиж, бодит зөвлөгөө өг. "
+ + "Hanako латин үсгээр монголоор бичиж болно — ойлгоод кириллээр хариул. "
+ + "Чамд бодит цагийн ханш, график, интернет байхгүй: одоогийн үнэ, өнөөдрийн хөдөлгөөнийг таамаглахгүй, хэрэгтэй бол «одоогийн графикаа хараад шалгаарай» гэж хэл. Доорх өгөгдөлд байгаа мэдээний хуваарийг ашиглаж болно. Тодорхой «одоо ав/зар» гэсэн дохио өгөхгүй, гэхдээ setup, сценари, түвшинг сурган тайлбарлаж, эрсдэлийг нь хэлж болно. Мэдэхгүй зүйлээ зохиохгүй, «итгэлтэй биш» гэж хэлнэ. "
+ + "Хэрэв тэр өөрийгөө гэмтээх, амиа хорлох тухай бичвэл: халамжтайгаар санаа зовж буйгаа хэлж, ойр дотны итгэлтэй хүндээ хандахыг, яаралтай бол 103 руу залгахыг уриал.";
 function juniAI(){
   if(juni.sample) return Promise.resolve(juni.sample);
   if(!(window.claude && window.claude.use)) return Promise.resolve(null);
@@ -1220,7 +1236,7 @@ function gemAsk(sys, msgs, key){
     if(last && last.role === role) last.parts[0].text += "\n\n" + m.t;
     else contents.push({role:role, parts:[{text:m.t}]});
   });
-  var body = {system_instruction:{parts:[{text:sys}]}, contents:contents, generationConfig:{temperature:0.8, maxOutputTokens:900}};
+  var body = {system_instruction:{parts:[{text:sys}]}, contents:contents, generationConfig:{temperature:0.7, maxOutputTokens:2048}};
   var saved = ""; try{ saved = localStorage.getItem("xau_gem_model") || ""; }catch(e){}
   var list = saved ? [saved].concat(GEM_MODELS.filter(function(x){ return x!==saved; })) : GEM_MODELS.slice();
   var busyErr = null;
@@ -1319,7 +1335,7 @@ function viewJuni(){
   if(!juni.msgs){ juniLoad().then(function(){ if(state.tab==="juni") render(); }); return '<div class="juni"><div class="dim">Ачаалж байна…</div></div>'; }
   var tdy = juniToday();
   if(!juni.msgs.length){
-    juni.msgs.push({r:"j", t:"Сайн уу, Hanako. Би Juni байна\n\nЭнд өнөөдрийн сэтгэл санаа, хийсэн арилжаа, алдсан ч, олсон ч — юу ч бичиж болно. Би шүүмжлэхгүй, сонсоод хамт бодно.\n\nӨнөөдөр ямархуу байна?", at:Date.now()});
+    juni.msgs.push({r:"j", t:"Сайн уу, Hanako! Би Juni — чиний AI туслах.\n\nАлт, GBPJPY, мэдээ, техник анализ, лот ба эрсдэлийн тооцоо — юу ч асуу. Арилжаанаас өөр зүйл асуусан ч болно.", at:Date.now()});
   }
   var lastDay = "", chat = juni.msgs.slice(-80).map(function(m){
     var d = new Date(m.at), day = ymd(d), hd = "";
@@ -1329,13 +1345,14 @@ function viewJuni(){
   if(juni.busy) chat += '<div class="msg j typing" id="juniTyping">Juni бодож байна…</div>';
   var cur = juni.moods[tdy] || "";
   return '<div class="juni">'
-    + '<div class="juni-head"><div class="juni-av">'+juniAvatar()+'</div><div><b>Juni</b><span>Сэтгэл санаагаа хуваалц · трейдерийн сэтгэл зүй</span></div></div>'
+    + '<div class="juni-head"><div class="juni-av">'+juniAvatar()+'</div><div><b>Juni</b><span>AI туслах · арилжаа, мэдээ, юу ч асуу</span></div></div>'
     + '<div><div class="juni-note" style="margin-bottom:6px">Өнөөдөр ямар байна?</div><div class="moods">'
       + MOODS.map(function(m){ return '<button class="mood" data-mood="'+m.k+'" aria-pressed="'+(cur===m.k)+'"><i style="background:'+m.c+'"></i>'+m.t+'</button>'; }).join("")
     + '</div></div>'
     + '<div class="juni-tools"><button class="btn sm" id="breathBtn">Амьсгалын дасгал · 1 мин</button>'
       + '<button class="btn sm ghost" data-jq="Өнөөдрийн арилжаагаа дүгнэж өгөөч">Өдрөө дүгнэх</button>'
-      + '<button class="btn sm ghost" data-jq="Арилжааны өмнө сэтгэлээ яаж бэлдэх вэ?">Арилжааны өмнө</button></div>'
+      + '<button class="btn sm ghost" data-jq="Энэ долоо хоногт алт болон фунт/иенд нөлөөлөх гол мэдээнүүд юу байна, тус бүр юу гэсэн үг вэ?">Энэ 7 хоногийн мэдээ</button>'
+      + '<button class="btn sm ghost" data-jq="Миний сүүлийн арилжаануудыг дүгнээд, юуг сайжруулах вэ?">Арилжаагаа шинжлэх</button></div>'
     + '<div class="chat" id="chat">'+chat+'</div>'
     + '<div class="juni-in"><textarea id="juniText" rows="1" placeholder="Юу ч бичиж болно…"></textarea>'
       + '<button class="send" id="juniSend" aria-label="Илгээх"'+(juni.busy?" disabled":"")+'><svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 12l16-8-6 16-2.5-6.5z" fill="currentColor"/></svg></button></div>'
