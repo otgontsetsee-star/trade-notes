@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-13",
+ "updated": "2026-10-19",
  "items": [
   {
    "id": "202609011400-JOLTS",
@@ -495,6 +495,134 @@
    "cur": "GBP",
    "note": "9-р сар",
    "src": "ONS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202610211300-BOEGovBaileySpeaks",
+   "t": "2026-10-21T13:00Z",
+   "code": "Speech",
+   "title": "Их Британи · BOE Gov Bailey Speaks",
+   "imp": 2,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202610230600-RetailSalesmm",
+   "t": "2026-10-23T06:00Z",
+   "code": "UK Retail",
+   "title": "Их Британи · Retail Sales m/m",
+   "imp": 2,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "Таамаг -0.2% · Өмнөх 0.5%",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202610230830-FlashManufacturingPMI",
+   "t": "2026-10-23T08:30Z",
+   "code": "UK PMI",
+   "title": "Их Британи · Flash Manufacturing PMI",
+   "imp": 2,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "Таамаг 51.8 · Өмнөх 52.0",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202610230830-FlashServicesPMI",
+   "t": "2026-10-23T08:30Z",
+   "code": "UK PMI",
+   "title": "Их Британи · Flash Services PMI",
+   "imp": 2,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "Таамаг 51.8 · Өмнөх 51.7",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202610231345-FlashManufacturingPMI",
+   "t": "2026-10-23T13:45Z",
+   "code": "PMI",
+   "title": "АНУ · Flash Manufacturing PMI",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "Таамаг 55.5 · Өмнөх 57.0",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202610231345-FlashServicesPMI",
+   "t": "2026-10-23T13:45Z",
+   "code": "PMI",
+   "title": "АНУ · Flash Services PMI",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "Таамаг 58.0 · Өмнөх 58.7",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202610231400-RevisedUoMConsumerSentim",
+   "t": "2026-10-23T14:00Z",
+   "code": "UoM",
+   "title": "АНУ · Revised UoM Consumer Sentiment",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "Таамаг 46.3 · Өмнөх 46.3",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202610231400-RevisedUoMInflationExpec",
+   "t": "2026-10-23T14:00Z",
+   "code": "UoM",
+   "title": "АНУ · Revised UoM Inflation Expectations",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "Өмнөх 4.7%",
+   "src": "ForexFactory",
    "allDay": false,
    "approx": false
   },
