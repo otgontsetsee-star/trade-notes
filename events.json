@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-19",
+ "updated": "2026-10-21",
  "items": [
   {
    "id": "202609011400-JOLTS",
@@ -523,7 +523,7 @@
     "GBPJPY"
    ],
    "cur": "GBP",
-   "note": "Таамаг -0.2% · Өмнөх 0.5%",
+   "note": "Таамаг -0.1% · Өмнөх 0.5%",
    "src": "ForexFactory",
    "allDay": false,
    "approx": false
@@ -570,7 +570,7 @@
     "DXY"
    ],
    "cur": "USD",
-   "note": "Таамаг 55.5 · Өмнөх 57.0",
+   "note": "Таамаг 55.4 · Өмнөх 57.0",
    "src": "ForexFactory",
    "allDay": false,
    "approx": false
@@ -587,7 +587,7 @@
     "DXY"
    ],
    "cur": "USD",
-   "note": "Таамаг 58.0 · Өмнөх 58.7",
+   "note": "Таамаг 57.8 · Өмнөх 58.7",
    "src": "ForexFactory",
    "allDay": false,
    "approx": false
