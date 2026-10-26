@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-22",
+ "updated": "2026-10-26",
  "items": [
   {
    "id": "202609011400-JOLTS",
@@ -627,6 +627,53 @@
    "approx": false
   },
   {
+   "id": "ff-202610271400-CBConsumerConfidence",
+   "t": "2026-10-27T14:00Z",
+   "code": "CB",
+   "title": "АНУ · CB Consumer Confidence",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "Таамаг 80.5 · Өмнөх 81.9",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202610281230-AnnualBudgetRelease",
+   "t": "2026-10-28T12:30Z",
+   "code": "Annual",
+   "title": "Их Британи · Annual Budget Release",
+   "imp": 3,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202610281230-AutumnForecastStatement",
+   "t": "2026-10-28T12:30Z",
+   "code": "Autumn",
+   "title": "Их Британи · Autumn Forecast Statement",
+   "imp": 2,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
    "id": "202610281800-FOMC",
    "t": "2026-10-28T18:00Z",
    "code": "FOMC",
@@ -641,6 +688,24 @@
    "cur": "USD",
    "note": "30 мин дараа Пауэллын хэвлэлийн бага хурал",
    "src": "Federal Reserve",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202610281830-FOMCPressConference",
+   "t": "2026-10-28T18:30Z",
+   "code": "Speech",
+   "title": "АНУ · FOMC Press Conference",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "",
+   "src": "ForexFactory",
    "allDay": false,
    "approx": false
   },
@@ -662,6 +727,40 @@
    "approx": false
   },
   {
+   "id": "ff-202610291230-CorePCEPriceIndexmm",
+   "t": "2026-10-29T12:30Z",
+   "code": "PCE",
+   "title": "АНУ · Core PCE Price Index m/m",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "Таамаг 0.3% · Өмнөх 0.2%",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202610292330-TokyoCoreCPIyy",
+   "t": "2026-10-29T23:30Z",
+   "code": "JP CPI",
+   "title": "Япон · Tokyo Core CPI y/y",
+   "imp": 2,
+   "tags": [
+    "GBPJPY",
+    "XAU"
+   ],
+   "cur": "JPY",
+   "note": "Таамаг 2.6% · Өмнөх 2.7%",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
    "id": "202610300300-BoJ",
    "t": "2026-10-30T03:00Z",
    "code": "BoJ",
@@ -676,6 +775,22 @@
    "src": "Bank of Japan",
    "allDay": false,
    "approx": true
+  },
+  {
+   "id": "ff-202610300530-BOJPressConference",
+   "t": "2026-10-30T05:30Z",
+   "code": "Speech",
+   "title": "Япон · BOJ Press Conference",
+   "imp": 3,
+   "tags": [
+    "GBPJPY",
+    "XAU"
+   ],
+   "cur": "JPY",
+   "note": "",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
   },
   {
    "id": "202610301230-ECI",
