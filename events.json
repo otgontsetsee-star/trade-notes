@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-31",
+ "updated": "2026-11-02",
  "items": [
   {
    "id": "202609011400-JOLTS",
@@ -862,6 +862,24 @@
    "approx": false
   },
   {
+   "id": "ff-202611031516-CongressionalElections",
+   "t": "2026-11-03T15:16Z",
+   "code": "Congress",
+   "title": "АНУ · Congressional Elections",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
    "id": "202611041500-ISM",
    "t": "2026-11-04T15:00Z",
    "code": "ISM",
@@ -894,6 +912,36 @@
    "approx": false
   },
   {
+   "id": "ff-202611051200-MonetaryPolicySummary",
+   "t": "2026-11-05T12:00Z",
+   "code": "Monetary",
+   "title": "Их Британи · Monetary Policy Summary",
+   "imp": 3,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611051230-BOEGovBaileySpeaks",
+   "t": "2026-11-05T12:30Z",
+   "code": "Speech",
+   "title": "Их Британи · BOE Gov Bailey Speaks",
+   "imp": 3,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
    "id": "202611061330-NFP",
    "t": "2026-11-06T13:30Z",
    "code": "NFP",
@@ -908,6 +956,92 @@
    "cur": "USD",
    "note": "10-р сар · ажилгүйдлийн түвшин хамт",
    "src": "BLS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611061330-AverageHourlyEarningsmm",
+   "t": "2026-11-06T13:30Z",
+   "code": "Average",
+   "title": "АНУ · Average Hourly Earnings m/m",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "Таамаг 0.3% · Өмнөх 0.1%",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611061330-UnemploymentRate",
+   "t": "2026-11-06T13:30Z",
+   "code": "Jobs",
+   "title": "АНУ · Unemployment Rate",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "Таамаг 4.2% · Өмнөх 4.2%",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611061500-PrelimUoMConsumerSentime",
+   "t": "2026-11-06T15:00Z",
+   "code": "UoM",
+   "title": "АНУ · Prelim UoM Consumer Sentiment",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "Таамаг 47.8 · Өмнөх 46.3",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611061500-PrelimUoMInflationExpect",
+   "t": "2026-11-06T15:00Z",
+   "code": "UoM",
+   "title": "АНУ · Prelim UoM Inflation Expectations",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "Өмнөх 4.7%",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611061600-BOJGovUedaSpeaks",
+   "t": "2026-11-06T16:00Z",
+   "code": "Speech",
+   "title": "Япон · BOJ Gov Ueda Speaks",
+   "imp": 3,
+   "tags": [
+    "GBPJPY",
+    "XAU"
+   ],
+   "cur": "JPY",
+   "note": "",
+   "src": "ForexFactory",
    "allDay": false,
    "approx": false
   },
