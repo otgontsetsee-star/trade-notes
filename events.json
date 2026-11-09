@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-03",
+ "updated": "2026-11-09",
  "items": [
   {
    "id": "202609011400-JOLTS",
@@ -1046,6 +1046,38 @@
    "approx": false
   },
   {
+   "id": "ff-202611091725-BOEGovBaileySpeaks",
+   "t": "2026-11-09T17:25Z",
+   "code": "Speech",
+   "title": "Их Британи · BOE Gov Bailey Speaks",
+   "imp": 2,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611100900-FOMCMemberWallerSpeaks",
+   "t": "2026-11-10T09:00Z",
+   "code": "Speech",
+   "title": "АНУ · FOMC Member Waller Speaks",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
    "id": "202611101330-CPI",
    "t": "2026-11-10T13:30Z",
    "code": "CPI",
@@ -1060,6 +1092,36 @@
    "cur": "USD",
    "note": "10-р сар",
    "src": "BLS",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611120700-GDPmm",
+   "t": "2026-11-12T07:00Z",
+   "code": "UK GDP",
+   "title": "Их Британи · GDP m/m",
+   "imp": 3,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "Таамаг 0.0% · Өмнөх 0.1%",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611120700-PrelimGDPqq",
+   "t": "2026-11-12T07:00Z",
+   "code": "UK GDP",
+   "title": "Их Британи · Prelim GDP q/q",
+   "imp": 2,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "Таамаг 0.7% · Өмнөх 0.5%",
+   "src": "ForexFactory",
    "allDay": false,
    "approx": false
   },
