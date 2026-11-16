@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-09",
+ "updated": "2026-11-16",
  "items": [
   {
    "id": "202609011400-JOLTS",
@@ -1143,6 +1143,24 @@
    "approx": false
   },
   {
+   "id": "ff-202611161700-FedChairmanWarshSpeaks",
+   "t": "2026-11-16T17:00Z",
+   "code": "Speech",
+   "title": "АНУ · Fed Chairman Warsh Speaks",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
    "id": "202611170700-UKJobs",
    "t": "2026-11-17T07:00Z",
    "code": "UK Jobs",
@@ -1190,6 +1208,36 @@
    "approx": false
   },
   {
+   "id": "ff-202611180730-BOEGovBaileySpeaks",
+   "t": "2026-11-18T07:30Z",
+   "code": "Speech",
+   "title": "Их Британи · BOE Gov Bailey Speaks",
+   "imp": 2,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611181500-BOEGovBaileySpeaks",
+   "t": "2026-11-18T15:00Z",
+   "code": "Speech",
+   "title": "Их Британи · BOE Gov Bailey Speaks",
+   "imp": 3,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
    "id": "202611181900-Minutes",
    "t": "2026-11-18T19:00Z",
    "code": "Minutes",
@@ -1205,6 +1253,72 @@
    "src": "Federal Reserve",
    "allDay": false,
    "approx": true
+  },
+  {
+   "id": "ff-202611191330-PhillyFedManufacturingIn",
+   "t": "2026-11-19T13:30Z",
+   "code": "Philly",
+   "title": "АНУ · Philly Fed Manufacturing Index",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "Таамаг 19.2 · Өмнөх 20.9",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611200700-RetailSalesmm",
+   "t": "2026-11-20T07:00Z",
+   "code": "UK Retail",
+   "title": "Их Британи · Retail Sales m/m",
+   "imp": 2,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "Таамаг 0.0% · Өмнөх -0.4%",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611201500-RevisedUoMConsumerSentim",
+   "t": "2026-11-20T15:00Z",
+   "code": "UoM",
+   "title": "АНУ · Revised UoM Consumer Sentiment",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "Таамаг 52.1 · Өмнөх 51.0",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611201500-RevisedUoMInflationExpec",
+   "t": "2026-11-20T15:00Z",
+   "code": "UoM",
+   "title": "АНУ · Revised UoM Inflation Expectations",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "Өмнөх 4.3%",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
   },
   {
    "id": "202611251330-PCE",
