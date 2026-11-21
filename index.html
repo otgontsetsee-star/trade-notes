@@ -1832,34 +1832,51 @@ async function vaultOpen(pass, rawB64){
   try{ localStorage.setItem("xau_vault_key", u8b64(raw)); }catch(e){}
   vaultApply(data, o.exportedAt);
 }
-function importSettings(os){
+function importSettings(os, addOnly){
   if(!os) return;
-  ensureAccts();
-  var S = state.settings, keepAccts = S.accounts, keepActive = S.activeAcct;
+  ensureAccts(); syncAcct();
+  var S = state.settings, keepAccts = S.accounts.slice(), keepActive = S.activeAcct;
   if(Array.isArray(os.accounts) && os.accounts.length){
-    state.settings = Object.assign(S, os); ensureAccts();
-    var e = state.settings.accounts.filter(function(x){ return x.id === curAcct(); })[0];
-    if(e) ACCT_KEYS.forEach(function(k){ if(e[k] !== undefined) state.settings[k] = e[k]; });
-    return;
+    /* данснуудыг ID-аар нэгтгэнэ — байгаа данс устахгүй */
+    var shared = Object.assign({}, os), had = {}, added = [];
+    delete shared.accounts; delete shared.activeAcct; ACCT_KEYS.forEach(function(k){ delete shared[k]; });
+    var list = keepAccts.map(function(a){ had[a.id] = 1; return a; });
+    os.accounts.forEach(function(a){
+      if(!a || !a.id) return;
+      if(had[a.id]){ if(!addOnly) list = list.map(function(x){ return x.id === a.id ? Object.assign({}, x, a) : x; }); }
+      else { list.push(a); added.push(a.id); }
+    });
+    if(!addOnly) Object.assign(S, shared);
+    S.accounts = list;
+    S.activeAcct = keepActive;
+    var e = list.filter(function(x){ return x.id === curAcct(); })[0];
+    if(e) ACCT_KEYS.forEach(function(k){ if(e[k] !== undefined) S[k] = e[k]; });
+    if(!Array.isArray(S.deposits)) S.deposits = [];
+    return added;
   }
+  if(addOnly) return;
   /* хуучин нөөц: нэг данстай → «main» дансанд хамаарна */
   if(curAcct() === "main"){ state.settings = Object.assign(S, os); state.settings.accounts = keepAccts; state.settings.activeAcct = keepActive; syncAcct(); return; }
   var m = keepAccts.filter(function(x){ return x.id === "main"; })[0];
-  var shared = Object.assign({}, os); ACCT_KEYS.forEach(function(k){ if(m && os[k] !== undefined) m[k] = os[k]; delete shared[k]; });
-  state.settings = Object.assign(S, shared); state.settings.accounts = keepAccts; state.settings.activeAcct = keepActive;
+  var shared2 = Object.assign({}, os); ACCT_KEYS.forEach(function(k){ if(m && os[k] !== undefined) m[k] = os[k]; delete shared2[k]; });
+  state.settings = Object.assign(S, shared2); state.settings.accounts = keepAccts; state.settings.activeAcct = keepActive;
 }
 function vaultApply(o, ver){
   if(!o || !Array.isArray(o.trades)) return;
-  var map = {}; state.trades.forEach(function(t){ map[t.id] = t; });
-  o.trades.forEach(function(t){ if(t && t.id) map[t.id] = t; });
-  state.trades = Object.keys(map).map(function(k){ return map[k]; });
-  importSettings(o.settings);
-  resplit();
+  /* энэ төхөөрөмж дээр өгөгдөл байвал зөвхөн шинийг нэмнэ (засварууд дарагдахгүй) */
+  var all = allTrades(), had = all.length > 0, map = {}, n = 0;
+  all.forEach(function(t){ map[t.id] = t; });
+  o.trades.forEach(function(t){ if(t && t.id && (!had || !map[t.id])){ if(!map[t.id]) n++; map[t.id] = t; } });
+  var added = importSettings(o.settings, had);
+  resplit(Object.keys(map).map(function(k){ return map[k]; }));
   state.usingDemo = false; state.calMonth = null;
   try{ localStorage.setItem("xau_hide_demo","1"); localStorage.setItem("xau_vault_seen", ver || ""); }catch(e){}
   saveLocal(); applyRules(); vaultClose(); render();
   if(!localStorage.getItem("xau_lock")) sha("0000").then(function(h){ lockSet({on:true, pin:h}); try{ sessionStorage.setItem("xau_unlocked", String(Date.now())); }catch(e){} });
-  toast("Таны өгөгдөл ачааллаа · "+o.trades.length+" арилжаа");
+  if(had && added && added.length){
+    var nm = acctList().filter(function(x){ return added.indexOf(x.id) >= 0; }).map(function(x){ return x.account; }).join(", ");
+    toast("Шинэ данс нэмэгдлээ: "+nm+" · "+n+" арилжаа — дээд талын данс товчоор шилжинэ");
+  } else toast(had ? (n ? n+" шинэ арилжаа нэмэгдлээ" : "Өгөгдөл шинэчлэгдлээ") : "Таны өгөгдөл ачааллаа · "+o.trades.length+" арилжаа");
 }
 function vaultClose(){ var v = document.getElementById("vault"); if(v) v.remove(); }
 function vaultAsk(){
