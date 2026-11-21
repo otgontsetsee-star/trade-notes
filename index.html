@@ -23,7 +23,7 @@
   --ink:#FFFFFF; --ink-2:#B4B4B4; --ink-3:#7A7A7A;
   --accent:#DB5B14; --accent-2:#E84A45; --accent-soft:rgba(219,91,20,.16); --on-accent:#FFFFFF;
   --win:#3CCB7F; --win-soft:rgba(60,203,127,.13);
-  --loss:#E84A45; --loss-soft:rgba(232,74,69,.14);
+  --loss:#F0782D; --loss-soft:rgba(240,120,45,.15);
   --warn:#F2A23C;
   --c-blue:#3D6BFF; --c-violet:#8B5CF6; --c-orange:#DB5B14; --c-red:#E84A45;
   --grad:linear-gradient(135deg,#DB5B14 0%,#E84A45 100%);
@@ -38,7 +38,7 @@
   --ink:#0E0E0E; --ink-2:#4F4F4F; --ink-3:#8C8C8C;
   --accent:#DB5B14; --accent-2:#E84A45; --accent-soft:rgba(219,91,20,.10); --on-accent:#FFFFFF;
   --win:#13955A; --win-soft:rgba(19,149,90,.10);
-  --loss:#D9362F; --loss-soft:rgba(217,54,47,.09);
+  --loss:#D4570F; --loss-soft:rgba(212,87,15,.10);
   --warn:#B86A0B;
   --card:linear-gradient(180deg,#FFFFFF 0%,#FAFAFA 100%);
   --glow:rgba(219,91,20,.16);
@@ -728,6 +728,9 @@ h1,h2,h3,.kpi .v,.trio b,.cal-month,.ne-title,.donut-wrap b,.streak b{letter-spa
 .kpi .k{color:var(--ink-2);display:flex;align-items:center;gap:7px}
 .kpi .k::before{content:"";width:6px;height:6px;border-radius:2px;background:currentColor;opacity:.55;flex:none}
 .kpi .v{font-weight:600;font-size:23px}
+.kpi .k{padding-right:38px;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.3;align-items:flex-start}
+.kpi .k::before{margin-top:5px}
+@media (max-width:760px){.cal-main .kpi::after{display:none} .cal-main .kpi .k{padding-right:0}}
 .kpi::after{content:"";position:absolute;right:12px;top:13px;width:30px;height:14px;opacity:.95;
   background:
     linear-gradient(var(--kc),var(--kc)) 0 100%/30% 70% no-repeat,
