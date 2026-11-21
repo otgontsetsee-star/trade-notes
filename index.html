@@ -806,6 +806,71 @@ tr.detail td{background:var(--surface-0)}
   .kpi::after{width:26px;height:12px;right:10px;top:11px}
 }
 
+/* ---------- dashboard виджетүүд ---------- */
+.chip-s{font-size:11.5px;color:var(--ink-2);background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+.flow-svg{width:100%;height:auto}
+.score-card{display:flex;flex-direction:column}
+.gauge-svg{width:100%;max-width:300px;margin:0 auto;display:block;overflow:visible}
+.score-parts{display:flex;flex-direction:column;gap:7px;margin-top:6px}
+.score-parts div{display:grid;grid-template-columns:118px 1fr 38px;gap:8px;align-items:center;font-size:12px;color:var(--ink-2)}
+.score-parts i{height:6px;border-radius:3px;background:var(--surface-3);overflow:hidden;display:block}
+.score-parts i b{display:block;height:100%;border-radius:3px;background:var(--grad)}
+.score-parts em{font-style:normal;text-align:right;color:var(--ink)}
+.tipbar{display:flex;gap:10px;align-items:center;margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line)}
+.tipbar .spark{width:28px;height:28px;border-radius:8px;background:var(--surface-3);display:flex;align-items:center;justify-content:center;flex:none;color:var(--accent)}
+.tipbar b{display:block;font-size:12.5px;font-weight:600}
+.tipbar small{font-size:11.5px;color:var(--ink-3)}
+.ins-card{position:relative;overflow:hidden;display:flex;flex-direction:column}
+.ins-card::before{content:"";position:absolute;right:-40px;top:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 70%);pointer-events:none}
+.ins{display:flex;flex-direction:column;gap:9px;flex:1}
+.ins-row{display:flex;gap:10px;align-items:flex-start;font-size:12.8px;line-height:1.45;color:var(--ink-2)}
+.ins-row b{color:var(--ink);font-weight:600}
+.ins-row i,.up-row i,.jact i{font-style:normal;width:28px;height:28px;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;background:var(--ic)}
+.ins-go{width:100%;margin-top:14px;padding:10px}
+.goal-in{display:flex;align-items:center;gap:2px;font-size:12px;color:var(--ink-3);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:0 4px 0 8px}
+.goal-in input{width:62px;border:0;background:none;font-weight:600;padding:4px 2px;text-align:right}
+.goal-in input:focus{outline:none}
+.gbars{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;height:170px;align-items:end;margin-top:4px}
+.gb{position:relative;height:100%;display:flex;flex-direction:column;justify-content:flex-end}
+.glabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:2px 0 8px}
+.gl{line-height:1.2;padding-left:2px}
+.gl small{display:block;font-size:10.5px;color:var(--ink-3)}
+.gl b{font-size:15px;font-weight:600}
+.gcol{border-radius:8px 8px 4px 4px;background:repeating-linear-gradient(135deg,#E2573A 0 7px,#C9452B 7px 14px);min-height:6px}
+.gb.g2 .gcol{background:repeating-linear-gradient(135deg,#F0782D 0 7px,#D4601C 7px 14px)}
+.gb.g3 .gcol{background:repeating-linear-gradient(135deg,rgba(226,87,58,.55) 0 7px,rgba(201,69,43,.55) 7px 14px)}
+.gb.neg .gcol{background:var(--surface-3)}
+.gcurve{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+:root[data-theme="light"] .gcurve path{stroke:#0E0E0E} :root[data-theme="light"] .gcurve circle{fill:#0E0E0E}
+.gfoot{display:flex;justify-content:space-between;margin-top:10px;font-size:12px;color:var(--ink-3)}
+.gfoot b{color:var(--ink);font-weight:600}
+.link-btn{background:none;border:0;color:var(--ink-3);font-size:12px;cursor:pointer;padding:0}
+.link-btn:hover{color:var(--ink)}
+.up{display:flex;flex-direction:column}
+.up-row{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.up-row:last-child{border-bottom:0}
+.up-row i{width:34px;height:34px;font-size:10px;letter-spacing:.02em}
+.up-row .t b{display:block;font-size:12.8px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.up-row .t small{font-size:11.5px;color:var(--ink-3)}
+.imp-tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--surface-2);color:var(--ink-2)}
+.imp-tag.i3{background:var(--loss-soft);color:var(--loss)}
+@media (max-width:1100px){ .dash3{grid-template-columns:1fr 1fr} .dash3 .up-card{grid-column:1/-1} }
+@media (max-width:760px){ .dash3{grid-template-columns:1fr} .score-parts div{grid-template-columns:104px 1fr 34px} }
+/* ---------- Juni нүүр ---------- */
+.jhero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:22px 4px 8px}
+.orb{width:84px;height:84px;border-radius:50%;background:radial-gradient(circle at 34% 28%,#FFE1D6 0%,#F57C66 18%,#D8382F 46%,#7A1218 78%,#3A070A 100%);
+  box-shadow:0 18px 50px rgba(232,74,69,.45), inset 0 -10px 22px rgba(0,0,0,.45), inset 0 6px 14px rgba(255,255,255,.25);animation:orbF 5s ease-in-out infinite}
+@keyframes orbF{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-6px) scale(1.03)}}
+.jh-g{margin-top:16px;font-size:13.5px;color:var(--ink-3)}
+.jh-t{font-size:26px;font-weight:700;letter-spacing:-.03em;text-transform:uppercase;margin-top:2px}
+.jh-s{font-size:12.5px;color:var(--ink-3);margin-top:4px}
+.jacts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:100%;margin-top:18px}
+.jact{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;padding:11px;border-radius:14px;background:var(--card);border:1px solid var(--line);cursor:pointer;color:var(--ink)}
+.jact b{font-size:12.5px;font-weight:600;line-height:1.25}
+.jact small{font-size:11px;color:var(--ink-3)}
+.jact:hover{border-color:var(--line-strong)}
+@media (max-width:420px){ .jacts{gap:6px} .jact{padding:9px} .jh-t{font-size:22px} }
+
 </style>
 </head>
 <body>
@@ -1619,6 +1684,17 @@ function juniOffline(text, c){
   return [pick[0], pick[1], data, pick[2]].filter(Boolean).join("\n\n");
 }
 
+function juniHero(){
+  var h = new Date().getHours(), g = h < 5 ? "Сайхан амраарай" : h < 12 ? "Өглөөний мэнд" : h < 18 ? "Өдрийн мэнд" : "Оройн мэнд";
+  var acts = [
+    {c:"var(--c-blue)", ic:"☰", t:"Өдрөө дүгнэх", s:"Өнөөдрийн арилжаа", q:"Өнөөдрийн арилжаагаа дүгнэж өгөөч"},
+    {c:"var(--c-violet)", ic:"%", t:"Эрсдэл тооцох", s:"2%-ийн лот", q:"Миний одоогийн дансаар 2% эрсдэлтэй бол алтанд SL 5$ зайтай үед лот хэд байх вэ? Тооцоогоо харуулаад өгөөч"},
+    {c:"var(--c-red)", ic:"!", t:"Энэ 7 хоногийн мэдээ", s:"Алт · фунт · иен", q:"Энэ долоо хоногт алт болон фунт/иенд нөлөөлөх гол мэдээнүүд юу байна, тус бүр юу гэсэн үг вэ?"}
+  ];
+  return '<div class="jhero"><div class="orb"></div><div class="jh-g">'+g+', Hanako</div><h2 class="jh-t">Юу бодож байна?</h2>'
+    + '<div class="jh-s">Арилжаа, мэдээ, эрсдэл — Juni-ээс юу ч асуу</div>'
+    + '<div class="jacts">'+acts.map(function(a){ return '<button class="jact" data-jq="'+esc(a.q)+'"><i style="--ic:'+a.c+'">'+a.ic+'</i><b>'+a.t+'</b><small>'+a.s+' →</small></button>'; }).join("")+'</div></div>';
+}
 function viewJuni(){
   if(!juni.msgs){ juniLoad().then(function(){ if(state.tab==="juni"){ render(); setTimeout(juniScroll, 60); setTimeout(juniScroll, 350); } }); return '<div class="juni"><div class="dim">Ачаалж байна…</div></div>'; }
   var tdy = juniToday();
@@ -1633,7 +1709,7 @@ function viewJuni(){
   if(juni.busy) chat += '<div class="msg j typing" id="juniTyping">Juni бодож байна…</div>';
   var cur = juni.moods[tdy] || "";
   return '<div class="juni">'
-    + '<div class="juni-head"><div class="juni-av">'+juniAvatar()+'</div><div><b>Juni</b><span>AI туслах · арилжаа, мэдээ, юу ч асуу</span></div></div>'
+    + (juni.msgs.length <= 1 ? juniHero() : '<div class="juni-head"><div class="juni-av">'+juniAvatar()+'</div><div><b>Juni</b><span>AI туслах · арилжаа, мэдээ, юу ч асуу</span></div></div>')
     + '<div><div class="juni-note" style="margin-bottom:6px">Өнөөдөр ямар байна?</div><div class="moods">'
       + MOODS.map(function(m){ return '<button class="mood" data-mood="'+m.k+'" aria-pressed="'+(cur===m.k)+'"><i style="background:'+m.c+'"></i>'+m.t+'</button>'; }).join("")
     + '</div></div>'
@@ -2171,6 +2247,140 @@ function breakdown(groups, opts){
 }
 
 /* ================= харагдац: самбар ================= */
+/* ================= Juni dashboard виджетүүд ================= */
+function dayPL(list){
+  var m = {};
+  list.forEach(function(t){ var c = calc(t); if(c.open) return; var d = t.closeDate || t.date; m[d] = (m[d]||0) + c.pl; });
+  return m;
+}
+/* өдөр бүрийн P/L — нягт баганан график */
+function flowSVG(list){
+  var m = dayPL(list), keys = Object.keys(m).sort();
+  if(!keys.length) return '<div class="empty">Арилжаа алга.</div>';
+  var end = new Date(keys[keys.length-1]+"T00:00:00"), days = [];
+  for(var i = 29; i >= 0; i--){ var d = new Date(end); d.setDate(d.getDate()-i); var k = ymd(d); days.push({k:k, v:m[k]||0}); }
+  var W = 640, H = 250, padL = 34, padB = 22, top = 10, max = 0;
+  days.forEach(function(x){ max = Math.max(max, Math.abs(x.v)); });
+  max = max || 1;
+  var step = (W - padL - 6) / days.length, bw = Math.max(4, step*0.42), ih = H - padB - top;
+  var grid = [0, .5, 1].map(function(f){
+    var y = top + ih - ih*f;
+    return '<line x1="'+padL+'" x2="'+W+'" y1="'+y+'" y2="'+y+'" stroke="var(--line)" stroke-dasharray="2 4"/>'
+      + '<text x="'+(padL-6)+'" y="'+(y+3)+'" text-anchor="end" font-size="9.5" fill="var(--ink-3)">$'+(max*f).toFixed(max*f<10?1:0)+'</text>';
+  }).join("");
+  var bars = days.map(function(x, i){
+    var x0 = padL + i*step + (step-bw)/2, h = Math.max(x.v ? 3 : 1.5, Math.abs(x.v)/max*ih), y = top + ih - h;
+    var col = x.v > 0 ? "var(--ink)" : x.v < 0 ? "var(--loss)" : "var(--surface-3)";
+    return '<rect x="'+x0.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="'+(bw/2).toFixed(1)+'" fill="'+col+'" opacity="'+(x.v?1:.6)+'"><title>'+x.k+' '+signed(x.v)+'</title></rect>';
+  }).join("");
+  var labs = [0, 7, 14, 21, 29].map(function(i){
+    var x0 = padL + i*step + step/2;
+    return '<text x="'+x0.toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">'+days[i].k.slice(5).replace("-","/")+'</text>';
+  }).join("");
+  return '<svg viewBox="0 0 '+W+' '+H+'" class="flow-svg" role="img" aria-label="Сүүлийн 30 өдрийн P/L">'+grid+bars+labs+'</svg>';
+}
+/* арилжаачны оноо 0–100 */
+function traderScore(list){
+  var s = stats(list), n = list.length;
+  if(!n) return null;
+  var ok = list.filter(followed).length / n;
+  var riskKnown = 0, riskOk = 0, lim = num(state.settings.riskPct) || 2;
+  list.forEach(function(t){ var c = compOf(t); if(c.riskPct !== null){ riskKnown++; if(c.riskPct <= lim + 1e-9) riskOk++; } });
+  var rk = riskKnown ? riskOk / riskKnown : 0.5;
+  var pf = s.pf === Infinity ? 1 : Math.min(s.pf / 2, 1);
+  var parts = [
+    {k:"Дүрэм баримтлах", v:ok, w:.35},
+    {k:"Эрсдэлээ барих", v:rk, w:.25},
+    {k:"Ялалтын хувь", v:Math.min(s.winRate / .6, 1), w:.2},
+    {k:"Ашиг ÷ алдагдал", v:pf, w:.2}
+  ];
+  var score = Math.round(parts.reduce(function(a,p){ return a + p.v*p.w; }, 0) * 100);
+  var weak = parts.slice().sort(function(a,b){ return a.v - b.v; })[0];
+  return {score:score, parts:parts, weak:weak, gain:Math.round((1-weak.v)*weak.w*100)};
+}
+function gaugeSVG(score){
+  var cx = 120, cy = 118, r = 92, seg = 9, gap = 3.2, out = "";
+  function pt(a, rr){ return [cx + rr*Math.cos(a), cy - rr*Math.sin(a)]; }
+  for(var i = 0; i < seg; i++){
+    var a0 = Math.PI - (Math.PI/seg)*i - (gap/180*Math.PI)/2, a1 = Math.PI - (Math.PI/seg)*(i+1) + (gap/180*Math.PI)/2;
+    var p0 = pt(a0, r), p1 = pt(a1, r), on = (i+1)/seg <= score/100 + 1e-9 || i/seg < score/100;
+    out += '<path d="M'+p0[0].toFixed(1)+' '+p0[1].toFixed(1)+' A'+r+' '+r+' 0 0 1 '+p1[0].toFixed(1)+' '+p1[1].toFixed(1)+'" stroke="'+(on?"url(#gGrad)":"var(--surface-3)")+'" stroke-width="22" fill="none"/>';
+  }
+  var a = Math.PI - Math.PI*Math.max(0, Math.min(100, score))/100, tip = pt(a, r-4), b1 = pt(a+0.085, r+17), b2 = pt(a-0.085, r+17);
+  return '<svg viewBox="0 0 240 140" class="gauge-svg" role="img" aria-label="Оноо '+score+'">'
+    + '<defs><linearGradient id="gGrad" x1="0" x2="1"><stop offset="0" stop-color="#8A3410"/><stop offset=".55" stop-color="#DB5B14"/><stop offset="1" stop-color="#F0782D"/></linearGradient></defs>'
+    + out
+    + '<path d="M'+tip[0].toFixed(1)+' '+tip[1].toFixed(1)+' L'+b1[0].toFixed(1)+' '+b1[1].toFixed(1)+' L'+b2[0].toFixed(1)+' '+b2[1].toFixed(1)+' Z" fill="var(--bg)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round"/>'
+    + '<text x="'+cx+'" y="'+(cy-14)+'" text-anchor="middle" font-size="38" font-weight="600" fill="var(--ink)" letter-spacing="-1">'+score+'</text>'
+    + '<text x="'+cx+'" y="'+(cy+6)+'" text-anchor="middle" font-size="11.5" fill="var(--ink-3)">Таны оноо</text></svg>';
+}
+function scoreCard(list){
+  var sc = traderScore(list);
+  if(!sc) return '<div class="panel"><header><h3>Арилжаачны оноо</h3></header><div class="empty">Арилжаа алга.</div></div>';
+  return '<div class="panel score-card"><header><h3>Арилжаачны оноо</h3><span class="dim" style="font-size:12px">'+list.length+' арилжаагаар</span></header>'
+    + gaugeSVG(sc.score)
+    + '<div class="score-parts">'+sc.parts.map(function(p){ return '<div><span>'+esc(p.k)+'</span><i><b style="width:'+Math.round(p.v*100)+'%"></b></i><em>'+Math.round(p.v*100)+'%</em></div>'; }).join("")+'</div>'
+    + '<div class="tipbar"><span class="spark">✦</span><div><b>«'+esc(sc.weak.k)+'»-аа сайжруулбал +'+sc.gain+' оноо</b><small>Хамгийн сул тал чинь энэ байна</small></div></div>'
+    + '</div>';
+}
+/* Juni-гийн ажиглалт — өгөгдлөөс автоматаар */
+function insightsList(list){
+  var out = [], S = state.settings;
+  var ses = groupBy(list, function(t){ return t.session; }).filter(function(g){ return g.list.length >= 2; }).sort(function(a,b){ return b.st.pl - a.st.pl; });
+  if(ses.length){
+    var b = ses[0]; out.push({ic:"◷", c:"var(--c-blue)", t:'<b>'+esc(b.key)+'</b> сесс хамгийн ашигтай: <b>'+signed(b.st.pl)+'</b> · ялалт '+pct(b.st.winRate)});
+    if(ses.length > 1 && ses[ses.length-1].st.pl < 0){ var w = ses[ses.length-1]; out.push({ic:"!", c:"var(--c-red)", t:'<b>'+esc(w.key)+'</b> сесс дээр алдаж байна: <b>'+signed(w.st.pl)+'</b> ('+w.list.length+' арилжаа)'}); }
+  }
+  var over = list.filter(function(t){ return compOf(t).v.some(function(v){ return v.k === "day"; }); });
+  if(over.length){ var os = stats(over); out.push({ic:"#", c:"var(--c-orange)", t:'Өдрийн '+(num(S.maxTrades)||3)+' арилжааны хязгаараас хэтэрсэн <b>'+over.length+'</b> арилжаа · <b>'+signed(os.pl)+'</b>'}); }
+  var risky = list.filter(function(t){ return compOf(t).v.some(function(v){ return v.k === "risk"; }); });
+  if(risky.length) out.push({ic:"%", c:"var(--c-red)", t:'<b>'+risky.length+'</b> арилжаанд эрсдэл '+(num(S.riskPct)||2)+'%-иас давсан'});
+  var early = list.filter(function(t){ return (t.mistakes||[]).some(function(m){ return /эрт/i.test(m); }); });
+  if(early.length) out.push({ic:"✂", c:"var(--c-violet)", t:'Ашгаа эрт таслсан <b>'+early.length+'</b> удаа — TP-гээ хүлээх дасгал хий'});
+  var srt = sorted(list), now = srt.length ? new Date(srt[srt.length-1].date+"T00:00:00") : new Date();
+  var d7 = ymd(new Date(now.getTime() - 6*86400000)), d14 = ymd(new Date(now.getTime() - 13*86400000));
+  var wk = stats(list.filter(function(t){ return t.date >= d7; })), pw = stats(list.filter(function(t){ return t.date >= d14 && t.date < d7; }));
+  if(wk.n) out.push({ic:"↗", c:"var(--c-blue)", t:'Сүүлийн 7 хоногт <b>'+signed(wk.pl)+'</b>, ялалт '+pct(wk.winRate)+(pw.n ? ' (өмнөх 7 хоногт '+signed(pw.pl)+')' : '')});
+  return out.slice(0, 5);
+}
+function insightsCard(list){
+  var ins = insightsList(list);
+  return '<div class="panel ins-card"><header><h3>Juni-гийн ажиглалт</h3><span class="dim" style="font-size:12px">AI</span></header>'
+    + (ins.length ? '<div class="ins">'+ins.map(function(x){ return '<div class="ins-row"><i style="--ic:'+x.c+'">'+x.ic+'</i><span>'+x.t+'</span></div>'; }).join("")+'</div>'
+      : '<div class="empty">Илүү олон арилжаа бүртгэхээр энд ажиглалт гарна.</div>')
+    + '<button class="btn primary ins-go" data-jgo="Миний сүүлийн арилжаануудыг дүгнээд, юуг сайжруулах вэ?">✦ Juni-ээс дэлгэрэнгүй асуух</button>'
+    + '</div>';
+}
+/* сарын зорилго */
+function goalCard(list){
+  var mon = ymd(new Date()).slice(0,7), srt = sorted(list);
+  if(srt.length && !list.some(function(t){ return (t.date||"").slice(0,7) === mon; })) mon = srt[srt.length-1].date.slice(0,7);
+  var ms = stats(list.filter(function(t){ return (t.date||"").slice(0,7) === mon; }));
+  var goal = num(state.settings.monthGoal) || Math.max(10, Math.ceil((startBalance() + stats(list).pl) * 0.2 / 5) * 5);
+  var earned = ms.pl, left = Math.max(0, goal - earned), mx = Math.max(goal, earned, 1);
+  var pctDone = Math.max(0, Math.min(100, earned/goal*100));
+  function bar(lbl, v, cls2){ var h = Math.max(6, Math.abs(v)/mx*100); return '<div class="gb '+cls2+'"><div class="gcol" style="height:'+h.toFixed(0)+'%"></div></div>'; }
+  function lab(lbl, v){ return '<div class="gl"><small>'+lbl+'</small><b>'+money(v)+'</b></div>'; }
+  var h1 = 100, h2 = Math.max(6, Math.abs(earned)/mx*100), h3 = Math.max(6, left/mx*100);
+  var curve = '<svg class="gcurve" viewBox="0 0 300 100" preserveAspectRatio="none"><path d="M0 '+(100-h1).toFixed(1)+' C 70 '+(100-h1).toFixed(1)+', 110 '+(100-h2).toFixed(1)+', 150 '+(100-h2).toFixed(1)+' S 230 '+(100-h3).toFixed(1)+', 300 '+(100-h3).toFixed(1)+'" fill="none" stroke="#fff" stroke-width="2" vector-effect="non-scaling-stroke"/><circle cx="0" cy="'+(100-h1).toFixed(1)+'" r="3" fill="#fff"/></svg>';
+  return '<div class="panel goal-card"><header><h3>Сарын зорилго</h3><label class="goal-in">$<input id="goalIn" type="number" inputmode="decimal" min="1" step="1" value="'+goal+'"></label></header>'
+    + '<div class="glabs">'+lab("Зорилго", goal)+lab("Олсон", earned)+lab("Үлдсэн", left)+'</div>'
+    + '<div class="gbars">'+bar("Зорилго", goal, "g1")+bar("Олсон", earned, earned<0?"g2 neg":"g2")+bar("Үлдсэн", left, "g3")+curve+'</div>'
+    + '<div class="gfoot"><span>'+mon.replace("-", " оны ")+'-р сар</span><b>'+pctDone.toFixed(0)+'% биелсэн</b></div>'
+    + '</div>';
+}
+/* удахгүй болох мэдээ */
+function upcomingCard(){
+  var now = Date.now(), evs = allEvents().filter(function(e){ return e.imp >= 2 && e.t_ms > now - 3600000; }).slice(0, 6);
+  var CC = {USD:"var(--c-blue)", GBP:"var(--c-violet)", JPY:"var(--c-red)", EUR:"var(--c-orange)"};
+  return '<div class="panel up-card"><header><h3>Удахгүй болох мэдээ</h3><button class="link-btn" data-goto="cal">Бүгд</button></header>'
+    + (evs.length ? '<div class="up">'+evs.map(function(e){
+        var u = ubOf(e.t_ms), cur = e.cur || "USD";
+        return '<div class="up-row"><i style="--ic:'+(CC[cur]||"var(--ink-3)")+'">'+esc(cur)+'</i><div class="t"><b>'+esc(e.title)+'</b><small>'+WD[u.dow]+' · '+(+u.date.slice(5,7))+'/'+u.day+(e.allDay?"":" · "+u.time)+'</small></div>'
+          + '<span class="imp-tag i'+e.imp+'">'+(e.imp>=3?"Өндөр":"Дунд")+'</span></div>';
+      }).join("")+'</div>' : '<div class="empty">Ойрын мэдээ алга.</div>')
+    + '</div>';
+}
 function viewDash(){
   var list = visibleTrades(), s = stats(list);
   var bal = startBalance();
@@ -2239,6 +2449,11 @@ function viewDash(){
   return ''
   + '<div class="sect-head" style="margin-top:0"><span class="eyebrow">Тойм</span><span class="rule"></span><span class="dim" style="font-size:12.5px">'+list.length+' арилжаа</span></div>'
   + kpiHtml
+  + '<div class="grid split" style="margin-top:14px">'
+    + '<div class="panel flow-card"><header><h3>Өдрийн P/L урсгал</h3><span class="chip-s">Сүүлийн 30 өдөр</span></header><div class="chart-wrap">'+flowSVG(list)+'</div></div>'
+    + scoreCard(list)
+  + '</div>'
+  + '<div class="grid cols-3 dash3" style="margin-top:14px">'+insightsCard(list)+goalCard(list)+upcomingCard()+'</div>'
   + '<div class="grid split" style="margin-top:14px">'
     + '<div class="panel"><header><h3>Ашгийн муруй</h3><span class="dim mono" style="font-size:12.5px">Сайн '+signed(s.maxWin)+' · муу '+signed(s.maxLoss)+'</span></header>'
     + '<div class="chart-wrap">'+equitySVG(s.curve)+'</div></div>'
@@ -3665,6 +3880,7 @@ function shotRead(files){
     });
 }
 document.getElementById("view").addEventListener("change", function(e){
+  if(e.target.id === "goalIn"){ var gv = num(e.target.value); if(gv > 0){ state.settings.monthGoal = gv; putSettings(); render(); } return; }
   if(e.target.id === "shotFile" && e.target.files && e.target.files.length) shotRead(e.target.files);
 });
 document.getElementById("view").addEventListener("keydown", function(e){
@@ -3835,6 +4051,8 @@ document.getElementById("themeBtn").addEventListener("click", function(){
 });
 
 document.getElementById("view").addEventListener("click", function(e){
+  var jg = e.target.closest("[data-jgo]"); if(jg){ state.tab = "juni"; render(); var q = jg.dataset.jgo, tries = 0; (function go(){ if(juni.msgs && !juni.busy) juniSend(q); else if(tries++ < 40) setTimeout(go, 100); })(); return; }
+  var gt = e.target.closest("[data-goto]"); if(gt){ state.tab = gt.dataset.goto; render(); window.scrollTo(0,0); return; }
   var mon = e.target.closest("[data-mon]");
   if(mon){
     var k = parseInt(mon.dataset.mon,10);
