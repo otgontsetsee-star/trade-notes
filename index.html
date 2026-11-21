@@ -519,6 +519,28 @@ body.drag-img::after{content:"Зургаа энд тавь — Juni уншаад
 
 /* ---------- утасны апп хэлбэр ---------- */
 .tabbar,.sheet,.sheet-bg{display:none}
+@media (min-width:761px){
+  .sheet-bg{display:block;position:fixed;inset:0;z-index:70;background:rgba(15,12,35,.42)}
+  .sheet{display:block;position:fixed;left:50%;top:12vh;transform:translateX(-50%);width:400px;z-index:71;background:var(--surface);border-radius:16px;padding:10px 14px 16px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:76vh;overflow-y:auto}
+  .sheet-bg[hidden],.sheet[hidden]{display:none}
+  .sheet .grab{display:none}
+  .sheet h4{margin:6px 4px 8px;font-size:13px;color:var(--ink-3);font-weight:600}
+  .sheet button.it{display:flex;align-items:center;gap:12px;width:100%;background:none;border:0;border-radius:12px;padding:10px;font-size:14.5px;font-weight:600;color:var(--ink);text-align:left;cursor:pointer}
+  .sheet button.it:hover{background:var(--surface-2)}
+  .sheet .it i{width:34px;height:34px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:16px;flex:none}
+  .sheet .it small{display:block;font-size:12px;font-weight:500;color:var(--ink-3)}
+}
+#balChip{cursor:pointer;-webkit-tap-highlight-color:transparent}
+#balChip .an{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;vertical-align:bottom}
+#balChip .car{font-size:10px;color:var(--ink-3);margin-left:2px}
+.sheet .it.on i{background:var(--accent);color:var(--on-accent)}
+.sheet .acct-form{display:flex;flex-direction:column;gap:8px;padding:6px 4px 2px}
+.sheet .acct-form input{height:42px;border:1px solid var(--line-strong);border-radius:10px;background:var(--bg);padding:0 12px;font-size:16px;color:var(--ink)}
+.acct-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.acct-row:last-child{border-bottom:0}
+.acct-row b{display:block;font-size:14px}
+.acct-row small{font-size:12px;color:var(--ink-3)}
+.acct-row .acts{display:flex;gap:6px}
 .cal-cell .cn{display:none}
 @media (max-width:760px){
   body{font-size:13.5px}
@@ -804,6 +826,7 @@ var state = {
   settings:{balance:10000, account:"Миний данс", deposits:[], serverUtcOffset:3,
             riskPct:2, maxTrades:3, sessionHours:2, checklist:DEFAULT_CHECKLIST.slice(),
             bot:{on:true, every:60, notify:false, roam:true}},
+  others:[],
   usingDemo:true,
   storeReady:false,
   storeMode:"local",
@@ -1040,13 +1063,103 @@ function groupBy(list, fn){
   return Object.keys(m).map(function(k){ return {key:k, list:m[k], st:stats(m[k])}; });
 }
 
+/* ================= олон данс ================= */
+function curAcct(){ return state.settings.activeAcct || "main"; }
+function acctOf(t){ return (t && t.acct) || "main"; }
+function allTrades(){
+  var map = {}, out = [];
+  (state.others || []).forEach(function(t){ map[t.id] = t; });
+  state.trades.forEach(function(t){ map[t.id] = t; });
+  Object.keys(map).forEach(function(k){ out.push(map[k]); });
+  return out;
+}
+function resplit(all){
+  if(all){ var mp = {}, u = []; all.forEach(function(t){ if(t && t.id) mp[t.id] = t; }); Object.keys(mp).forEach(function(k){ u.push(mp[k]); }); all = u; }
+  else all = allTrades();
+  var a = curAcct();
+  state.trades = all.filter(function(t){ return acctOf(t) === a; });
+  state.others = all.filter(function(t){ return acctOf(t) !== a; });
+  _comp.valid = false;
+}
+var ACCT_KEYS = ["account","balance","deposits","serverUtcOffset"];
+function ensureAccts(){
+  var S = state.settings;
+  if(!Array.isArray(S.accounts) || !S.accounts.length){
+    S.accounts = [{id:"main", account:S.account || "Миний данс", balance:S.balance, deposits:S.deposits || [], serverUtcOffset:S.serverUtcOffset}];
+    S.activeAcct = "main";
+  }
+  if(!S.accounts.some(function(x){ return x.id === curAcct(); })) S.activeAcct = S.accounts[0].id;
+}
+function syncAcct(){
+  ensureAccts();
+  var S = state.settings, e = S.accounts.filter(function(x){ return x.id === curAcct(); })[0];
+  if(e) ACCT_KEYS.forEach(function(k){ e[k] = S[k]; });
+}
+function acctList(){ ensureAccts(); return state.settings.accounts; }
+function switchAcct(id){
+  syncAcct();
+  var S = state.settings, e = S.accounts.filter(function(x){ return x.id === id; })[0]; if(!e) return;
+  var all = allTrades();
+  S.activeAcct = id;
+  ACCT_KEYS.forEach(function(k){ if(e[k] !== undefined) S[k] = e[k]; });
+  if(!Array.isArray(S.deposits)) S.deposits = [];
+  resplit(all);
+  state.usingDemo = false; state.calMonth = null; state.calDay = null; state.openRow = null; state.editing = null;
+  putSettings();
+  toast("Данс: "+(S.account || ""));
+}
+function addAcct(name, bal){
+  syncAcct();
+  var id = "a" + Date.now().toString(36);
+  state.settings.accounts.push({id:id, account:name || "Шинэ данс", balance:num(bal) || 0, deposits:[], serverUtcOffset:state.settings.serverUtcOffset});
+  switchAcct(id);
+}
+function deleteAcct(id){
+  if(id === curAcct()) return;
+  var gone = allTrades().filter(function(t){ return acctOf(t) === id; });
+  state.settings.accounts = acctList().filter(function(x){ return x.id !== id; });
+  state.others = (state.others || []).filter(function(t){ return acctOf(t) !== id; });
+  if(db) gone.forEach(function(t){ db.collection("trades").doc(t.id).delete().catch(function(){}); });
+  putSettings();
+  toast("Данс устлаа ("+gone.length+" арилжаа)");
+}
+function acctStats(id){
+  var list = allTrades().filter(function(t){ return acctOf(t) === id; });
+  return {n:list.length, pl:stats(list).pl};
+}
+function acctSheet(){
+  syncAcct();
+  var cur = curAcct();
+  sheetOpen('<h4>Данс сонгох</h4>'
+    + acctList().map(function(a){
+        var st = acctStats(a.id), dep = (a.deposits||[]), start = dep.length ? dep.reduce(function(x,d){ return x + num(d.amount); }, 0) : num(a.balance);
+        return '<button class="it'+(a.id===cur?' on':'')+'" data-act="acct:'+esc(a.id)+'"><i>'+(a.id===cur?'✓':'$')+'</i><span>'+esc(a.account||"Данс")
+          + '<small>'+st.n+' арилжаа · '+money(start + st.pl)+'</small></span></button>';
+      }).join("")
+    + '<div class="acct-form"><b style="font-size:13px;color:var(--ink-3);font-weight:600;margin-top:6px">Шинэ данс нэмэх</b>'
+      + '<input id="newAcctName" placeholder="Нэр (жишээ: XM Real 2, Demo)" autocomplete="off">'
+      + '<input id="newAcctBal" type="number" inputmode="decimal" step="0.01" placeholder="Эхлэлийн баланс ($)">'
+      + '<button class="btn primary" id="newAcctGo" type="button">+ Данс нэмээд шилжих</button></div>');
+}
+function acctPanel(){
+  var cur = curAcct();
+  return '<div class="panel"><header><h3>Данснууд</h3><button class="btn sm" id="acctOpen" type="button">+ Шинэ данс</button></header>'
+    + acctList().map(function(a){
+        var st = acctStats(a.id);
+        return '<div class="acct-row"><div><b>'+esc(a.account||"Данс")+(a.id===cur?' <span class="pill win">идэвхтэй</span>':'')+'</b><small>'+st.n+' арилжаа · P/L '+signed(st.pl)+'</small></div>'
+          + '<div class="acts">'+(a.id===cur ? '' : '<button class="btn sm" data-acct-use="'+esc(a.id)+'">Шилжих</button><button class="btn sm danger" data-acct-del="'+esc(a.id)+'">Устгах</button>')+'</div></div>';
+      }).join("")
+    + '<div class="dim" style="font-size:12.5px;margin-top:8px">Данс бүр өөрийн арилжаа, баланс, хуанлитай. Дээд талын «Данс» товчоор хурдан сольж болно. Шинэ дансны MT5 тайлан/зургийг тухайн данс идэвхтэй үед оруулна.</div></div>';
+}
+
 /* ================= хадгалалт ================= */
 function visibleTrades(){
   return state.trades.length ? state.trades : (state.usingDemo ? DEMO : []);
 }
 function saveLocal(){
   try{
-    localStorage.setItem("xau_trades", JSON.stringify(state.trades));
+    syncAcct();
+    localStorage.setItem("xau_trades", JSON.stringify(allTrades()));
     localStorage.setItem("xau_settings", JSON.stringify(state.settings));
   }catch(e){}
 }
@@ -1057,9 +1170,11 @@ function loadLocal(){
     var s = localStorage.getItem("xau_settings");
     if(s){ state.settings = Object.assign(state.settings, JSON.parse(s)||{}); }
   }catch(e){}
+  ensureAccts(); resplit((state.others || []).concat(state.trades));
   applyRules();
 }
 function putTrade(t){
+  if(!t.acct) t.acct = curAcct();
   if(db){
     db.collection("trades").doc(t.id).set(t).catch(function(e){ toast("Хадгалахад алдаа гарлаа: "+(e&&e.message||"")); });
     var i = state.trades.findIndex(function(x){return x.id===t.id});
@@ -1082,6 +1197,7 @@ function applyRules(){
   RULES = (Array.isArray(cl) && cl.length) ? cl.filter(function(x){ return x && x.t; }) : DEFAULT_CHECKLIST.slice();
 }
 function putSettings(){
+  syncAcct();
   applyRules();
   if(db) db.doc("settings/account").set(state.settings).catch(function(){});
   else saveLocal();
@@ -1097,7 +1213,8 @@ async function initStore(){
   if(db){
     state.storeMode = "cloud";
     db.collection("trades").onSnapshot(function(snap){
-      state.trades = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+      ensureAccts();
+      resplit(snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }));
       state.storeReady = true;
       render();
     }, function(){ state.storeMode="local"; db=null; loadLocal(); render(); });
@@ -1109,6 +1226,7 @@ async function initStore(){
     }, function(){});
     db.doc("settings/account").onSnapshot(function(s){
       if(s.exists) state.settings = Object.assign(state.settings, s.data());
+      ensureAccts(); resplit();
       applyRules();
       render();
     }, function(){});
@@ -1248,6 +1366,9 @@ function gemAsk(sys, msgs, key){
     else contents.push({role:role, parts:[{text:m.t}]});
   });
   var body = {system_instruction:{parts:[{text:sys}]}, contents:contents, generationConfig:{temperature:0.7, maxOutputTokens:2048}};
+  return gemRun(body, key);
+}
+function gemRun(body, key){
   var saved = ""; try{ saved = localStorage.getItem("xau_gem_model") || ""; }catch(e){}
   var list = saved ? [saved].concat(GEM_MODELS.filter(function(x){ return x!==saved; })) : GEM_MODELS.slice();
   var busyErr = null;
@@ -1261,6 +1382,33 @@ function gemAsk(sys, msgs, key){
       });
   }
   return next(0);
+}
+/* зургийг багасгаж base64 болгох */
+function gemImg(file){
+  return new Promise(function(res, rej){
+    var u = URL.createObjectURL(file), im = new Image();
+    im.onload = function(){
+      var m = 1800, k = Math.min(1, m / Math.max(im.naturalWidth, im.naturalHeight));
+      var c = document.createElement("canvas"); c.width = Math.max(1, Math.round(im.naturalWidth*k)); c.height = Math.max(1, Math.round(im.naturalHeight*k));
+      var x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0,0,c.width,c.height); x.drawImage(im, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(u); res(c.toDataURL("image/jpeg", 0.9).split(",")[1]);
+    };
+    im.onerror = function(){ URL.revokeObjectURL(u); rej(gemErr("img","Зургийг нээж чадсангүй")); };
+    im.src = u;
+  });
+}
+/* Gemini-ээр зураг уншиж JSON буцаах */
+function gemVision(prompt, files){
+  var key = gemKey(); if(!key) return Promise.reject(gemErr("nokey"));
+  return Promise.all(files.map(gemImg)).then(function(imgs){
+    var parts = [{text:prompt}].concat(imgs.map(function(b){ return {inline_data:{mime_type:"image/jpeg", data:b}}; }));
+    var body = {contents:[{role:"user", parts:parts}], generationConfig:{temperature:0.1, maxOutputTokens:8192, responseMimeType:"application/json"}};
+    return gemRun(body, key);
+  }).then(function(t){
+    t = String(t||"").replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/, "");
+    var a = t.indexOf("{"), b = t.lastIndexOf("}");
+    try{ return JSON.parse(a >= 0 && b > a ? t.slice(a, b+1) : t); }catch(e){ throw gemErr("parse", "AI-ийн хариуг уншиж чадсангүй"); }
+  });
 }
 function gemPanel(){
   if(window.claude) return "";
@@ -1536,9 +1684,18 @@ document.getElementById("tabbar").addEventListener("click", function(e){
   if(b.dataset.tab){ state.tab = b.dataset.tab; state.openRow = null; render(); window.scrollTo(0,0); }
 });
 document.getElementById("sheetBg").addEventListener("click", sheetClose);
+document.getElementById("balChip").addEventListener("click", acctSheet);
+document.getElementById("sheet").addEventListener("click", function(e){
+  if(!e.target.closest("#newAcctGo")) return;
+  var n = (document.getElementById("newAcctName").value || "").trim(), b = document.getElementById("newAcctBal").value;
+  if(!n){ toast("Дансны нэрээ бичнэ үү"); return; }
+  sheetClose(); addAcct(n, b);
+});
 document.getElementById("sheet").addEventListener("click", function(e){
   var b = e.target.closest("[data-act]"); if(!b) return;
-  var a = b.dataset.act; sheetClose();
+  var a = b.dataset.act;
+  if(a.indexOf("acct:") === 0){ sheetClose(); var id = a.slice(5); if(id !== curAcct()) switchAcct(id); return; }
+  sheetClose();
   if(a === "shot"){ var f = document.getElementById("shotTopFile"); if(f) f.click(); return; }
   if(a === "theme"){ document.getElementById("themeBtn").click(); return; }
   if(a.indexOf("tab:") === 0){ if(a === "tab:form") state.editing = null; state.tab = a.slice(4); state.openRow = null; render(); window.scrollTo(0,0); }
@@ -1675,12 +1832,29 @@ async function vaultOpen(pass, rawB64){
   try{ localStorage.setItem("xau_vault_key", u8b64(raw)); }catch(e){}
   vaultApply(data, o.exportedAt);
 }
+function importSettings(os){
+  if(!os) return;
+  ensureAccts();
+  var S = state.settings, keepAccts = S.accounts, keepActive = S.activeAcct;
+  if(Array.isArray(os.accounts) && os.accounts.length){
+    state.settings = Object.assign(S, os); ensureAccts();
+    var e = state.settings.accounts.filter(function(x){ return x.id === curAcct(); })[0];
+    if(e) ACCT_KEYS.forEach(function(k){ if(e[k] !== undefined) state.settings[k] = e[k]; });
+    return;
+  }
+  /* хуучин нөөц: нэг данстай → «main» дансанд хамаарна */
+  if(curAcct() === "main"){ state.settings = Object.assign(S, os); state.settings.accounts = keepAccts; state.settings.activeAcct = keepActive; syncAcct(); return; }
+  var m = keepAccts.filter(function(x){ return x.id === "main"; })[0];
+  var shared = Object.assign({}, os); ACCT_KEYS.forEach(function(k){ if(m && os[k] !== undefined) m[k] = os[k]; delete shared[k]; });
+  state.settings = Object.assign(S, shared); state.settings.accounts = keepAccts; state.settings.activeAcct = keepActive;
+}
 function vaultApply(o, ver){
   if(!o || !Array.isArray(o.trades)) return;
   var map = {}; state.trades.forEach(function(t){ map[t.id] = t; });
   o.trades.forEach(function(t){ if(t && t.id) map[t.id] = t; });
   state.trades = Object.keys(map).map(function(k){ return map[k]; });
-  if(o.settings) state.settings = Object.assign(state.settings, o.settings);
+  importSettings(o.settings);
+  resplit();
   state.usingDemo = false; state.calMonth = null;
   try{ localStorage.setItem("xau_hide_demo","1"); localStorage.setItem("xau_vault_seen", ver || ""); }catch(e){}
   saveLocal(); applyRules(); vaultClose(); render();
@@ -1749,7 +1923,8 @@ function blobSave(filename, data, mime){
 }
 /* ---- нөөц (backup) ---- */
 function exportBackup(){
-  var data = {app:"trade-notes", version:1, exportedAt:new Date().toISOString(), trades:state.trades, settings:state.settings};
+  syncAcct();
+  var data = {app:"trade-notes", version:2, exportedAt:new Date().toISOString(), trades:allTrades(), settings:state.settings};
   saveFile("trade-notes-backup-"+ymd(new Date())+".json", JSON.stringify(data, null, 1), "application/json");
 }
 function importBackup(text){
@@ -1760,7 +1935,8 @@ function importBackup(text){
   var added = 0, updated = 0;
   o.trades.forEach(function(t){ if(!t || !t.id) return; if(map[t.id]) updated++; else added++; map[t.id] = t; });
   state.trades = Object.keys(map).map(function(k){ return map[k]; });
-  if(o.settings) state.settings = Object.assign(state.settings, o.settings);
+  importSettings(o.settings);
+  resplit();
   state.usingDemo = false; state.calMonth = null;
   try{ localStorage.setItem("xau_hide_demo","1"); }catch(e){}
   if(db){
@@ -2663,6 +2839,7 @@ function viewSettings(){
         + '<div class="dim" style="font-size:12.5px;margin-top:10px;line-height:1.5">Том мэдээ 15 минутын дотор гарах гэж байвал давтамжаас үл хамааран шууд сануулна. Хуудас нээлттэй үед л ажиллана.</div>'
       + '</div>';
     })()
+  + acctPanel()
   + '<div class="panel"><header><h3>Өгөгдөл</h3></header>'
     + '<div style="font-size:13.5px;display:flex;flex-direction:column;gap:10px">'
       + '<div>Бүртгэсэн арилжаа: <b class="mono">'+real+'</b></div>'
@@ -2898,6 +3075,7 @@ function runImport(){
   if(!fresh.length){ state.usingDemo = false; render(); toast(newDep > 0 ? newDep+" гүйлгээ нэмэгдлээ, шинэ арилжаа алга" : "Шинэ арилжаа алга — бүгд аль хэдийн бүртгэгдсэн"); return; }
   state.usingDemo = false;
   fresh.forEach(function(t){
+    t.acct = curAcct();
     if(db) db.collection("trades").doc(t.id).set(t).catch(function(){});
     state.trades.push(t);
   });
@@ -2941,7 +3119,7 @@ function shotInner(){
   var thumbs = shot.thumbs.length ? '<div class="shot-thumbs">'+shot.thumbs.map(function(u){ return '<img src="'+u+'" alt="">'; }).join("")+'</div>' : "";
   if(shot.busy){
     return head + '<div class="shot-busy">'+thumbs
-      + '<div class="shot-status"><span class="spin" aria-hidden="true"></span><b>Juni зургийг уншиж байна…</b><span class="dim">'+(shotCan() ? 'Ихэвчлэн 10–40 секунд' : 'Анх удаа ~10–20 секунд, дараа нь хурдан')+'</span></div>'
+      + '<div class="shot-status"><span class="spin" aria-hidden="true"></span><b>Juni зургийг уншиж байна…</b><span class="dim">'+((shotCan() || gemKey()) ? 'Ихэвчлэн 10–40 секунд' : 'Анх удаа ~10–20 секунд, дараа нь хурдан')+'</span></div>'
       + (shotCan() ? '<button type="button" class="btn sm ghost" id="shotStop">Зогсоох</button>' : '') + '</div>';
   }
   var max = shot.lim && shot.lim.images ? shot.lim.images.maxCount : 5;
@@ -2991,12 +3169,12 @@ function shotList(){
 function shotPrompt(){
   var off = num(state.settings.serverUtcOffset);
   return [
-    "You read screenshots of a trader's trades and return them as data. The trader trades mostly XAUUSD (gold) and sometimes GBPJPY on MetaTrader 5 (Exness).",
+    "You read screenshots of a trader's trades and return them as data. The trader trades mostly XAUUSD (gold) and sometimes GBPJPY on MetaTrader 5 (XM Global; gold symbol is GOLD).",
     "The images may be: MT5 desktop or mobile History / Trade (positions) lists, a single position's detail view, a deal/position confirmation, or a TradingView / MT5 chart with a long/short position tool or entry, SL and TP lines.",
     "Today's date is "+ymd(new Date())+". Times shown in MT5 are broker server time (UTC+"+off+"); copy them exactly as shown, do not convert.",
     "Return every distinct trade (position) you can see. Read only what is visible. Use null for anything not visible; never invent values.",
     "Field rules:",
-    "- symbol: return \"XAUUSD\" or \"GBPJPY\". Exness shows gold as \"gold\" or \"XAUUSDm\" - return \"XAUUSD\". Drop broker suffixes like m or .m.",
+    "- symbol: return \"XAUUSD\" or \"GBPJPY\". XM shows gold as \"GOLD\" (others as \"gold\" or \"XAUUSDm\") - return \"XAUUSD\". Drop broker suffixes like m or .m.",
     "- dir: \"buy\" or \"sell\".",
     "- lot: volume in lots (0.01 = 0.01).",
     "- entry: open price. exit: close price, or null if the trade is still open.",
@@ -3005,6 +3183,7 @@ function shotPrompt(){
     "- profit: the profit number shown for the trade in account currency (negative for a loss), before commission and swap. commission, swap: numbers if shown, else null.",
     "- ticket: position/order ticket number as a string if visible (e.g. \"#123456789\" -> \"123456789\").",
     "- closed_by: \"tp\" or \"sl\" if the screenshot marks the close as take profit / stop loss, else null. In MT5 History a red-highlighted S/L cell means it closed at stop loss, a green-highlighted T/P cell means take profit; [sl] / [tp] in the comment means the same.",
+    "- MT5 phone app (iPhone/Android) History > Positions: each trade is a block like 'GOLD, sell 0.01' with '4012.35 → 4020.10' (open → close price) and the profit on the right, plus the close date/time like '2026.10.08 10:15:22'. Tapping a row may also show Open time, S/L, T/P, Swap, Commission, Position id. Read those when visible.",
     "- An MT5 History row reads: Time (open), Symbol, Ticket, Type, Volume, Price (open), S/L, T/P, Time (close), Price (close), Profit, Change.",
     "For an MT5 History list where a position shows as two deals (in and out), merge them into one trade. Ignore the summary line (Profit / Credit / Deposit / Balance).",
     "IMPORTANT: if the trader has marked some rows by hand (a drawn circle, outline, underline, arrow or highlight, usually red), return ONLY the marked trades. A hand-drawn line may cross the text: read the numbers through it carefully. If nothing is marked, return all trades.",
@@ -3272,6 +3451,26 @@ function shotRead(files){
   shot.thumbs = files.map(function(f){ return URL.createObjectURL(f); });
   shot.busy = true; shot.err = ""; shot.msg = ""; shot.results = null;
   if(state.tab !== "form"){ state.editing = null; state.tab = "form"; render(); } else shotPaint();
+  if(!shotCan() && gemKey() && !shot.noGem){
+    shot.ctl = null;
+    gemVision(shotPrompt(), files).then(function(res){
+      var list = (res && Array.isArray(res.trades)) ? res.trades : (Array.isArray(res) ? res : []);
+      var note = res && typeof res.note === "string" ? res.note.trim() : "";
+      var trades = list.map(shotTrade).filter(function(t){ return t.entry > 0; });
+      shot.busy = false;
+      if(!trades.length){
+        shot.err = "Арилжаа олж уншсангүй." + (note ? " "+note : " MT5-ийн History эсвэл арилжааны дэлгэрэнгүй зургийг оруулна уу.");
+        if(state.tab==="form") shotPaint(); return;
+      }
+      shotApply(trades, note);
+    }).catch(function(e){
+      shot.busy = false;
+      if(ocrOk()){ shot.noGem = true; toast("AI завгүй байна — текст танихаар уншиж байна"); shotRead(files); shot.noGem = false; return; }
+      shot.err = "AI зургийг уншиж чадсангүй ("+String((e && e.message) || e).slice(0,90)+"). Дахин оролдоорой.";
+      if(state.tab==="form") shotPaint();
+    });
+    return;
+  }
   if(!shotCan()){
     shot.ctl = null;
     ocrRead(files).then(function(trades){
@@ -3445,9 +3644,9 @@ function render(){
   document.getElementById("storeLabel").textContent =
     state.storeMode==="cloud" ? "Байнгын хадгалалт идэвхтэй" : "Энэ хөтөч дээр хадгалж байна";
   document.getElementById("balChip").innerHTML =
-    '<span class="dim">Данс</span> <b class="mono">'+money(startBalance() + s.pl)+'</b>';
+    '<span class="dim an">'+esc(acctList().length > 1 ? (state.settings.account || "Данс") : "Данс")+'</span> <b class="mono">'+money(startBalance() + s.pl)+'</b><span class="car">▾</span>';
 
-  document.getElementById("demoNotice").innerHTML = (!state.trades.length && vault.file && !window.claude)
+  document.getElementById("demoNotice").innerHTML = (!allTrades().length && vault.file && !window.claude)
     ? '<div class="notice"><b>Таны арилжааны өгөгдөл энэ төхөөрөмж дээр хараахан нээгдээгүй байна.</b> Нууц үгээ нэг удаа оруулахад таны бүх арилжаа, тэмдэглэл гарч ирнэ. <button class="btn sm primary" id="vaultOpenBtn">Өгөгдлөө нээх</button></div>'
     : (!state.trades.length && state.usingDemo)
     ? '<div class="notice"><b>Жишээ (зохиомол) өгөгдөл харагдаж байна — таны данс биш.</b> Өөрийн арилжааг харах бол «MT5 импорт» дээр MT5-ийн History тайлангаа (.html) оруулна уу, эсвэл Тохиргоо → «Нөөцөөс сэргээх». Бодит арилжаа биш — эхний бичлэгээ нэмэх эсвэл MT5-аас импортлоход алга болно. <button class="btn sm ghost" id="hideDemo">Хоослох</button></div>'
@@ -3564,6 +3763,13 @@ document.getElementById("view").addEventListener("click", function(e){
     juni.clearArm = false; juni.msgs = []; juniSave(); render(); toast("Шинэ яриа эхэллээ"); return;
   }
   if(e.target.id === "faceBtn"){ faceSetup(); return; }
+  if(e.target.id === "acctOpen"){ acctSheet(); setTimeout(function(){ var n = document.getElementById("newAcctName"); if(n) n.focus(); }, 80); return; }
+  if(e.target.dataset && e.target.dataset.acctUse){ switchAcct(e.target.dataset.acctUse); return; }
+  if(e.target.dataset && e.target.dataset.acctDel){
+    var did = e.target.dataset.acctDel;
+    if(state._delArm !== did){ state._delArm = did; e.target.textContent = "Дахин дар — арилжаатай нь устгана"; setTimeout(function(){ state._delArm = null; }, 3500); return; }
+    state._delArm = null; deleteAcct(did); return;
+  }
   if(e.target.id === "gemGo"){ e.preventDefault(); state.tab = "settings"; render(); setTimeout(function(){ var el = document.getElementById("gemKey"); if(el){ el.scrollIntoView({block:"center"}); el.focus(); } }, 60); return; }
   if(e.target.id === "gemDel"){ gemSetKey(""); toast("AI түлхүүр устлаа"); render(); return; }
   if(e.target.id === "gemSave"){
