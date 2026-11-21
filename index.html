@@ -902,6 +902,17 @@ tr.detail td{background:var(--surface-0)}
 .dd em{font-style:normal;font-size:10px;color:var(--ink-3);line-height:1}
 @media (max-width:760px){ .ms-v{font-size:28px} .ms-grid{grid-template-columns:1fr 1.15fr;gap:8px} .ms-cell{padding:10px} .ms-ring{width:46px;height:46px} }
 
+/* ---------- Juni: гар нээлттэй үед чат өөрөө гүйлгэгддэг цонх ---------- */
+@media (max-width:760px){
+  body.kb.juni-on{overflow:hidden}
+  body.kb.juni-on .juni{position:fixed;left:0;right:0;top:var(--vvt,0px);height:var(--vvh,100vh);z-index:43;background:var(--bg);
+    display:flex;flex-direction:column;gap:0;margin:0;max-width:none;padding:calc(6px + env(safe-area-inset-top)) 12px 0}
+  body.kb.juni-on .juni > :not(.chat):not(.juni-in){display:none !important}
+  body.kb.juni-on .juni .chat{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:6px 0 10px !important}
+  body.kb.juni-on .juni-in{position:static !important;bottom:auto !important;left:auto;right:auto;padding:8px 0 8px !important;border-top:1px solid var(--line);background:var(--bg)}
+  body.kb.juni-on .tabbar,body.kb.juni-on .bot{display:none !important}
+}
+
 </style>
 </head>
 <body>
@@ -1770,9 +1781,11 @@ function juniMd(t){
   return out.join("").replace(/\n(<ul>)/g,"$1").replace(/(<\/ul>)\n/g,"$1").replace(/\n+$/,"")
     .replace(/\*\*([^*\n]+)\*\*/g,"<b>$1</b>").replace(/(^|[\s(>])\*([^*\n]+)\*(?=[\s.,!?)<]|$)/g,"$1<i>$2</i>");
 }
+function juniKbMode(){ return document.body.classList.contains("kb") && document.body.classList.contains("juni-on"); }
 function juniScroll(){
   var c = document.getElementById("chat"); if(!c) return;
   var last = c.lastElementChild; if(!last) return;
+  if(juniKbMode()){ c.scrollTop = c.scrollHeight; return; }
   if(window.innerWidth <= 760){
     var inp = document.querySelector(".juni-in"), ih = inp ? inp.getBoundingClientRect().top : window.innerHeight;
     var vv = window.visualViewport, bottomEdge = vv ? Math.min(ih, vv.offsetTop + vv.height) : ih;
@@ -1783,12 +1796,22 @@ function juniScroll(){
 /* iPhone гарын үсгийн самбар: бичих талбарыг яг дээр нь байрлуулах */
 (function(){
   var vv = window.visualViewport; if(!vv) return;
+  var raf = 0;
   function upd(){
-    var kb = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
-    document.documentElement.style.setProperty("--kb", kb + "px");
+    var kb = Math.max(0, window.innerHeight - vv.height - vv.offsetTop), st = document.documentElement.style;
+    st.setProperty("--kb", kb + "px");
+    st.setProperty("--vvt", vv.offsetTop + "px");
+    st.setProperty("--vvh", vv.height + "px");
   }
-  vv.addEventListener("resize", function(){ upd(); if(state.tab === "juni" && document.activeElement && document.activeElement.id === "juniText") setTimeout(juniScroll, 60); });
-  vv.addEventListener("scroll", upd);
+  function sched(){ if(raf) return; raf = requestAnimationFrame(function(){ raf = 0; upd(); }); }
+  /* гар нээгдэх үед л доод хэсэгт шилжүүлнэ — хэрэглэгч дээш гүйлгэж байвал хүчээр буцаахгүй */
+  var lastH = vv.height;
+  vv.addEventListener("resize", function(){
+    sched();
+    var opened = vv.height < lastH - 80; lastH = vv.height;
+    if(opened && state.tab === "juni" && document.activeElement && document.activeElement.id === "juniText") setTimeout(juniScroll, 80);
+  });
+  vv.addEventListener("scroll", sched);
   upd();
 })();
 function juniSend(text){
@@ -1959,7 +1982,7 @@ function faceSetup(){
 }
 (function(){
   function isField(el){ return el && (el.tagName === "TEXTAREA" || (el.tagName === "INPUT" && !/^(checkbox|radio|button|submit|file|range)$/i.test(el.type)) || el.tagName === "SELECT"); }
-  document.addEventListener("focusin", function(e){ if(isField(e.target) && window.innerWidth <= 760) document.body.classList.add("kb"); });
+  document.addEventListener("focusin", function(e){ if(isField(e.target) && window.innerWidth <= 760){ document.body.classList.add("kb"); if(e.target.id === "juniText") setTimeout(juniScroll, 120); } });
   document.addEventListener("focusout", function(){ setTimeout(function(){ if(!isField(document.activeElement)) document.body.classList.remove("kb"); }, 60); });
 })();
 function lockInit(){
@@ -4070,6 +4093,7 @@ function render(){
   var list = visibleTrades(), s = stats(list), bal = startBalance();
   document.getElementById("subtitle").textContent = state.settings.account;
   document.getElementById("pageTitle").textContent = TITLES[state.tab] || "Самбар";
+  document.body.classList.toggle("juni-on", state.tab === "juni");
   document.getElementById("storeLabel").textContent =
     state.storeMode==="cloud" ? "Байнгын хадгалалт идэвхтэй" : "Энэ хөтөч дээр хадгалж байна";
   document.getElementById("balChip").innerHTML =
