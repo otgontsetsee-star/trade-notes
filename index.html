@@ -902,17 +902,20 @@ tr.detail td{background:var(--surface-0)}
 .dd em{font-style:normal;font-size:10px;color:var(--ink-3);line-height:1}
 @media (max-width:760px){ .ms-v{font-size:28px} .ms-grid{grid-template-columns:1fr 1.15fr;gap:8px} .ms-cell{padding:10px} .ms-ring{width:46px;height:46px} }
 
-/* ---------- Juni: гар нээлттэй үед чат өөрөө гүйлгэгддэг цонх ---------- */
-@keyframes jfade{from{opacity:.6}to{opacity:1}}
+/* ---------- Juni (утас): мессенжер шиг тогтмол цонх — хуудас өөрөө гүйлгэгдэхгүй ---------- */
 @media (max-width:760px){
-  body.kb.juni-on{overflow:hidden}
-  body.kb.juni-on .juni{position:fixed;left:0;right:0;top:var(--vvt,0px);height:var(--vvh,100vh);z-index:43;background:var(--bg);
-    transition:height .26s cubic-bezier(.2,.8,.2,1), top .26s cubic-bezier(.2,.8,.2,1);
-    display:flex;flex-direction:column;gap:0;margin:0;max-width:none;padding:calc(6px + env(safe-area-inset-top)) 12px 0}
-  body.kb.juni-on .juni > :not(.chat):not(.juni-in){display:none !important}
-  body.kb.juni-on .juni .chat{flex:1;min-height:0;overflow-y:auto;animation:jfade .2s ease;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:6px 0 10px !important}
-  body.kb.juni-on .juni-in{position:static !important;bottom:auto !important;left:auto;right:auto;padding:8px 0 8px !important;border-top:1px solid var(--line);background:var(--bg)}
-  body.kb.juni-on .tabbar,body.kb.juni-on .bot{display:none !important}
+  body.juni-on{overflow:hidden}
+  body.juni-on .juni{position:fixed;left:0;right:0;top:var(--jt,0px);height:calc(var(--vvh,100vh) - var(--jt,0px));z-index:30;
+    max-width:none;margin:0;padding:0;gap:0;display:flex;flex-direction:column}
+  body.juni-on .juni-scroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+    display:flex;flex-direction:column;gap:10px;padding:10px 14px 12px}
+  body.juni-on .juni .chat{padding-bottom:0 !important;min-height:0}
+  body.juni-on .juni-in{position:static !important;bottom:auto !important;left:auto;right:auto;z-index:auto;flex:none;
+    padding:8px 14px calc(var(--jb,80px) + 6px) !important;border-top:1px solid var(--line);background:var(--bg)}
+  body.juni-on.kb .juni{top:var(--vvt,0px);height:var(--vvh,100vh);z-index:46;background:var(--bg)}
+  body.juni-on.kb .juni-scroll{padding-top:calc(env(safe-area-inset-top) + 8px)}
+  body.juni-on.kb .juni-in{padding-bottom:8px !important}
+  body.juni-on.kb .tabbar,body.juni-on.kb .bot{display:none !important}
 }
 
 </style>
@@ -1779,7 +1782,7 @@ function viewJuni(){
   }).join("");
   if(juni.busy) chat += '<div class="msg j typing" id="juniTyping">Juni бодож байна…</div>';
   var cur = juni.moods[tdy] || "";
-  return '<div class="juni">'
+  return '<div class="juni"><div class="juni-scroll" id="juniBox">'
     + (juni.msgs.length <= 1 ? juniHero() : '<div class="juni-head"><div class="juni-av">'+juniOrb()+'</div><div><b>Juni</b><span>AI туслах · арилжаа, мэдээ, юу ч асуу</span></div></div>')
     + '<div><div class="juni-note" style="margin-bottom:6px">Өнөөдөр ямар байна?</div><div class="moods">'
       + MOODS.map(function(m){ return '<button class="mood" data-mood="'+m.k+'" aria-pressed="'+(cur===m.k)+'"><i style="background:'+m.c+'"></i>'+m.t+'</button>'; }).join("")
@@ -1789,10 +1792,11 @@ function viewJuni(){
       + '<button class="btn sm ghost" data-jq="Энэ долоо хоногт алт болон фунт/иенд нөлөөлөх гол мэдээнүүд юу байна, тус бүр юу гэсэн үг вэ?">Энэ 7 хоногийн мэдээ</button>'
       + '<button class="btn sm ghost" data-jq="Миний сүүлийн арилжаануудыг дүгнээд, юуг сайжруулах вэ?">Арилжаагаа шинжлэх</button></div>'
     + '<div class="chat" id="chat">'+chat+'</div>'
-    + '<div class="juni-in"><textarea id="juniText" rows="1" placeholder="Юу ч бичиж болно…"></textarea>'
-      + '<button class="send" id="juniSend" aria-label="Илгээх"'+(juni.busy?" disabled":"")+'><svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 12l16-8-6 16-2.5-6.5z" fill="currentColor"/></svg></button></div>'
     + '<div class="juni-note">'+(window.claude ? 'Juni Claude-ийн тусламжтайгаар хариулна.' : gemKey() ? 'Juni AI (Google Gemini)-аар хариулна.' : 'Juni одоо офлайн горимоор хариулж байна. <a href="#" id="gemGo">Үнэгүй AI холбох</a> бол илүү гүнзгий ярилцана.')
       + ' Juni бол эмч биш — хүнд үед ойр дотны хүн эсвэл мэргэжлийн хүнд хандаарай.</div>'
+    + '</div>'
+    + '<div class="juni-in"><textarea id="juniText" rows="1" placeholder="Юу ч бичиж болно…"></textarea>'
+      + '<button class="send" id="juniSend" aria-label="Илгээх"'+(juni.busy?" disabled":"")+'><svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 12l16-8-6 16-2.5-6.5z" fill="currentColor"/></svg></button></div>'
     + '</div>';
 }
 /* AI хариултын энгийн markdown: **тод**, *налуу*, жагсаалт, гарчиг */
@@ -1810,17 +1814,20 @@ function juniMd(t){
   return out.join("").replace(/\n(<ul>)/g,"$1").replace(/(<\/ul>)\n/g,"$1").replace(/\n+$/,"")
     .replace(/\*\*([^*\n]+)\*\*/g,"<b>$1</b>").replace(/(^|[\s(>])\*([^*\n]+)\*(?=[\s.,!?)<]|$)/g,"$1<i>$2</i>");
 }
-function juniKbMode(){ return document.body.classList.contains("kb") && document.body.classList.contains("juni-on"); }
+function juniBox(){ return window.innerWidth <= 760 ? document.getElementById("juniBox") : null; }
 function juniScroll(){
+  var b = juniBox(); if(b){ if(juni.msgs && juni.msgs.length <= 1){ b.scrollTop = 0; return; } b.scrollTop = b.scrollHeight; juni.atBottom = true; return; }
   var c = document.getElementById("chat"); if(!c) return;
-  var last = c.lastElementChild; if(!last) return;
-  if(juniKbMode()){ c.scrollTop = c.scrollHeight; return; }
-  if(window.innerWidth <= 760){
-    var inp = document.querySelector(".juni-in"), ih = inp ? inp.getBoundingClientRect().top : window.innerHeight;
-    var vv = window.visualViewport, bottomEdge = vv ? Math.min(ih, vv.offsetTop + vv.height) : ih;
-    var r = last.getBoundingClientRect();
-    window.scrollBy(0, r.bottom - bottomEdge + 12);
-  } else last.scrollIntoView({block:"end"});
+  var last = c.lastElementChild; if(last) last.scrollIntoView({block:"end"});
+}
+/* хэрэглэгч доод хэсэгт байгаа эсэх — тэгвэл хэмжээ өөрчлөгдөхөд доор нь барина */
+document.addEventListener("scroll", function(e){
+  if(e.target && e.target.id === "juniBox"){ var b = e.target; juni.atBottom = b.scrollHeight - b.scrollTop - b.clientHeight < 40; }
+}, true);
+function juniLayout(){
+  var st = document.documentElement.style, tb = document.querySelector(".topbar"), bar = document.getElementById("tabbar");
+  if(tb) st.setProperty("--jt", Math.max(0, Math.round(tb.getBoundingClientRect().bottom)) + "px");
+  if(bar && getComputedStyle(bar).display !== "none" && !document.body.classList.contains("kb")) st.setProperty("--jb", Math.max(0, Math.round(window.innerHeight - bar.getBoundingClientRect().top)) + "px");
 }
 /* iPhone гарын үсгийн самбар: бичих талбарыг яг дээр нь байрлуулах */
 (function(){
@@ -1831,15 +1838,10 @@ function juniScroll(){
     st.setProperty("--kb", kb + "px");
     st.setProperty("--vvt", vv.offsetTop + "px");
     st.setProperty("--vvh", vv.height + "px");
+    if(state.tab === "juni" && juni.atBottom !== false){ var b = juniBox(); if(b) b.scrollTop = b.scrollHeight; }
   }
   function sched(){ if(raf) return; raf = requestAnimationFrame(function(){ raf = 0; upd(); }); }
-  /* гар нээгдэх үед л доод хэсэгт шилжүүлнэ — хэрэглэгч дээш гүйлгэж байвал хүчээр буцаахгүй */
-  var lastH = vv.height;
-  vv.addEventListener("resize", function(){
-    sched();
-    var opened = vv.height < lastH - 80; lastH = vv.height;
-    if(opened && state.tab === "juni" && document.activeElement && document.activeElement.id === "juniText"){ setTimeout(juniScroll, 80); setTimeout(juniScroll, 320); }
-  });
+  vv.addEventListener("resize", sched);
   vv.addEventListener("scroll", sched);
   upd();
 })();
@@ -2011,16 +2013,9 @@ function faceSetup(){
 }
 (function(){
   function isField(el){ return el && (el.tagName === "TEXTAREA" || (el.tagName === "INPUT" && !/^(checkbox|radio|button|submit|file|range)$/i.test(el.type)) || el.tagName === "SELECT"); }
-  document.addEventListener("focusin", function(e){ if(isField(e.target) && window.innerWidth <= 760){ document.body.classList.add("kb"); if(e.target.id === "juniText") setTimeout(juniScroll, 120); } });
-  document.addEventListener("focusout", function(){ setTimeout(function(){ if(!isField(document.activeElement)){ var was = document.body.classList.contains("kb"); document.body.classList.remove("kb"); if(was && state.tab === "juni") setTimeout(juniScroll, 80); } }, 60); });
-  /* Juni: хуруу хүрмэгц (гар гарахаас өмнө) чатын цонхыг бэлдэнэ — хуудас үсрэхгүй */
-  document.addEventListener("touchstart", function(e){
-    var t = e.target && e.target.closest ? e.target.closest("#juniText") : null;
-    if(t && window.innerWidth <= 760 && !document.body.classList.contains("kb")){
-      document.body.classList.add("kb"); juniScroll();
-      setTimeout(function(){ if(!isField(document.activeElement)) document.body.classList.remove("kb"); }, 900);
-    }
-  }, {passive:true});
+  function keepBottom(){ if(state.tab === "juni" && juni.atBottom !== false){ juniScroll(); setTimeout(juniScroll, 120); setTimeout(juniScroll, 380); } }
+  document.addEventListener("focusin", function(e){ if(isField(e.target) && window.innerWidth <= 760){ document.body.classList.add("kb"); if(e.target.id === "juniText") keepBottom(); } });
+  document.addEventListener("focusout", function(){ setTimeout(function(){ if(!isField(document.activeElement)){ var was = document.body.classList.contains("kb"); document.body.classList.remove("kb"); if(was) keepBottom(); } }, 60); });
 })();
 function lockInit(){
   if(window.claude) return;
@@ -4131,6 +4126,7 @@ function render(){
   document.getElementById("subtitle").textContent = state.settings.account;
   document.getElementById("pageTitle").textContent = TITLES[state.tab] || "Самбар";
   document.body.classList.toggle("juni-on", state.tab === "juni");
+  if(state.tab === "juni"){ window.scrollTo(0,0); juniLayout(); }
   document.getElementById("storeLabel").textContent =
     state.storeMode==="cloud" ? "Байнгын хадгалалт идэвхтэй" : "Энэ хөтөч дээр хадгалж байна";
   document.getElementById("balChip").innerHTML =
