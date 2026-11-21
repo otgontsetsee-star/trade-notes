@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-18",
+ "updated": "2026-11-21",
  "items": [
   {
    "id": "202609011400-JOLTS",
@@ -1316,6 +1316,23 @@
    ],
    "cur": "USD",
    "note": "Өмнөх 4.3%",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611201700-PresidentTrumpSpeaks",
+   "t": "2026-11-20T17:00Z",
+   "code": "Speech",
+   "title": "АНУ · President Trump Speaks",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "",
    "src": "ForexFactory",
    "allDay": false,
    "approx": false
