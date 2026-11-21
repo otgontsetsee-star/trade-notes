@@ -918,6 +918,23 @@ tr.detail td{background:var(--surface-0)}
   body.juni-on.kb .tabbar,body.juni-on.kb .bot{display:none !important}
 }
 
+/* Juni толгой хэсэг үргэлж харагдана */
+.juni-top{display:flex;flex-direction:column;gap:10px}
+@media (max-width:760px){
+  body.juni-on .juni-top{flex:none;gap:7px;padding:8px 14px 8px;border-bottom:1px solid var(--line);background:var(--bg)}
+  body.juni-on .juni-top .juni-head{gap:10px}
+  body.juni-on .juni-top .juni-av{width:36px;height:36px}
+  body.juni-on .juni-top .juni-head b{font-size:14.5px}
+  body.juni-on .juni-top .juni-head span{font-size:11.5px}
+  body.juni-on .juni-top .juni-note{display:none}
+  body.juni-on .juni-top .moods,body.juni-on .juni-top .juni-tools{flex-wrap:nowrap !important;overflow-x:auto;scrollbar-width:none;margin:0 -14px;padding:0 14px}
+  body.juni-on .juni-top .moods::-webkit-scrollbar,body.juni-on .juni-top .juni-tools::-webkit-scrollbar{display:none}
+  body.juni-on .juni-top .mood{padding:5px 11px;font-size:12.5px;white-space:nowrap}
+  body.juni-on .juni-top .juni-tools .btn{white-space:nowrap;flex:none;min-height:32px;padding:5px 11px;font-size:12px}
+  body.juni-on.kb .juni-top{display:none}
+  body.juni-on .juni-scroll > *{flex-shrink:0}
+}
+
 </style>
 </head>
 <body>
@@ -1782,8 +1799,9 @@ function viewJuni(){
   }).join("");
   if(juni.busy) chat += '<div class="msg j typing" id="juniTyping">Juni бодож байна…</div>';
   var cur = juni.moods[tdy] || "";
-  return '<div class="juni"><div class="juni-scroll" id="juniBox">'
-    + (juni.msgs.length <= 1 ? juniHero() : '<div class="juni-head"><div class="juni-av">'+juniOrb()+'</div><div><b>Juni</b><span>AI туслах · арилжаа, мэдээ, юу ч асуу</span></div></div>')
+  var hero = juni.msgs.length <= 1;
+  return '<div class="juni"><div class="juni-top">'
+    + (hero ? '' : '<div class="juni-head"><div class="juni-av">'+juniOrb()+'</div><div><b>Juni</b><span>AI туслах · арилжаа, мэдээ, юу ч асуу</span></div></div>')
     + '<div><div class="juni-note" style="margin-bottom:6px">Өнөөдөр ямар байна?</div><div class="moods">'
       + MOODS.map(function(m){ return '<button class="mood" data-mood="'+m.k+'" aria-pressed="'+(cur===m.k)+'"><i style="background:'+m.c+'"></i>'+m.t+'</button>'; }).join("")
     + '</div></div>'
@@ -1791,6 +1809,8 @@ function viewJuni(){
       + '<button class="btn sm ghost" data-jq="Өнөөдрийн арилжаагаа дүгнэж өгөөч">Өдрөө дүгнэх</button>'
       + '<button class="btn sm ghost" data-jq="Энэ долоо хоногт алт болон фунт/иенд нөлөөлөх гол мэдээнүүд юу байна, тус бүр юу гэсэн үг вэ?">Энэ 7 хоногийн мэдээ</button>'
       + '<button class="btn sm ghost" data-jq="Миний сүүлийн арилжаануудыг дүгнээд, юуг сайжруулах вэ?">Арилжаагаа шинжлэх</button></div>'
+    + '</div><div class="juni-scroll" id="juniBox">'
+    + (hero ? juniHero() : '')
     + '<div class="chat" id="chat">'+chat+'</div>'
     + '<div class="juni-note">'+(window.claude ? 'Juni Claude-ийн тусламжтайгаар хариулна.' : gemKey() ? 'Juni AI (Google Gemini)-аар хариулна.' : 'Juni одоо офлайн горимоор хариулж байна. <a href="#" id="gemGo">Үнэгүй AI холбох</a> бол илүү гүнзгий ярилцана.')
       + ' Juni бол эмч биш — хүнд үед ойр дотны хүн эсвэл мэргэжлийн хүнд хандаарай.</div>'
