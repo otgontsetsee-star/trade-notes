@@ -775,9 +775,9 @@ tr.detail td{background:var(--surface-0)}
 .sheet .it.on i{background:var(--ink);color:var(--bg)}
 .toast{background:var(--ink);color:var(--bg)}
 /* Juni чат */
-.juni-av{width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 34% 28%,#FFD3C4 0%,#F06A55 22%,#C42B2B 52%,#5A0E12 100%);
-  box-shadow:0 10px 28px rgba(232,74,69,.35), inset 0 -6px 12px rgba(0,0,0,.35)}
+.juni-av{width:48px;height:48px;border-radius:50%;filter:drop-shadow(0 8px 18px rgba(226,90,78,.4))}
 .juni-av svg{display:none}
+.juni-av svg.orb-svg{display:block;width:100%;height:100%}
 .msg.j{background:var(--card);border-color:var(--line)}
 .msg.u{background:var(--ink);color:var(--bg)}
 .juni-in textarea{background:var(--surface-0);border-color:rgba(219,91,20,.45);border-radius:18px}
@@ -858,8 +858,8 @@ tr.detail td{background:var(--surface-0)}
 @media (max-width:760px){ .dash3{grid-template-columns:1fr} .score-parts div{grid-template-columns:104px 1fr 34px} }
 /* ---------- Juni нүүр ---------- */
 .jhero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:22px 4px 8px}
-.orb{width:84px;height:84px;border-radius:50%;background:radial-gradient(circle at 34% 28%,#FFE1D6 0%,#F57C66 18%,#D8382F 46%,#7A1218 78%,#3A070A 100%);
-  box-shadow:0 18px 50px rgba(232,74,69,.45), inset 0 -10px 22px rgba(0,0,0,.45), inset 0 6px 14px rgba(255,255,255,.25);animation:orbF 5s ease-in-out infinite}
+.orb{width:96px;height:96px;border-radius:50%;filter:drop-shadow(0 16px 30px rgba(226,90,78,.45));animation:orbF 5s ease-in-out infinite}
+.orb .orb-svg{width:100%;height:100%;display:block}
 @keyframes orbF{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-6px) scale(1.03)}}
 .jh-g{margin-top:16px;font-size:13.5px;color:var(--ink-3)}
 .jh-t{font-size:26px;font-weight:700;letter-spacing:-.03em;text-transform:uppercase;margin-top:2px}
@@ -903,12 +903,14 @@ tr.detail td{background:var(--surface-0)}
 @media (max-width:760px){ .ms-v{font-size:28px} .ms-grid{grid-template-columns:1fr 1.15fr;gap:8px} .ms-cell{padding:10px} .ms-ring{width:46px;height:46px} }
 
 /* ---------- Juni: гар нээлттэй үед чат өөрөө гүйлгэгддэг цонх ---------- */
+@keyframes jfade{from{opacity:.6}to{opacity:1}}
 @media (max-width:760px){
   body.kb.juni-on{overflow:hidden}
   body.kb.juni-on .juni{position:fixed;left:0;right:0;top:var(--vvt,0px);height:var(--vvh,100vh);z-index:43;background:var(--bg);
+    transition:height .26s cubic-bezier(.2,.8,.2,1), top .26s cubic-bezier(.2,.8,.2,1);
     display:flex;flex-direction:column;gap:0;margin:0;max-width:none;padding:calc(6px + env(safe-area-inset-top)) 12px 0}
   body.kb.juni-on .juni > :not(.chat):not(.juni-in){display:none !important}
-  body.kb.juni-on .juni .chat{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:6px 0 10px !important}
+  body.kb.juni-on .juni .chat{flex:1;min-height:0;overflow-y:auto;animation:jfade .2s ease;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:6px 0 10px !important}
   body.kb.juni-on .juni-in{position:static !important;bottom:auto !important;left:auto;right:auto;padding:8px 0 8px !important;border-top:1px solid var(--line);background:var(--bg)}
   body.kb.juni-on .tabbar,body.kb.juni-on .bot{display:none !important}
 }
@@ -1726,6 +1728,33 @@ function juniOffline(text, c){
   return [pick[0], pick[1], data, pick[2]].filter(Boolean).join("\n\n");
 }
 
+/* Juni-гийн шилэн бөмбөрцөг — дотор нь долгион урсдаг */
+var _orbN = 0;
+function juniOrb(){
+  var n = ++_orbN, id = function(k){ return k + n; };
+  return '<svg class="orb-svg" viewBox="0 0 100 100" aria-hidden="true"><defs>'
+    + '<clipPath id="'+id("oc")+'"><circle cx="50" cy="50" r="46"/></clipPath>'
+    + '<radialGradient id="'+id("ob")+'" cx="42%" cy="34%" r="72%"><stop offset="0" stop-color="#FCD3CB"/><stop offset=".3" stop-color="#F08C80"/><stop offset=".62" stop-color="#D2433F"/><stop offset=".88" stop-color="#8C1C22"/><stop offset="1" stop-color="#5A0B10"/></radialGradient>'
+    + '<linearGradient id="'+id("rb")+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF1EC"/><stop offset=".5" stop-color="#F7A497"/><stop offset="1" stop-color="#D2433F" stop-opacity=".2"/></linearGradient>'
+    + '<linearGradient id="'+id("rd")+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C8343A" stop-opacity=".75"/><stop offset="1" stop-color="#6A0E14" stop-opacity=".9"/></linearGradient>'
+    + '<radialGradient id="'+id("ov")+'" cx="50%" cy="46%" r="54%"><stop offset=".7" stop-color="#5A0B10" stop-opacity="0"/><stop offset="1" stop-color="#4A070C" stop-opacity=".55"/></radialGradient>'
+    + '<linearGradient id="'+id("tp")+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/></linearGradient>'
+    + '<radialGradient id="'+id("hl")+'" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>'
+    + '<filter id="'+id("bl")+'" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation=".9"/></filter>'
+    + '</defs><g clip-path="url(#'+id("oc")+')">'
+    + '<circle cx="50" cy="50" r="46" fill="url(#'+id("ob")+')"/>'
+    + '<g filter="url(#'+id("bl")+')"><animateTransform attributeName="transform" type="translate" values="-6 1;6 -1;-6 1" dur="8s" repeatCount="indefinite"/>'
+      + '<path d="M-8 62 C 18 32, 44 88, 70 52 S 104 38, 110 40 L110 110 L-8 110 Z" fill="url(#'+id("rd")+')"/>'
+      + '<path d="M-8 54 C 20 26, 44 80, 68 46 S 100 32, 110 36 L110 45 C 94 42, 78 62, 66 62 S 24 44, -8 66 Z" fill="url(#'+id("rb")+')" opacity=".92"/>'
+      + '<path d="M0 80 C 26 62, 50 94, 78 72 S 102 64, 110 66 L110 71 C 92 70, 80 88, 60 86 S 24 74, 0 86 Z" fill="url(#'+id("rb")+')" opacity=".55"/>'
+    + '</g>'
+    + '<circle cx="50" cy="50" r="46" fill="url(#'+id("tp")+')"/>'
+    + '<circle cx="50" cy="50" r="46" fill="url(#'+id("ov")+')"/>'
+    + '<ellipse cx="38" cy="24" rx="20" ry="9.5" transform="rotate(-22 38 24)" fill="url(#'+id("hl")+')" opacity=".8"/>'
+    + '<ellipse cx="31" cy="21" rx="5.5" ry="2.6" transform="rotate(-22 31 21)" fill="#fff" opacity=".95"/>'
+    + '<path d="M22 78 A 34 34 0 0 0 78 78" fill="none" stroke="#FFC7BC" stroke-opacity=".35" stroke-width="2.4" stroke-linecap="round"/>'
+    + '</g><circle cx="50" cy="50" r="45.6" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width=".9"/></svg>';
+}
 function juniHero(){
   var h = new Date().getHours(), g = h < 5 ? "Сайхан амраарай" : h < 12 ? "Өглөөний мэнд" : h < 18 ? "Өдрийн мэнд" : "Оройн мэнд";
   var acts = [
@@ -1733,7 +1762,7 @@ function juniHero(){
     {c:"var(--c-violet)", ic:"%", t:"Эрсдэл тооцох", s:"2%-ийн лот", q:"Миний одоогийн дансаар 2% эрсдэлтэй бол алтанд SL 5$ зайтай үед лот хэд байх вэ? Тооцоогоо харуулаад өгөөч"},
     {c:"var(--c-red)", ic:"!", t:"Энэ 7 хоногийн мэдээ", s:"Алт · фунт · иен", q:"Энэ долоо хоногт алт болон фунт/иенд нөлөөлөх гол мэдээнүүд юу байна, тус бүр юу гэсэн үг вэ?"}
   ];
-  return '<div class="jhero"><div class="orb"></div><div class="jh-g">'+g+', Hanako</div><h2 class="jh-t">Юу бодож байна?</h2>'
+  return '<div class="jhero"><div class="orb">'+juniOrb()+'</div><div class="jh-g">'+g+', Hanako</div><h2 class="jh-t">Юу бодож байна?</h2>'
     + '<div class="jh-s">Арилжаа, мэдээ, эрсдэл — Juni-ээс юу ч асуу</div>'
     + '<div class="jacts">'+acts.map(function(a){ return '<button class="jact" data-jq="'+esc(a.q)+'"><i style="--ic:'+a.c+'">'+a.ic+'</i><b>'+a.t+'</b><small>'+a.s+' →</small></button>'; }).join("")+'</div></div>';
 }
@@ -1751,7 +1780,7 @@ function viewJuni(){
   if(juni.busy) chat += '<div class="msg j typing" id="juniTyping">Juni бодож байна…</div>';
   var cur = juni.moods[tdy] || "";
   return '<div class="juni">'
-    + (juni.msgs.length <= 1 ? juniHero() : '<div class="juni-head"><div class="juni-av">'+juniAvatar()+'</div><div><b>Juni</b><span>AI туслах · арилжаа, мэдээ, юу ч асуу</span></div></div>')
+    + (juni.msgs.length <= 1 ? juniHero() : '<div class="juni-head"><div class="juni-av">'+juniOrb()+'</div><div><b>Juni</b><span>AI туслах · арилжаа, мэдээ, юу ч асуу</span></div></div>')
     + '<div><div class="juni-note" style="margin-bottom:6px">Өнөөдөр ямар байна?</div><div class="moods">'
       + MOODS.map(function(m){ return '<button class="mood" data-mood="'+m.k+'" aria-pressed="'+(cur===m.k)+'"><i style="background:'+m.c+'"></i>'+m.t+'</button>'; }).join("")
     + '</div></div>'
@@ -1809,7 +1838,7 @@ function juniScroll(){
   vv.addEventListener("resize", function(){
     sched();
     var opened = vv.height < lastH - 80; lastH = vv.height;
-    if(opened && state.tab === "juni" && document.activeElement && document.activeElement.id === "juniText") setTimeout(juniScroll, 80);
+    if(opened && state.tab === "juni" && document.activeElement && document.activeElement.id === "juniText"){ setTimeout(juniScroll, 80); setTimeout(juniScroll, 320); }
   });
   vv.addEventListener("scroll", sched);
   upd();
@@ -1983,7 +2012,15 @@ function faceSetup(){
 (function(){
   function isField(el){ return el && (el.tagName === "TEXTAREA" || (el.tagName === "INPUT" && !/^(checkbox|radio|button|submit|file|range)$/i.test(el.type)) || el.tagName === "SELECT"); }
   document.addEventListener("focusin", function(e){ if(isField(e.target) && window.innerWidth <= 760){ document.body.classList.add("kb"); if(e.target.id === "juniText") setTimeout(juniScroll, 120); } });
-  document.addEventListener("focusout", function(){ setTimeout(function(){ if(!isField(document.activeElement)) document.body.classList.remove("kb"); }, 60); });
+  document.addEventListener("focusout", function(){ setTimeout(function(){ if(!isField(document.activeElement)){ var was = document.body.classList.contains("kb"); document.body.classList.remove("kb"); if(was && state.tab === "juni") setTimeout(juniScroll, 80); } }, 60); });
+  /* Juni: хуруу хүрмэгц (гар гарахаас өмнө) чатын цонхыг бэлдэнэ — хуудас үсрэхгүй */
+  document.addEventListener("touchstart", function(e){
+    var t = e.target && e.target.closest ? e.target.closest("#juniText") : null;
+    if(t && window.innerWidth <= 760 && !document.body.classList.contains("kb")){
+      document.body.classList.add("kb"); juniScroll();
+      setTimeout(function(){ if(!isField(document.activeElement)) document.body.classList.remove("kb"); }, 900);
+    }
+  }, {passive:true});
 })();
 function lockInit(){
   if(window.claude) return;
