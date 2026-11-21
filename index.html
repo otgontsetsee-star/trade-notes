@@ -2809,9 +2809,17 @@ function newsPanel(weeks){
       + '</div>';
   }
   var upd = (state.eventsUpdated || "");
+  /* зөвхөн энэ 7 хоног (Да–Ня), өнгөрсөн мэдээ харагдахгүй; үлдсэн мэдээгүй бол дараагийн 7 хоног */
+  var nowMs = Date.now();
+  function wkOf(dateStr){ var p = dateStr.split("-"), d = new Date(Date.UTC(+p[0], +p[1]-1, +p[2])); d.setUTCDate(d.getUTCDate() - ((d.getUTCDay()+6)%7)); var st = ymdUTC(d); d.setUTCDate(d.getUTCDate()+6); return {start:st, end:ymdUTC(d)}; }
+  function alive(e){ return e.allDay ? ubOf(e.t_ms).date >= todayUB : e.t_ms > nowMs - 30*60000; }
+  var cw = wkOf(todayUB);
+  weeks = [cw];
+  var leftNow = evs.filter(function(e){ var d = ubOf(e.t_ms).date; return d >= cw.start && d <= cw.end && e.imp >= 2 && alive(e); }).length;
+  if(!leftNow){ var nd = new Date(Date.UTC(+cw.end.slice(0,4), +cw.end.slice(5,7)-1, +cw.end.slice(8,10)+1)); weeks.push(wkOf(ymdUTC(nd))); }
   var blocks = weeks.map(function(wk, wi){
     var ws = wk.start, we = wk.end;
-    var list = evs.filter(function(e){ var d = ubOf(e.t_ms).date; return d >= ws && d <= we && e.imp >= 2; });
+    var list = evs.filter(function(e){ var d = ubOf(e.t_ms).date; return d >= ws && d <= we && e.imp >= 2 && alive(e); });
     var hi = list.filter(function(e){ return e.imp >= 3; }).length;
     var lvl = hi >= 3 ? "high" : hi >= 1 ? "mid" : "calm";
     var lvlTxt = {high:"Өндөр эрсдэл", mid:"Анхаар", calm:"Тайван"}[lvl];
@@ -2830,25 +2838,25 @@ function newsPanel(weeks){
           }).join("")
         + '</div></div>';
     }).join("");
-    var wk1 = weeklyEvents(ws, we).map(function(e){ var u = ubOf(e.t_ms); return WD_SHORT[u.dow]+' '+u.time+' '+e.title; });
+    var wk1 = weeklyEvents(ws, we).filter(function(e){ return e.t_ms > nowMs; }).map(function(e){ var u = ubOf(e.t_ms); return WD_SHORT[u.dow]+' '+u.time+' '+e.title; });
     var hit = visibleTrades().filter(function(t){ return t.date >= ws && t.date <= we && newsNear(t).length; });
     var warn = "";
     if(hit.length){
       var names = {}; hit.forEach(function(t){ newsNear(t).forEach(function(e){ names[e.code] = 1; }); });
       warn = '<div class="nw-warn"><b class="ic">!</b><span>'+Object.keys(names).join(", ")+' мэдээний үеэр '+hit.length+' арилжаа нээсэн · <span class="mono">'+signed(stats(hit).pl)+'</span></span></div>';
     }
+    if(!dayRows && !warn && weeks.length > 1 && wi === 0) return "";
     return '<section class="nw'+(isNow?" now":"")+(isPast?" past":"")+'">'
-      + '<div class="nw-h"><b>'+(wi+1)+'-р 7 хоног</b><span class="dim">'+ws.slice(5).replace("-",".")+' – '+we.slice(5).replace("-",".")+'</span>'
-        + (isNow?'<span class="now-badge">Энэ 7 хоног</span>':'')
+      + '<div class="nw-h"><b>'+(isNow?"Энэ 7 хоног":"Дараагийн 7 хоног")+'</b><span class="dim">'+ws.slice(5).replace("-",".")+' – '+we.slice(5).replace("-",".")+'</span>'
         + '<span class="lvl '+lvl+'"><i><span></span><span></span><span></span></i>'+lvlTxt+'</span></div>'
-      + (dayRows || '<div class="dim" style="font-size:12.5px;padding:2px 0 4px">Том мэдээ алга</div>')
+      + (dayRows || '<div class="dim" style="font-size:12.5px;padding:2px 0 4px">Энэ 7 хоногт үлдсэн том мэдээ алга</div>')
       + (wk1.length ? '<div class="nw-weekly">Долоо хоног бүр: '+esc(wk1.join(" · "))+'</div>' : '')
       + warn
       + '</section>';
   }).join("");
   return '<aside class="news">'
     + hero
-    + '<div class="news-head"><b>7 хоног бүрийн мэдээ</b><span class="dim">XAU · XAG · DXY · OIL · GBPJPY</span></div>'
+    + '<div class="news-head"><b>Энэ 7 хоногийн мэдээ</b><span class="dim">XAU · XAG · DXY · OIL · GBPJPY</span></div>'
     + blocks
     + '<div class="news-foot">Цаг: Улаанбаатар (UTC+8). Хуанли дээрх тэмдэг серверийн өдрөөр. Эх сурвалж: BLS, Fed, BEA, Census, ISM, ONS, BoE, BoJ'+(upd?' · шинэчилсэн '+esc(upd):'')+'.</div>'
     + '</aside>';
