@@ -1861,11 +1861,35 @@ function importSettings(os, addOnly){
   var shared2 = Object.assign({}, os); ACCT_KEYS.forEach(function(k){ if(m && os[k] !== undefined) m[k] = os[k]; delete shared2[k]; });
   state.settings = Object.assign(S, shared2); state.settings.accounts = keepAccts; state.settings.activeAcct = keepActive;
 }
+/* vault-д данстай ирсэн арилжаа энэ төхөөрөмж дээр өөр дансанд (ихэвчлэн «main») байвал зөв данс руу нь шилжүүлнэ.
+   ID ижил бол данс солино; ID өөр ч өдөр/чиглэл/лот/оролт ижил (зургаар оруулсан давхардал) бол vault-ын тоог авч, тэмдэглэлийг хадгална. */
+var JOURNAL_KEYS = ["setup","tf","bias","checks","mistakes","emoBefore","emoAfter","confidence","notes","chart","ideaSrc","exitReason","journaled"];
+function vaultMoveAccts(vt, map){
+  var moved = 0;
+  function keepJ(dst, src){ JOURNAL_KEYS.forEach(function(k){ var v = src[k], d = dst[k];
+    var has = function(z){ return z !== undefined && z !== "" && z !== 0 && z !== false && !(Array.isArray(z) && !z.length) && !(z && typeof z === "object" && !Array.isArray(z) && !Object.keys(z).filter(function(q){ return z[q]; }).length); };
+    if(has(v) && !has(d)) dst[k] = v; }); }
+  vt.forEach(function(t){
+    if(!t || !t.id || !t.acct) return;
+    var loc = map[t.id];
+    if(loc && acctOf(loc) !== t.acct){ loc.acct = t.acct; moved++; }
+    var twins = Object.keys(map).map(function(k){ return map[k]; }).filter(function(x){
+      return x.id !== t.id && acctOf(x) !== t.acct && x.date === t.date && x.dir === t.dir
+        && Math.abs(num(x.lot) - num(t.lot)) < 0.0001 && Math.abs(num(x.entry) - num(t.entry)) < 0.06;
+    });
+    if(!twins.length) return;
+    var m = loc || Object.assign({}, t);
+    twins.forEach(function(w){ keepJ(m, w); delete map[w.id]; moved++; });
+    map[t.id] = m;
+  });
+  return moved;
+}
 function vaultApply(o, ver){
   if(!o || !Array.isArray(o.trades)) return;
   /* энэ төхөөрөмж дээр өгөгдөл байвал зөвхөн шинийг нэмнэ (засварууд дарагдахгүй) */
   var all = allTrades(), had = all.length > 0, map = {}, n = 0;
   all.forEach(function(t){ map[t.id] = t; });
+  var moved = vaultMoveAccts(o.trades, map);
   o.trades.forEach(function(t){ if(t && t.id && (!had || !map[t.id])){ if(!map[t.id]) n++; map[t.id] = t; } });
   var added = importSettings(o.settings, had);
   resplit(Object.keys(map).map(function(k){ return map[k]; }));
@@ -1873,7 +1897,9 @@ function vaultApply(o, ver){
   try{ localStorage.setItem("xau_hide_demo","1"); localStorage.setItem("xau_vault_seen", ver || ""); }catch(e){}
   saveLocal(); applyRules(); vaultClose(); render();
   if(!localStorage.getItem("xau_lock")) sha("0000").then(function(h){ lockSet({on:true, pin:h}); try{ sessionStorage.setItem("xau_unlocked", String(Date.now())); }catch(e){} });
-  if(had && added && added.length){
+  if(had && moved && !(added && added.length)){
+    toast(moved+" арилжааг зөв дансанд нь шилжүүллээ"+(n ? " · "+n+" шинэ" : ""));
+  } else if(had && added && added.length){
     var nm = acctList().filter(function(x){ return added.indexOf(x.id) >= 0; }).map(function(x){ return x.account; }).join(", ");
     toast("Шинэ данс нэмэгдлээ: "+nm+" · "+n+" арилжаа — дээд талын данс товчоор шилжинэ");
   } else toast(had ? (n ? n+" шинэ арилжаа нэмэгдлээ" : "Өгөгдөл шинэчлэгдлээ") : "Таны өгөгдөл ачааллаа · "+o.trades.length+" арилжаа");
