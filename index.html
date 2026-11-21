@@ -2287,8 +2287,7 @@ function dayPL(list){
 /* өдөр бүрийн P/L — нягт баганан график */
 function flowSVG(list){
   var m = dayPL(list), keys = Object.keys(m).sort();
-  if(!keys.length) return '<div class="empty">Арилжаа алга.</div>';
-  var end = new Date(keys[keys.length-1]+"T00:00:00"), days = [];
+  var end = new Date(ymd(new Date())+"T00:00:00"), days = [];
   for(var i = 29; i >= 0; i--){ var d = new Date(end); d.setDate(d.getDate()-i); var k = ymd(d); days.push({k:k, v:m[k]||0}); }
   var W = 640, H = 250, padL = 34, padB = 22, top = 10, max = 0;
   days.forEach(function(x){ max = Math.max(max, Math.abs(x.v)); });
@@ -2384,8 +2383,7 @@ function insightsCard(list){
 }
 /* сарын зорилго */
 function goalCard(list){
-  var mon = ymd(new Date()).slice(0,7), srt = sorted(list);
-  if(srt.length && !list.some(function(t){ return (t.date||"").slice(0,7) === mon; })) mon = srt[srt.length-1].date.slice(0,7);
+  var mon = ymd(new Date()).slice(0,7);
   var ms = stats(list.filter(function(t){ return (t.date||"").slice(0,7) === mon; }));
   var goal = num(state.settings.monthGoal) || Math.max(10, Math.ceil((startBalance() + stats(list).pl) * 0.2 / 5) * 5);
   var earned = ms.pl, left = Math.max(0, goal - earned), mx = Math.max(goal, earned, 1);
@@ -2903,8 +2901,8 @@ function monthLabel(ym){
   return p[0]+" он · "+MN[parseInt(p[1],10)-1];
 }
 function defaultMonth(list){
-  var ds = list.map(function(t){return t.date}).filter(Boolean).sort();
-  return ds.length ? ds[ds.length-1].slice(0,7) : ymd(new Date()).slice(0,7);
+  /* үргэлж одоогийн сар — арилжаагүй байсан ч */
+  return ymd(new Date()).slice(0,7);
 }
 function shiftMonth(ym, k){
   var p = ym.split("-"), d = new Date(parseInt(p[0],10), parseInt(p[1],10)-1+k, 1);
@@ -3511,7 +3509,7 @@ function runImport(){
   });
   if(!db) saveLocal();
   state.importRows = null; state.importName = "";
-  state.tab = "cal"; state.calMonth = defaultMonth(state.trades); state.calDay = null;
+  state.tab = "cal"; state.calMonth = (function(){ var ds = state.trades.map(function(t){ return t.date; }).filter(Boolean).sort(); return ds.length ? ds[ds.length-1].slice(0,7) : defaultMonth(); })(); state.calDay = null;
   render();
   toast(fresh.length+" арилжаа импортлолоо");
   setTimeout(function(){ botSay(true); }, 900);
