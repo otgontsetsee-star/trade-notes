@@ -871,6 +871,37 @@ tr.detail td{background:var(--surface-0)}
 .jact:hover{border-color:var(--line-strong)}
 @media (max-width:420px){ .jacts{gap:6px} .jact{padding:9px} .jh-t{font-size:22px} }
 
+/* ---------- хуанлийн сарын дүн ---------- */
+.msum{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:14px}
+.msum::before{content:"";position:absolute;right:-60px;top:-70px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 70%);pointer-events:none}
+.ms-top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.ms-main{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ms-k{font-size:12px;color:var(--ink-3)}
+.ms-v{font-size:32px;font-weight:700;letter-spacing:-.035em;line-height:1.1}
+.ms-main small{font-size:12px;color:var(--ink-3)}
+.ms-spark{width:42%;max-width:220px;height:56px;flex:none}
+.ms-grid{display:grid;grid-template-columns:1fr 1.25fr;gap:10px}
+.ms-cell{display:flex;gap:10px;align-items:center;padding:11px 12px;border-radius:14px;background:var(--surface-2);border:1px solid var(--line);min-width:0}
+.ms-ring{width:52px;height:52px;flex:none}
+.ms-cell span{display:block;font-size:11.5px;color:var(--ink-3)}
+.ms-cell b{display:block;font-size:16px;font-weight:700;letter-spacing:-.02em}
+.ms-cell small{display:block;font-size:11px;color:var(--ink-3);white-space:nowrap}
+.ms-cell.rr{flex-direction:column;align-items:stretch;gap:5px}
+.rr-h{display:flex;justify-content:space-between;align-items:baseline}
+.rr-row{display:flex;align-items:center;gap:8px}
+.rr-row i{height:8px;border-radius:4px;display:block;min-width:4px}
+.rr-row i.w{background:var(--win)} .rr-row i.l{background:repeating-linear-gradient(135deg,var(--loss) 0 5px,color-mix(in srgb,var(--loss) 70%,#000) 5px 10px)}
+.rr-row em{font-style:normal;font-size:11.5px;font-weight:600;white-space:nowrap}
+.ms-dh{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3);margin-bottom:8px;gap:8px;flex-wrap:wrap}
+.ms-dh b{font-weight:700}
+.ms-strip{display:flex;gap:5px;align-items:flex-end;height:58px}
+.dd{flex:1;max-width:34px;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px}
+.dd i{display:block;width:100%;border-radius:6px;background:var(--surface-3)}
+.dd.w i{background:linear-gradient(180deg,var(--win),color-mix(in srgb,var(--win) 55%,transparent))}
+.dd.l i{background:linear-gradient(180deg,var(--loss),color-mix(in srgb,var(--loss) 55%,transparent))}
+.dd em{font-style:normal;font-size:10px;color:var(--ink-3);line-height:1}
+@media (max-width:760px){ .ms-v{font-size:28px} .ms-grid{grid-template-columns:1fr 1.15fr;gap:8px} .ms-cell{padding:10px} .ms-ring{width:46px;height:46px} }
+
 </style>
 </head>
 <body>
@@ -2879,6 +2910,48 @@ function shiftMonth(ym, k){
   var p = ym.split("-"), d = new Date(parseInt(p[0],10), parseInt(p[1],10)-1+k, 1);
   return d.getFullYear()+"-"+pad2(d.getMonth()+1);
 }
+/* хуанлийн сарын дүн — инфографик карт */
+function monthSummary(ym, byDay, ms, green, red){
+  var keys = Object.keys(byDay).filter(function(k){ return k.slice(0,7) === ym; }).sort();
+  var cum = 0, pts = [0];
+  var days = keys.map(function(k){ var v = stats(byDay[k]).pl; cum += v; pts.push(cum); return {k:k, v:v}; });
+  /* өсөлтийн муруй */
+  var W = 150, H = 54, mn = Math.min.apply(null, pts), mx = Math.max.apply(null, pts), rg = (mx - mn) || 1;
+  var xy = pts.map(function(v, i){ return [(i/(Math.max(1, pts.length-1)))*W, H - 4 - (v - mn)/rg*(H - 10)]; });
+  var line = xy.map(function(p, i){ return (i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1); }).join(" ");
+  var col = ms.pl >= 0 ? "var(--win)" : "var(--loss)";
+  var spark = '<svg class="ms-spark" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none"><defs><linearGradient id="msG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+col+'" stop-opacity=".35"/><stop offset="1" stop-color="'+col+'" stop-opacity="0"/></linearGradient></defs>'
+    + '<path d="'+line+' L'+W+' '+H+' L0 '+H+' Z" fill="url(#msG)"/><path d="'+line+'" fill="none" stroke="'+col+'" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'
+    + (xy.length ? '<circle cx="'+xy[xy.length-1][0].toFixed(1)+'" cy="'+xy[xy.length-1][1].toFixed(1)+'" r="3.2" fill="'+col+'"/>' : '')+'</svg>';
+  /* ялалтын бөгж */
+  var wr = ms.winRate || 0, C = 2*Math.PI*22;
+  var ring = '<svg class="ms-ring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="22" fill="none" stroke="var(--surface-3)" stroke-width="6"/>'
+    + '<circle cx="28" cy="28" r="22" fill="none" stroke="url(#ringG)" stroke-width="6" stroke-linecap="round" stroke-dasharray="'+(C*wr).toFixed(1)+' '+C.toFixed(1)+'" transform="rotate(-90 28 28)"/>'
+    + '<defs><linearGradient id="ringG" x1="0" x2="1"><stop offset="0" stop-color="#DB5B14"/><stop offset="1" stop-color="#F0A04B"/></linearGradient></defs>'
+    + '<text x="28" y="32" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">'+Math.round(wr*100)+'%</text></svg>';
+  /* дундаж ашиг ба алдагдал */
+  var aw = ms.avgWin || 0, al = ms.avgLoss || 0, am = Math.max(aw, al, 0.01);
+  var ratio = al ? (aw/al).toFixed(2)+"×" : "—";
+  /* өдрийн тууз */
+  var peak = Math.max.apply(null, days.map(function(d){ return Math.abs(d.v); }).concat([1]));
+  var strip = days.map(function(d){
+    var c = d.v > 0.0001 ? "w" : d.v < -0.0001 ? "l" : "z", h = 30 + Math.abs(d.v)/peak*70;
+    return '<span class="dd '+c+'" title="'+d.k+' '+signed(d.v)+'"><i style="height:'+h.toFixed(0)+'%"></i><em>'+(+d.k.slice(8))+'</em></span>';
+  }).join("");
+  return '<div class="panel msum">'
+    + '<div class="ms-top"><div class="ms-main"><span class="ms-k">Сарын P/L</span><b class="ms-v '+cls(ms.pl)+'">'+signed(ms.pl)+'</b>'
+      + '<small>'+monthLabel(ym)+' · '+ms.n+' арилжаа</small></div>'+spark+'</div>'
+    + '<div class="ms-grid">'
+      + '<div class="ms-cell">'+ring+'<div><span>Ялалт</span><b>'+ms.wins+' / '+ms.losses+'</b><small>ялсан / алдсан</small></div></div>'
+      + '<div class="ms-cell rr"><div class="rr-h"><span>Ашиг ÷ алдагдал</span><b>'+ratio+'</b></div>'
+        + '<div class="rr-row"><i class="w" style="width:'+(aw/am*100).toFixed(0)+'%"></i><em class="pos">+$'+aw.toFixed(2)+'</em></div>'
+        + '<div class="rr-row"><i class="l" style="width:'+(al/am*100).toFixed(0)+'%"></i><em class="neg">−$'+al.toFixed(2)+'</em></div>'
+        + '<small>дундаж ашиг ба алдагдал</small></div>'
+    + '</div>'
+    + '<div class="ms-days"><div class="ms-dh"><span>Арилжсан өдрүүд</span><span><b class="pos">'+green+'</b> ашигтай · <b class="neg">'+red+'</b> алдагдалтай</span></div>'
+      + '<div class="ms-strip">'+(strip || '<span class="dim" style="font-size:12px">Энэ сард арилжаа алга</span>')+'</div></div>'
+    + '</div>';
+}
 function viewCalendar(){
   var all = visibleTrades();
   var ym = state.calMonth || (state.calMonth = defaultMonth(all));
@@ -2894,14 +2967,7 @@ function viewCalendar(){
   var red = dayPls.filter(function(v){return v<-0.0001}).length;
   var peak = Math.max.apply(null, dayPls.map(Math.abs).concat([1]));
 
-  var kpiHtml = kpiRow([
-    {k:"Сарын P/L", v:signed(ms.pl), c:cls(ms.pl), n:monthLabel(ym)},
-    {k:"Ялалт", v:pct(ms.winRate), c:"", n:ms.wins+" ялсан / "+ms.losses+" алдсан"},
-    {k:"Ашиг ÷ алдагдал", v:(ms.avgLoss? (ms.avgWin/ms.avgLoss).toFixed(2):"—")+"×", c:"", n:"дундаж харьцаа"},
-    {k:"Арилжаа", v:String(ms.n), c:"", n:"энэ сард хаагдсан"},
-    {k:"Ногоон өдөр", v:String(green), c:green?"pos":"", n:"ашигтай хаасан"},
-    {k:"Улаан өдөр", v:String(red), c:red?"neg":"", n:"алдагдалтай хаасан"}
-  ]);
+  var kpiHtml = monthSummary(ym, byDay, ms, green, red);
 
   /* сүлжээ: Даваагаар эхэлнэ */
   var first = new Date(y, m, 1);
