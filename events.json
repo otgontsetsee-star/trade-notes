@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-21",
+ "updated": "2026-11-23",
  "items": [
   {
    "id": "202609011400-JOLTS",
@@ -1338,6 +1338,87 @@
    "approx": false
   },
   {
+   "id": "ff-202611230930-FlashManufacturingPMI",
+   "t": "2026-11-23T09:30Z",
+   "code": "UK PMI",
+   "title": "Их Британи · Flash Manufacturing PMI",
+   "imp": 2,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "Таамаг 53.0 · Өмнөх 52.8",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611230930-FlashServicesPMI",
+   "t": "2026-11-23T09:30Z",
+   "code": "UK PMI",
+   "title": "Их Британи · Flash Services PMI",
+   "imp": 2,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "Таамаг 53.0 · Өмнөх 53.1",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611231445-FlashManufacturingPMI",
+   "t": "2026-11-23T14:45Z",
+   "code": "PMI",
+   "title": "АНУ · Flash Manufacturing PMI",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "Таамаг 54.5 · Өмнөх 56.0",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611231445-FlashServicesPMI",
+   "t": "2026-11-23T14:45Z",
+   "code": "PMI",
+   "title": "АНУ · Flash Services PMI",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "Таамаг 55.6 · Өмнөх 57.9",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611241500-CBConsumerConfidence",
+   "t": "2026-11-24T15:00Z",
+   "code": "CB",
+   "title": "АНУ · CB Consumer Confidence",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "Таамаг 92.1 · Өмнөх 91.7",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
    "id": "202611251330-PCE",
    "t": "2026-11-25T13:30Z",
    "code": "PCE",
@@ -1351,6 +1432,41 @@
    "cur": "USD",
    "note": "10-р сарын PCE",
    "src": "BEA",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611251330-PrelimGDPPriceIndexqq",
+   "t": "2026-11-25T13:30Z",
+   "code": "GDP",
+   "title": "АНУ · Prelim GDP Price Index q/q",
+   "imp": 2,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY"
+   ],
+   "cur": "USD",
+   "note": "Таамаг 2.3% · Өмнөх 2.3%",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611251330-PrelimGDPqq",
+   "t": "2026-11-25T13:30Z",
+   "code": "GDP",
+   "title": "АНУ · Prelim GDP q/q",
+   "imp": 3,
+   "tags": [
+    "XAU",
+    "XAG",
+    "DXY",
+    "OIL"
+   ],
+   "cur": "USD",
+   "note": "Таамаг 3.5% · Өмнөх 3.4%",
+   "src": "ForexFactory",
    "allDay": false,
    "approx": false
   },
@@ -1370,6 +1486,22 @@
    "note": "Хөрвөх чадвар бага, spread өргөсөж болно · 27-нд хагас өдөр",
    "src": "",
    "allDay": true,
+   "approx": false
+  },
+  {
+   "id": "ff-202611262330-TokyoCoreCPIyy",
+   "t": "2026-11-26T23:30Z",
+   "code": "JP CPI",
+   "title": "Япон · Tokyo Core CPI y/y",
+   "imp": 2,
+   "tags": [
+    "GBPJPY",
+    "XAU"
+   ],
+   "cur": "JPY",
+   "note": "Таамаг 2.9% · Өмнөх 2.6%",
+   "src": "ForexFactory",
+   "allDay": false,
    "approx": false
   },
   {
