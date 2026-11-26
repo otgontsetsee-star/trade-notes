@@ -957,14 +957,36 @@ tr.detail td{background:var(--surface-0)}
   .cal-cell.today .tday{font-size:9.5px}
 }
 
+/* ---------- брэнд карт (sidebar) ---------- */
+.side .brand{position:relative;overflow:hidden;margin:14px 12px 6px;padding:16px 14px 13px;border-radius:18px;gap:4px;
+  background:radial-gradient(120% 90% at 100% 0%, rgba(219,91,20,.38), transparent 58%), linear-gradient(160deg,#1C1C1C 0%,#111 70%);
+  border:1px solid rgba(255,255,255,.08);box-shadow:0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.06)}
+.side .brand::after{content:"";position:absolute;right:-50px;top:-50px;width:140px;height:140px;border-radius:50%;
+  background:radial-gradient(circle, rgba(240,120,45,.22), transparent 68%);pointer-events:none}
+.side .brand .logo{margin-bottom:4px;gap:11px}
+.side .brand .logo-mark{width:42px;height:42px;filter:drop-shadow(0 6px 14px rgba(219,91,20,.35))}
+.side .brand .wm{color:#fff;font-size:28px;letter-spacing:-.065em;display:inline-flex;align-items:flex-end}
+.side .brand .wm i{display:inline-block;width:8px;height:8px;border-radius:50%;margin:0 0 6px 3px;background:linear-gradient(135deg,#DB5B14,#E84A45);box-shadow:0 0 10px rgba(232,74,69,.8)}
+.side .brand small{color:rgba(255,255,255,.55);font-size:11.5px;letter-spacing:.01em;position:relative;z-index:1}
+.brand-live{position:relative;z-index:1;display:flex;align-items:center;gap:7px;margin-top:9px;padding:6px 10px;border-radius:999px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);font-size:11.5px;color:rgba(255,255,255,.7);width:100%;box-sizing:border-box}
+.brand-live b{color:#fff;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-live b{flex:1;min-width:0}
+.brand-live #brandClock{margin-left:auto;white-space:nowrap;flex:none;font-variant-numeric:tabular-nums;color:rgba(255,255,255,.55)}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#3CCB7F;box-shadow:0 0 0 0 rgba(60,203,127,.6);animation:livePulse 2s infinite;flex:none}
+.brand-live.closed .live-dot{background:#7A7A7A;animation:none}
+@keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(60,203,127,.55)}70%{box-shadow:0 0 0 7px rgba(60,203,127,0)}100%{box-shadow:0 0 0 0 rgba(60,203,127,0)}}
+@media (max-width:860px){ .side .brand{margin:10px 12px 6px} .brand-live{display:none} }
+
 </style>
 </head>
 <body>
 <div class="app">
   <aside class="side">
     <div class="brand">
-      <div class="logo"><svg class="logo-mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="jnG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DB5B14"/><stop offset="1" stop-color="#E84A45"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="#161616"/><rect x=".5" y=".5" width="63" height="63" rx="17.5" fill="none" stroke="rgba(255,255,255,.10)"/><path d="M32 15 L48 43 L16 43 Z" fill="#fff" stroke="#fff" stroke-width="12" stroke-linejoin="round"/><rect x="24" y="36" width="16" height="13" rx="3.5" fill="url(#jnG)"/><circle cx="27" cy="31" r="1.9" fill="#0E0E0E"/><circle cx="37" cy="31" r="1.9" fill="#0E0E0E"/></svg><span class="wm">juni</span></div>
-            <small>Алт · GBPJPY журнал</small>
+      <div class="logo"><svg class="logo-mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="jnG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DB5B14"/><stop offset="1" stop-color="#E84A45"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="#161616"/><rect x=".5" y=".5" width="63" height="63" rx="17.5" fill="none" stroke="rgba(255,255,255,.10)"/><path d="M32 15 L48 43 L16 43 Z" fill="#fff" stroke="#fff" stroke-width="12" stroke-linejoin="round"/><rect x="24" y="36" width="16" height="13" rx="3.5" fill="url(#jnG)"/><circle cx="27" cy="31" r="1.9" fill="#0E0E0E"/><circle cx="37" cy="31" r="1.9" fill="#0E0E0E"/></svg><span class="wm">juni<i></i></span></div>
+            <small>Арилжааны AI журнал</small>
+            <div class="brand-live" id="brandLive"><span class="live-dot"></span><b id="brandSess">—</b><span id="brandClock">--:--</span></div>
     </div>
     <nav class="nav" id="nav">
       <div class="sep">Хяналт</div>
@@ -2216,6 +2238,15 @@ function vaultApply(o, ver){
   o.trades.forEach(function(t){ if(t && t.id && (!had || !map[t.id])){ if(!map[t.id]) n++; map[t.id] = t; } });
   var added = importSettings(o.settings, had);
   resplit(Object.keys(map).map(function(k){ return map[k]; }));
+  /* шинэ төхөөрөмж дээр хамгийн сүүлд арилжаа хийсэн дансаар нээнэ */
+  if(!had){
+    var lastT = sorted(allTrades()).pop();
+    if(lastT && acctOf(lastT) !== curAcct() && acctList().some(function(a){ return a.id === acctOf(lastT); })){
+      var S0 = state.settings, e0 = S0.accounts.filter(function(a){ return a.id === acctOf(lastT); })[0];
+      syncAcct(); S0.activeAcct = e0.id; ACCT_KEYS.forEach(function(k){ if(e0[k] !== undefined) S0[k] = e0[k]; });
+      resplit();
+    }
+  }
   state.usingDemo = false; state.calMonth = null;
   try{ localStorage.setItem("xau_hide_demo","1"); localStorage.setItem("xau_vault_seen", ver || ""); }catch(e){}
   saveLocal(); applyRules(); vaultClose(); render();
@@ -4740,6 +4771,22 @@ lockInit();
 setTimeout(function(){ botSay(true); }, 3200);
 setInterval(botTick, 30000);
 setInterval(botRoam, 12000);
+
+/* ---------- брэнд карт: УБ цаг + одоогийн сесс ---------- */
+(function(){
+  function tick(){
+    var el = document.getElementById("brandSess"), ck = document.getElementById("brandClock"), box = document.getElementById("brandLive");
+    if(!el) return;
+    var now = new Date(), ub = ubOf(now.getTime()), dow = now.getUTCDay(), h = now.getUTCHours();
+    var weekend = dow === 6 || (dow === 0 && h < 21) || (dow === 5 && h >= 21);
+    var sess = autoSession(pad2(h)+":"+pad2(now.getUTCMinutes()), 0);
+    el.textContent = weekend ? "Зах хаалттай" : (sess || "—");
+    el.title = weekend ? "" : (sess ? sess + " сесс явж байна" : "");
+    if(box) box.classList.toggle("closed", weekend);
+    if(ck) ck.textContent = ub.time;
+  }
+  tick(); setInterval(tick, 30000);
+})();
 </script>
 </body>
 </html>
