@@ -946,6 +946,17 @@ tr.detail td{background:var(--surface-0)}
   .link-btn{padding:6px 4px}
 }
 
+/* ---------- хуанли: өнөөдөр тод ---------- */
+.cal-cell.today{border:2px solid var(--accent) !important;background:color-mix(in srgb,var(--accent) 9%,var(--surface)) !important;opacity:1}
+.cal-cell.today .d .dn{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 5px;border-radius:999px;background:var(--accent);color:#fff;font-weight:700}
+.cal-cell.today .tday{margin-top:auto;font-size:11px;font-weight:700;color:var(--accent)}
+.cal-cell.today:disabled{cursor:default}
+.cal-week.now .d{color:var(--accent);font-weight:700}
+@media (max-width:760px){
+  .cal-cell.today .d .dn{min-width:20px;height:20px;font-size:11px}
+  .cal-cell.today .tday{font-size:9.5px}
+}
+
 </style>
 </head>
 <body>
@@ -3105,6 +3116,7 @@ function viewCalendar(){
   var cur = new Date(start), weeks = [];
   var newsByDay = {};
   allEvents().forEach(function(e){ if(e.imp >= 3){ var d = srvOf(e.t_ms).date; (newsByDay[d] = newsByDay[d] || []).push(e); } });
+  var todayKey = ymd(new Date());
   for(var w=0; w<6; w++){
     var weekPl = 0, weekN = 0, rendered = "";
     var wStart = ymd(cur), wEnd = ymd(new Date(cur.getFullYear(), cur.getMonth(), cur.getDate()+6));
@@ -3118,19 +3130,21 @@ function viewCalendar(){
       if(i >= 5){ cur.setDate(cur.getDate()+1); continue; }
       var tone = dayList.length && !isOut ? (ds.pl>0.0001?"win":ds.pl<-0.0001?"loss":"") : "";
       var big = Math.abs(ds.pl) > peak*0.6 ? " big" : "";
-      rendered += '<button type="button" class="cal-cell'+(isOut?" out":"")+(dayList.length&&!isOut?" has":"")+(tone?" "+tone:"")+big+'"'
-        + ' data-day="'+key+'" aria-pressed="'+(state.calDay===key)+'"'+(dayList.length&&!isOut?"":" disabled")+'>'
-        + '<span class="d"><span>'+cur.getDate()+'</span>'
+      var isToday = key === todayKey;
+      rendered += '<button type="button" class="cal-cell'+(isOut?" out":"")+(dayList.length&&!isOut?" has":"")+(tone?" "+tone:"")+big+(isToday?" today":"")+'"'
+        + ' data-day="'+key+'" aria-pressed="'+(state.calDay===key)+'"'+(isToday?' aria-current="date"':'')+(dayList.length&&!isOut?"":" disabled")+'>'
+        + '<span class="d"><span class="dn">'+cur.getDate()+'</span>'
           + ((newsByDay[key]||[]).length && !isOut ? '<span class="cal-news-wrap">'+newsByDay[key].slice(0,2).map(function(e){ return '<span class="cal-news" title="'+esc(e.title)+'">'+esc(e.code)+'</span>'; }).join("")+'</span>' : '')
         + '</span>'
         + (dayList.length&&!isOut
             ? '<span class="p '+cls(ds.pl)+'">'+signed(ds.pl)+'</span><span class="c">'+dayList.length+' арилжаа</span><span class="cn">'+dayList.length+'×</span>'
-            : '')
+            : (isToday ? '<span class="tday">Өнөөдөр</span>' : ''))
         + '</button>';
       cur.setDate(cur.getDate()+1);
     }
-    cells += rendered + '<div class="cal-cell cal-week">'
-      + '<span class="d">'+(w+1)+'-р 7 хоног</span>'
+    var thisWeek = todayKey >= wStart && todayKey <= wEnd;
+    cells += rendered + '<div class="cal-cell cal-week'+(thisWeek?" now":"")+'">'
+      + '<span class="d">'+(thisWeek ? "Энэ 7 хоног" : (w+1)+'-р 7 хоног')+'</span>'
       + (weekN ? '<span class="p '+cls(weekPl)+'">'+signed(weekPl)+'</span><span class="c">'+weekN+' арилжаа</span>' : '')
       + '</div>';
     if(cur.getMonth() !== m && cur > new Date(y, m+1, 0)) break;
