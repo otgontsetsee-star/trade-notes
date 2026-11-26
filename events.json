@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-24",
+ "updated": "2026-11-26",
  "items": [
   {
    "id": "202609011400-JOLTS",
@@ -1466,6 +1466,21 @@
    ],
    "cur": "USD",
    "note": "Таамаг 3.5% · Өмнөх 3.4%",
+   "src": "ForexFactory",
+   "allDay": false,
+   "approx": false
+  },
+  {
+   "id": "ff-202611251415-MonetaryPolicyReportHear",
+   "t": "2026-11-25T14:15Z",
+   "code": "Monetary",
+   "title": "Их Британи · Monetary Policy Report Hearings",
+   "imp": 2,
+   "tags": [
+    "GBPJPY"
+   ],
+   "cur": "GBP",
+   "note": "",
    "src": "ForexFactory",
    "allDay": false,
    "approx": false
