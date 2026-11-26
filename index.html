@@ -275,11 +275,11 @@ body.drag-img::after{content:"Зургаа энд тавь — Juni уншаад
 @media (prefers-reduced-motion: reduce){.spin{animation:none}}
 
 .steps{counter-reset:s;display:flex;flex-direction:column;gap:10px;font-size:13.5px;margin:0;padding:0;list-style:none}
-.steps li{display:flex;gap:10px;align-items:flex-start}
+.steps li{display:block;position:relative;padding-left:30px;line-height:1.5}
 .steps li::before{
-  counter-increment:s;content:counter(s);flex:0 0 auto;width:20px;height:20px;border-radius:50%;
+  counter-increment:s;content:counter(s);position:absolute;left:0;top:1px;width:20px;height:20px;border-radius:50%;
   background:var(--surface-2);font-size:11px;font-weight:700;
-  display:flex;align-items:center;justify-content:center;margin-top:1px;color:var(--ink-2);
+  display:flex;align-items:center;justify-content:center;color:var(--ink-2);
 }
 
 .recent-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer}
@@ -935,6 +935,17 @@ tr.detail td{background:var(--surface-0)}
   body.juni-on .juni-scroll > *{flex-shrink:0}
 }
 
+/* ---------- аудитын засварууд ---------- */
+.backup-nag{justify-content:space-between;font-size:13px;line-height:1.45}
+.backup-nag span{flex:1;min-width:200px}
+.bot-btn .orb-svg{width:58px;height:58px;display:block;margin:9px 7px;filter:drop-shadow(0 10px 18px rgba(226,90,78,.45))}
+.bot.flip .bot-btn svg{transform:none}
+@media (max-width:760px){
+  #view input[type="checkbox"],#view input[type="radio"]{width:20px;height:20px;flex:none}
+  .cal-bar .btn.sm{min-width:38px}
+  .link-btn{padding:6px 4px}
+}
+
 </style>
 </head>
 <body>
@@ -1116,7 +1127,8 @@ function calc(t){
   var C = contractFor(t.symbol);
   // SL/TP тавиагүй (0) бол эрсдэл/зорилт тодорхойгүй гэж үзнэ
   // SL ашгийн тал руу зөөгдсөн (breakeven/trailing) бол анхны эрсдэл тодорхойгүй
-  var slOk = num(t.sl) && (t.dir === "buy" ? num(t.sl) < num(t.entry) : num(t.sl) > num(t.entry));
+  var slOk = num(t.sl) && (t.dir === "buy" ? num(t.sl) < num(t.entry) : num(t.sl) > num(t.entry))
+    && Math.abs(num(t.entry) - num(t.sl)) >= Math.abs(num(t.entry)) * 0.0002;
   var risk = (slOk && C) ? Math.abs(num(t.entry)-num(t.sl)) * C * lot : 0;
   var reward = (num(t.tp) && C) ? Math.abs(num(t.tp)-num(t.entry)) * C * lot : 0;
   var pl = hasPl(t) ? num(t.plOverride)
@@ -1193,6 +1205,12 @@ function minsOf(date, time){
   return Date.UTC(+d[0], +d[1]-1, +d[2], +m[0]||0, +m[1]||0) / 60000;
 }
 function fmtDur(min){ var h = Math.floor(min/60), m = Math.round(min%60); return (h? h+"ц ":"")+m+"м"; }
+/* дансанд нийт хийсэн мөнгө (татсаныг хасахгүй) — өгөөжийн хувийг үүнээс бодно */
+function fundedIn(){
+  var dep = state.settings.deposits || [];
+  var pos = dep.reduce(function(a,x){ return a + Math.max(0, num(x.amount)); }, 0);
+  return pos || num(state.settings.balance);
+}
 function startBalance(){
   var dep = state.settings.deposits || [];
   return dep.length ? dep.reduce(function(a,x){ return a + num(x.amount); }, 0) : num(state.settings.balance);
@@ -1226,7 +1244,7 @@ function compliance(){
         v.push({k:"risk", short:info.riskPct.toFixed(1)+"% эрсдэл", text:"Эрсдэл $"+c.risk.toFixed(2)+" = данснаас "+info.riskPct.toFixed(1)+"% (хязгаар "+num(S.riskPct)+"% = $"+(bal*num(S.riskPct)/100).toFixed(2)+")"});
     } else { info.riskPct = null; }
     /* 3) сесс дээрх цаг */
-    var sess = t.session || autoSession(t.time, S.serverUtcOffset);
+    var sess = t.session || autoSession(t.time, srvOffAt(t.date));
     info.session = sess;
     var sk = t.date+"|"+sess;
     if(perSess[sk] === undefined) perSess[sk] = at;
@@ -1398,7 +1416,20 @@ function loadLocal(){
     if(s){ state.settings = Object.assign(state.settings, JSON.parse(s)||{}); }
   }catch(e){}
   ensureAccts(); resplit((state.others || []).concat(state.trades));
+  if(fixSessions(allTrades()).length) saveLocal();
   applyRules();
+}
+/* өвлийн цагт (+2) арилжаа +3-аар сесс бодогдсон бол засна (хэрэглэгч өөрөө сольсон бол хөндөхгүй) */
+function fixSessions(list){
+  var base = num(state.settings.serverUtcOffset), out = [];
+  (list || []).forEach(function(t){
+    if(!t || t.sessFix || !t.time || !t.date) return;
+    var off = srvOffAt(t.date);
+    if(off === base) return;
+    if(t.session && t.session !== autoSession(t.time, base)) { t.sessFix = 1; return; }
+    t.session = autoSession(t.time, off); t.sessFix = 1; out.push(t);
+  });
+  return out;
 }
 function putTrade(t){
   if(!t.acct) t.acct = curAcct();
@@ -1442,6 +1473,7 @@ async function initStore(){
     db.collection("trades").onSnapshot(function(snap){
       ensureAccts();
       resplit(snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }));
+      fixSessions(allTrades()).forEach(function(t){ db.collection("trades").doc(t.id).set(t).catch(function(){}); });
       state.storeReady = true;
       render();
     }, function(){ state.storeMode="local"; db=null; loadLocal(); render(); });
@@ -2249,6 +2281,21 @@ function exportBackup(){
   syncAcct();
   var data = {app:"trade-notes", version:2, exportedAt:new Date().toISOString(), trades:allTrades(), settings:state.settings};
   saveFile("trade-notes-backup-"+ymd(new Date())+".json", JSON.stringify(data, null, 1), "application/json");
+  try{ localStorage.setItem("xau_last_backup", String(Date.now())); }catch(e){}
+  render();
+}
+/* утсан дээрх өгөгдөл зөвхөн энэ төхөөрөмжид байдаг тул нөөц хуучирвал сануулна */
+function backupAgeDays(){
+  var t = 0; try{ t = +localStorage.getItem("xau_last_backup") || 0; }catch(e){}
+  return t ? Math.floor((Date.now() - t)/86400000) : null;
+}
+function backupNag(){
+  if(state.storeMode === "cloud" || !allTrades().length) return "";
+  var d = backupAgeDays();
+  if(d !== null && d < 14) return "";
+  return '<div class="notice backup-nag"><span><b>Нөөцөө татаарай.</b> '+(d === null ? 'Та одоогоор нөөц татаагүй байна' : d+' хоногийн өмнө нөөц татсан')
+    + ' — утсан дээрх тэмдэглэл зөвхөн энэ утсанд хадгалагддаг тул апп устгавал алга болно.</span>'
+    + '<button class="btn sm primary" id="exportBackup">Нөөц татах</button></div>';
 }
 function importBackup(text){
   var o;
@@ -2489,7 +2536,7 @@ function viewDash(){
   var list = visibleTrades(), s = stats(list);
   var bal = startBalance();
   var kpi = [
-    {k:"Нийт P/L", v:signed(s.pl), c:cls(s.pl), n: bal? (s.pl/bal*100).toFixed(2)+"% данснаас":"—"},
+    {k:"Нийт P/L", v:signed(s.pl), c:cls(s.pl), n: fundedIn() ? (s.pl>=0?"+":"")+(s.pl/fundedIn()*100).toFixed(1)+"% өгөөж":"—"},
     {k:"Ялалт", v:pct(s.winRate), c:"", n:s.wins+" ялсан / "+s.losses+" алдсан"},
     {k:"Profit factor", v:(s.pf===Infinity?"∞":s.pf.toFixed(2)), c:s.pf>=1?"pos":"neg", n:"Ашиг ÷ алдагдал"},
     {k:"Дундаж R", v:(s.avgR>=0?"+":"−")+Math.abs(s.avgR).toFixed(2)+"R", c:cls(s.avgR), n:"Арилжаа тутамд"},
@@ -2550,7 +2597,7 @@ function viewDash(){
       }).join("") + '</div>'
     : '<div class="empty">Арилжаа алга.</div>';
 
-  return ''
+  return backupNag()
   + '<div class="sect-head" style="margin-top:0"><span class="eyebrow">Тойм</span><span class="rule"></span><span class="dim" style="font-size:12.5px">'+list.length+' арилжаа</span></div>'
   + kpiHtml
   + '<div class="grid split" style="margin-top:14px">'
@@ -2850,7 +2897,15 @@ function shiftParts(ms, offH){
   return {date: iso.slice(0,10), time: iso.slice(11,16), dow: d.getUTCDay(), day: d.getUTCDate()};
 }
 function ubOf(ms){ return shiftParts(ms, UB_OFF); }
-function srvOf(ms){ return shiftParts(ms, num(state.settings.serverUtcOffset)); }
+/* XM зэрэг брокер: өвөл UTC+2, зун UTC+3 (АНУ-ын зуны цагтай хамт солигдоно) */
+function srvOffAt(dateStr){
+  var S = state.settings, base = num(S.serverUtcOffset);
+  if(S.serverDst === false || (base !== 2 && base !== 3)) return base;
+  var p = String(dateStr || "").split("-");
+  if(p.length < 3){ var n = new Date(); p = [n.getUTCFullYear(), n.getUTCMonth()+1, n.getUTCDate()]; }
+  return usDst(+p[0], +p[1], +p[2]) ? 3 : 2;
+}
+function srvOf(ms){ return shiftParts(ms, srvOffAt(new Date(ms).toISOString().slice(0,10))); }
 function nthSunday(y, mo, n){ var w = new Date(Date.UTC(y, mo-1, 1)).getUTCDay(); return 1 + (7-w)%7 + (n-1)*7; }
 function usDst(y, m, d){
   var cur = Date.UTC(y, m-1, d);
@@ -2876,7 +2931,7 @@ function weeklyEvents(fromDate, toDate){
   return out;
 }
 function ymdUTC(d){ return d.toISOString().slice(0,10); }
-function tradeUtcMs(t){ return minsOf(t.date, t.time)*60000 - num(state.settings.serverUtcOffset)*3600000; }
+function tradeUtcMs(t){ return minsOf(t.date, t.time)*60000 - srvOffAt(t.date)*3600000; }
 /* өндөр нөлөөтэй мэдээнээс 30 мин өмнө – 60 мин дараах цонхонд нээсэн эсэх */
 function newsNear(t){
   var ms = tradeUtcMs(t);
@@ -3312,9 +3367,10 @@ function viewSettings(){
     + '<div class="form-grid">'
       + f("account","Дансны нэр",'<input id="setAccount" value="'+esc(state.settings.account)+'">')
       + ((state.settings.deposits||[]).length
-          ? f("balance","Нийт орлого + кредит ($)",'<input type="number" value="'+startBalance().toFixed(2)+'" disabled>')
+          ? f("balance","Цэвэр орлого ($) · орсон − татсан, кредит орсон",'<input type="number" value="'+startBalance().toFixed(2)+'" disabled>')
           : f("balance","Эхлэлийн баланс ($)",'<input id="setBalance" type="number" step="1" value="'+esc(state.settings.balance)+'">'))
-      + f("offset","Брокерын серверийн цаг (UTC+)",'<input id="setOffset" type="number" step="1" min="-12" max="14" value="'+esc(state.settings.serverUtcOffset)+'"><span class="hint">XM, Exness зуны цагаар ихэвчлэн +3 / +0</span>')
+      + f("offset","Брокерын серверийн цаг (UTC+)",'<input id="setOffset" type="number" step="1" min="-12" max="14" value="'+esc(state.settings.serverUtcOffset)+'"><span class="hint">XM: зун +3, өвөл +2</span>'
+        + '<label class="check" style="margin-top:6px"><input type="checkbox" id="setDst"'+(state.settings.serverDst===false?'':' checked')+'> Зун/өвлийн цагийг автоматаар тооцох</label>')
     + '</div>'
     + '<div class="form-actions" style="margin-top:14px"><button class="btn primary" id="saveSettings">Хадгалах</button>'
       + '<span class="dim" style="font-size:12.5px">Эрсдэлийн дүрмийг «Миний дүрэм» хэсэгт тохируулна</span></div>'
@@ -3347,6 +3403,7 @@ function viewSettings(){
     + '<div style="font-size:13.5px;display:flex;flex-direction:column;gap:10px">'
       + '<div>Бүртгэсэн арилжаа: <b class="mono">'+real+'</b></div>'
       + '<div>Хадгалалт: <b>'+(state.storeMode==="cloud"?"Байнгын (Artifact DB)":"Энэ хөтчид (localStorage)")+'</b></div>'
+      + (state.storeMode==="cloud" ? '' : '<div>Сүүлд нөөц татсан: <b>'+(backupAgeDays()===null ? 'хэзээ ч' : backupAgeDays()===0 ? 'өнөөдөр' : backupAgeDays()+' хоногийн өмнө')+'</b></div>')
       + '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">'
         + '<button class="btn primary" id="exportBackup">Нөөц татах</button>'
         + '<label class="btn" style="cursor:pointer">Нөөцөөс сэргээх<input type="file" id="backupFile" accept=".json,application/json" hidden></label>'
@@ -3520,7 +3577,7 @@ function parseMt5(text){
       tp: map.tp!==undefined ? mtNum(r[map.tp]) : 0,
       fees: -(comm+swap),
       plOverride: profit + comm + swap,
-      session:autoSession(od.time, state.settings.serverUtcOffset), setup:"", tf:"", bias:"", checks:{}, mistakes:[],
+      session:autoSession(od.time, srvOffAt(od.date)), setup:"", tf:"", bias:"", checks:{}, mistakes:[],
       emoBefore:"", emoAfter:"", confidence:0, notes:"", chart:""
     });
   }
@@ -3670,7 +3727,7 @@ function shotList(){
     + '</tbody></table></div>';
 }
 function shotPrompt(){
-  var off = num(state.settings.serverUtcOffset);
+  var off = srvOffAt(ymd(new Date()));
   return [
     "You read screenshots of a trader's trades and return them as data. The trader trades mostly XAUUSD (gold) and sometimes GBPJPY on MetaTrader 5 (XM Global; gold symbol is GOLD).",
     "The images may be: MT5 desktop or mobile History / Trade (positions) lists, a single position's detail view, a deal/position confirmation, or a TradingView / MT5 chart with a long/short position tool or entry, SL and TP lines.",
@@ -3715,7 +3772,7 @@ function shotTrade(r){
     sl: sl || 0, tp: tp || 0, exit: exit === null ? "" : exit,
     fees: (comm || swap) ? -(comm + swap) : 0,
     plOverride: profit === null ? "" : Math.round((profit + comm + swap)*100)/100,
-    session: time ? autoSession(time, state.settings.serverUtcOffset) : "",
+    session: time ? autoSession(time, srvOffAt(date)) : "",
     setup:"", tf:"", bias:"", checks:{}, mistakes:[], emoBefore:"", emoAfter:"", confidence:0, notes:"", chart:"",
     ideaSrc:"", exitReason:""
   };
@@ -3910,7 +3967,7 @@ function parseOcrRows(text){
       date:od.date, time:od.time, closeDate:cd.date, closeTime:cd.time,
       dir:dir, lot:lot, entry:entry, sl:sl, tp:tp, exit:exit,
       fees:-extra, plOverride: profit === null ? "" : Math.round((profit + extra)*100)/100,
-      session:autoSession(od.time, state.settings.serverUtcOffset), setup:"", tf:"", bias:"", checks:{}, mistakes:[],
+      session:autoSession(od.time, srvOffAt(od.date)), setup:"", tf:"", bias:"", checks:{}, mistakes:[],
       emoBefore:"", emoAfter:"", confidence:0, notes:"", chart:"", ideaSrc:"", exitReason:""
     };
     /* алтан дээр ашгийг үнээс шалгах — таарахгүй бол үнээр бодно */
@@ -4124,7 +4181,7 @@ function parseMt5Rows(text){
       lot: mtNum(mid[0]), entry: mtNum(mid[1]), sl: mtNum(mid[2]), tp: mtNum(mid[3]),
       exit: tail.length ? mtNum(tail[0]) : "",
       fees: -extra, plOverride: tail.length >= 2 ? Math.round((profit + extra)*100)/100 : "",
-      session: autoSession(od.time, state.settings.serverUtcOffset), setup:"", tf:"", bias:"", checks:{}, mistakes:[],
+      session: autoSession(od.time, srvOffAt(od.date)), setup:"", tf:"", bias:"", checks:{}, mistakes:[],
       emoBefore:"", emoAfter:"", confidence:0, notes:"", chart:"", ideaSrc:"", exitReason:""
     };
     if(t.exit !== "" && t.sl && Math.abs(t.exit - t.sl) <= 0.3) t.exitReason = "sl";
@@ -4152,7 +4209,7 @@ function render(){
   document.getElementById("balChip").innerHTML =
     '<span class="dim an">'+esc(acctList().length > 1 ? (state.settings.account || "Данс") : "Данс")+'</span> <b class="mono">'+money(startBalance() + s.pl)+'</b><span class="car">▾</span>';
 
-  document.getElementById("demoNotice").innerHTML = (!allTrades().length && vault.file && !window.claude)
+  document.getElementById("demoNotice").innerHTML = (state.tab === "juni") ? "" : (!allTrades().length && vault.file && !window.claude)
     ? '<div class="notice"><b>Таны арилжааны өгөгдөл энэ төхөөрөмж дээр хараахан нээгдээгүй байна.</b> Нууц үгээ нэг удаа оруулахад таны бүх арилжаа, тэмдэглэл гарч ирнэ. <button class="btn sm primary" id="vaultOpenBtn">Өгөгдлөө нээх</button></div>'
     : (!state.trades.length && state.usingDemo)
     ? '<div class="notice"><b>Жишээ (зохиомол) өгөгдөл харагдаж байна — таны данс биш.</b> Өөрийн арилжааг харах бол «MT5 импорт» дээр MT5-ийн History тайлангаа (.html) оруулна уу, эсвэл Тохиргоо → «Нөөцөөс сэргээх». Бодит арилжаа биш — эхний бичлэгээ нэмэх эсвэл MT5-аас импортлоход алга болно. <button class="btn sm ghost" id="hideDemo">Хоослох</button></div>'
@@ -4234,6 +4291,7 @@ document.getElementById("view").addEventListener("click", function(e){
     state.settings.account = document.getElementById("setAccount").value;
     var sb = document.getElementById("setBalance"); if(sb) state.settings.balance = num(sb.value);
     state.settings.serverUtcOffset = num(document.getElementById("setOffset").value);
+    var sd = document.getElementById("setDst"); if(sd) state.settings.serverDst = sd.checked;
     putSettings(); toast("Тохиргоо хадгалагдлаа"); return;
   }
   if(e.target.id === "clAdd"){
@@ -4496,8 +4554,8 @@ function botLines(){
     head.push('<p>Сүүлийн арилжаагаа TP-ийн <b>'+Math.round(tpFrac(last)*100)+'%</b>-д хаасан байна. Дараагийнхыг TP хүртэл тэвчье!</p>');
   else if(last && isCopied(last))
     head.push('<p>Сүүлийн арилжаа бусдын санаагаар орсон байна. Дараагийнх нь <b>өөрийн</b> шинжилгээ байг.</p>');
-  var sess = autoSession(srvNow.time, S.serverUtcOffset), lim = num(S.sessionHours)*60;
-  var inSess = todayT.filter(function(t){ return (t.session || autoSession(t.time, S.serverUtcOffset)) === sess; });
+  var sess = autoSession(srvNow.time, srvOffAt(srvNow.date)), lim = num(S.sessionHours)*60;
+  var inSess = todayT.filter(function(t){ return (t.session || autoSession(t.time, srvOffAt(t.date))) === sess; });
   if(sess && lim && inSess.length){
     var el = minsOf(srvNow.date, srvNow.time) - Math.min.apply(null, inSess.map(function(t){ return minsOf(t.date, t.time); }));
     if(el > lim) head.splice(soon ? 2 : 1, 0, '<p class="hi">'+esc(sess)+' сесс дээр '+fmtDur(el)+' болж, '+num(S.sessionHours)+' цагийн хязгаар хэтэрлээ. Зогсох цаг!</p>');
@@ -4577,6 +4635,7 @@ function botRoam(){
 }
 (function(){
   var btn = document.getElementById("botBtn");
+  if(btn && !btn.querySelector(".orb-svg")) btn.innerHTML = juniOrb();
   btn.addEventListener("pointerdown", function(e){
     if(e.button !== undefined && e.button !== 0) return;
     var b = botBox();
